@@ -1,0 +1,357 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+model Holder {
+  owner       String       @id
+  amount      Int
+  mints       Dino[]
+  subdaos     SubDAO[]
+  claymakers  Claymaker[]
+  clay        Clay[]
+  consumables Consumable[]
+}
+
+model Dino {
+  mint        String      @id
+  name        String
+  pfp         String
+  gif         String
+  holderOwner String?
+  rarity      Int?
+  subDAOId    String?
+  herdId      String?
+  classPFP    String?
+  attributes  Attributes?
+  holder      Holder?     @relation(fields: [holderOwner], references: [owner])
+  subdaos     SubDAO[]
+  herd        Herd?       @relation(fields: [herdId], references: [id])
+
+  @@index([holderOwner])
+  @@index([herdId])
+}
+
+model Attributes {
+  mint       String  @id
+  species    String
+  skin       String
+  color      String
+  motion     String
+  mood       String
+  background String
+  layerCount String
+  back       String
+  belly      String
+  pattern    String
+  details    String
+  class      String?
+  dino       Dino    @relation(fields: [mint], references: [mint])
+
+  @@index([mint])
+}
+
+model Herd {
+  id      String  @id @default(cuid())
+  owner   String
+  tier    Int
+  type    String
+  matches String
+  rarity  Int
+  key     String  @unique
+  dinos   Dino[]
+  voters  Voter[]
+}
+
+model Voter {
+  votesAvailable Int
+  votesCast      Int
+  userId         String  @id @unique
+  votesIssued    Boolean
+  votes          Herd[]
+  user           User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model DinoToHerd {
+  A String
+  B String
+
+  @@unique([A, B], map: "_DinoToHerd_AB_unique")
+  @@index([B], map: "_DinoToHerd_B_index")
+  @@map("_DinoToHerd")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model User {
+  id             String      @id @default(cuid())
+  name           String?
+  image          String?
+  defaultAddress String      @unique
+  accounts       Account[]
+  discord        Discord?
+  twitter        Twitter?
+  telegram       Telegram?
+  wallets        Wallet[]
+  collages       Collage[]
+  AudioFile      AudioFile[]
+  Voter          Voter?
+}
+
+model Discord {
+  username    String  @unique
+  global_name String
+  image_url   String
+  userId      String  @unique
+  id          String? @unique
+  User        User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Twitter {
+  username    String  @unique
+  global_name String
+  image_url   String
+  userId      String  @unique
+  banner_url  String?
+  private     Boolean @default(false)
+  User        User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Telegram {
+  username    String?
+  global_name String
+  image_url   String
+  userId      String  @unique
+  telegramId  String  @unique
+  isActive    Boolean @default(true)
+  private     Boolean @default(false)
+  User        User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Wallet {
+  address        String  @id @unique
+  userId         String
+  favoriteDomain String?
+  User           User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model SubDAO {
+  id                String      @id @default(cuid())
+  name              String      @unique
+  description       String?     @db.VarChar(500)
+  requirements      String?
+  acronym           String?
+  banner_url        String?
+  discord           String?
+  twitter           String?
+  website           String?
+  thumbnail         String?
+  qualifyingCount   Int?
+  type              String?
+  uniqueAddresses   Int?
+  verifiedAddresses Int?
+  grouping          Boolean?
+  telegramGroup     String?
+  dinos             Dino[]
+  holders           Holder[]
+  claymakers        Claymaker[]
+  clay              Clay[]
+}
+
+model Clay {
+  mint        String   @id
+  name        String
+  gif         String
+  color       String
+  holderOwner String?
+  rarity      Int?
+  subDAOId    String?
+  holder      Holder?  @relation(fields: [holderOwner], references: [owner])
+  subdaos     SubDAO[]
+
+  @@index([holderOwner])
+}
+
+model Claymaker {
+  mint        String   @id
+  name        String
+  gif         String
+  edition     String
+  holderOwner String?
+  rarity      Int?
+  subDAOId    String?
+  charges     Int?
+  holder      Holder?  @relation(fields: [holderOwner], references: [owner])
+  subdaos     SubDAO[]
+
+  @@index([holderOwner])
+}
+
+model Consumable {
+  name          String
+  symbol        String?
+  description   String?
+  image         String
+  attributes    Json?
+  holderOwner   String?
+  mint          String  @id
+  animation_url String?
+  holder        Holder? @relation(fields: [holderOwner], references: [owner])
+
+  @@index([holderOwner])
+}
+
+model Collage {
+  id          String    @id @default(cuid())
+  columns     Int
+  rows        Int
+  borderColor String
+  borderWidth Int
+  data        Json
+  userId      String?
+  createdAt   DateTime  @default(now())
+  generatedAt DateTime?
+  status      String?
+  url         String?
+  hidden      Boolean?
+  overlay     Boolean?
+  User        User?     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+}
+
+model AudioFile {
+  id         String   @id @default(cuid())
+  name       String
+  userId     String?
+  uploadedAt DateTime @default(now())
+  url        String?
+  clipStart  Float?
+  User       User?    @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+}
+
+model DinoToSubDAO {
+  A String
+  B String
+
+  @@unique([A, B], map: "_DinoToSubDAO_AB_unique")
+  @@index([B], map: "_DinoToSubDAO_B_index")
+  @@map("_DinoToSubDAO")
+}
+
+model HolderToSubDAO {
+  A String
+  B String
+
+  @@unique([A, B], map: "_HolderToSubDAO_AB_unique")
+  @@index([B], map: "_HolderToSubDAO_B_index")
+  @@map("_HolderToSubDAO")
+}
+
+model ClayToSubDAO {
+  A String
+  B String
+
+  @@unique([A, B], map: "_ClayToSubDAO_AB_unique")
+  @@index([B], map: "_ClayToSubDAO_B_index")
+  @@map("_ClayToSubDAO")
+}
+
+model ClaymakerToSubDAO {
+  A String
+  B String
+
+  @@unique([A, B], map: "_ClaymakerToSubDAO_AB_unique")
+  @@index([B], map: "_ClaymakerToSubDAO_B_index")
+  @@map("_ClaymakerToSubDAO")
+}
+
+model LastUpdated {
+  id          String   @id
+  holders     DateTime
+  tribes      DateTime
+  herds       DateTime
+  clay        DateTime @default(now())
+  claymakers  DateTime @default(now())
+  consumables DateTime @default(now())
+}
+
+model HerdToVoter {
+  A String
+  B String
+
+  @@unique([A, B], map: "_HerdToVoter_AB_unique")
+  @@index([B], map: "_HerdToVoter_B_index")
+  @@map("_HerdToVoter")
+}
+
+model MoldedMeterSnapshot {
+  id        String   @id
+  createdAt DateTime @default(now())
+  red       Int
+  green     Int
+  yellow    Int
+  blue      Int
+  black     Int
+  white     Int
+}
+
+model ClassCountSnapshot {
+  id        String   @id
+  createdAt DateTime @default(now())
+  classes   Json
+}
+
+model MakerChargesSnapshot {
+  id            String   @id
+  createdAt     DateTime @default(now())
+  first         Int
+  deluxe        Int
+  limited       Int
+  deluxeCharges Int
+}
+
+model Thread {
+  id         String  @id @default(cuid())
+  tweetId    String  @unique
+  categoryId String
+  order      Int
+  tweetUrl   String?
+}
+
+model TelegramMember {
+  telegramId  String    @unique
+  username    String?   @unique
+  global_name String
+  joinedAt    DateTime  @default(now())
+  kickAt      DateTime?
+  exception   Boolean   @default(false)
+  subDAOId    String
+  userId      String?   @unique
+}
