@@ -33,28 +33,7 @@ export default function ProfileButton(props: ProfileButtonProps) {
       }
     >
       {/* <Dropdown.Header></Dropdown.Header> */}
-      <Dropdown.Item
-        className="text-white hover:bg-neutral-900 focus:bg-neutral-900"
-        icon={HiUser}
-        onClick={() => router.push(`/profile/${sessionKey}`)}
-      >
-        Profile
-      </Dropdown.Item>
-      <Dropdown.Item
-        className="text-white hover:bg-neutral-900 focus:bg-neutral-900"
-        icon={HiViewGrid}
-        onClick={() => router.push(`/inventory/${sessionKey}`)}
-      >
-        Inventory
-      </Dropdown.Item>
-      <Dropdown.Item
-        className="text-white hover:bg-neutral-900 focus:bg-neutral-900"
-        icon={HiCog}
-        onClick={() => router.push(`/profile/${sessionKey}/settings`)}
-      >
-        Settings
-      </Dropdown.Item>
-      <Dropdown.Divider className="bg-neutral-700" />
+
       <Dropdown.Item
         className="text-white hover:bg-neutral-900 focus:bg-neutral-900"
         icon={HiLogout}

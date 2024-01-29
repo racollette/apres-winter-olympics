@@ -155,15 +155,15 @@ export const authOptions: NextAuthOptions = {
             throw new Error("Could not validate the signed message");
 
           // Check if user exists
-          const user = await prisma.user.findFirst({
-            where: {
-              wallets: {
-                some: {
-                  address: signinMessage.publicKey,
-                },
-              },
-            },
-          });
+          // const user = await prisma.user.findFirst({
+          //   where: {
+          //     wallets: {
+          //       some: {
+          //         address: signinMessage.publicKey,
+          //       },
+          //     },
+          //   },
+          // });
 
           return {
             id: signinMessage.publicKey,
@@ -210,15 +210,15 @@ export const authOptions: NextAuthOptions = {
             throw new Error("Could not validate the signed message");
 
           // Check if user exists
-          const user = await prisma.user.findFirst({
-            where: {
-              wallets: {
-                some: {
-                  address: credentials?.address,
-                },
-              },
-            },
-          });
+          // const user = await prisma.user.findFirst({
+          //   where: {
+          //     wallets: {
+          //       some: {
+          //         address: credentials?.address,
+          //       },
+          //     },
+          //   },
+          // });
 
           return {
             id: credentials?.address,

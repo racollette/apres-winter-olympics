@@ -1,3 +1,5 @@
+import { type Attributes, type Dino } from "@prisma/client";
+
 export function groupByColor(items: any[]): Record<string, any> {
   return items.reduce((acc: Record<string, any>, item: any) => {
     const color = item.color;
@@ -30,3 +32,25 @@ export function groupBySymbol(items: any[]): Record<string, any> {
     return acc;
   }, {});
 }
+
+type IndexableAttributes = Attributes & {
+  [key: string]: string | null | undefined;
+};
+
+export type Character = Dino & {
+  attributes: IndexableAttributes | null;
+};
+
+export const sortByAttribute = (items: Character[], attribute: string) => {
+  return items?.sort((a, b) => {
+    const attrA = a.attributes?.[attribute] || "";
+    const attrB = b.attributes?.[attribute] || "";
+    return attrA.localeCompare(attrB);
+  });
+};
+
+export const sortByRarity = (items: Character[]) => {
+  return items?.sort((a, b) => {
+    return (a.rarity ?? 0) - (b.rarity ?? 0); // Sort by the 'rarity' property in ascending order
+  });
+};

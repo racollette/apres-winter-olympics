@@ -51,45 +51,6 @@ const Item = ({ item, type }: ItemProps) => {
     }
   };
 
-  useEffect(() => {
-    const getImageBlob = async (imageType: string) => {
-      try {
-        const response = await fetch(
-          `${
-            imageType === "pfp"
-              ? item.pfp
-              : imageType === "class"
-              ? item.classPFP
-              : isDino || isClaymaker || isClay
-              ? item.gif
-              : item.image
-          }`
-        );
-
-        if (response.ok) {
-          const blob = await response.blob();
-          setImageBlobs((prevBlobs) => ({ ...prevBlobs, [imageType]: blob }));
-        } else {
-          throw new Error("Image download failed");
-        }
-      } catch (error) {
-        console.error("Error downloading image:", error);
-      }
-    };
-
-    getImageBlob("pfp");
-    getImageBlob("gif");
-    getImageBlob("class");
-  }, [
-    item.pfp,
-    item.gif,
-    item.classPFP,
-    item.image,
-    isDino,
-    isClay,
-    isClaymaker,
-  ]);
-
   return (
     <div
       key={item.mint}
@@ -186,27 +147,6 @@ const Item = ({ item, type }: ItemProps) => {
                       CLASS
                     </button>
                   )}
-                </div>
-                <div>
-                  <button
-                    className="rounded-sm bg-cyan-600 px-4 py-1 font-clayno text-xs font-bold"
-                    onClick={() =>
-                      handleDownload(
-                        item.name,
-                        imageState === "pfp"
-                          ? "png"
-                          : isDino
-                          ? "gif"
-                          : isClaymaker
-                          ? "gif"
-                          : isPizza
-                          ? "gif"
-                          : "png"
-                      )
-                    }
-                  >
-                    DOWNLOAD
-                  </button>
                 </div>
               </div>
             </div>

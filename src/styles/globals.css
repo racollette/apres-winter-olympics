@@ -86,3 +86,21 @@
     src: url("../../public/fonts/Claynotopia-Shadow.otf")
   }
 }
+
+
+#root {
+  width: 100vw;
+  height: 100vh;
+  background-color: #000;
+}
+
+*{
+  margin : 0;
+  padding: 0;
+}
+
+canvas{
+  width: 100vw;
+  height: 100vh;
+}
+
