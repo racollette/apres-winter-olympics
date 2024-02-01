@@ -88,7 +88,7 @@ const Inventory = ({ username }: { username: string | null }) => {
 
   return (
     <>
-      <section className="flex flex-col items-center justify-center gap-y-8 text-black md:container md:p-2">
+      <section className="flex flex-col items-center justify-center gap-y-8 text-white md:container md:p-2">
         <div className="flex w-full flex-col gap-4">
           <div className="flex flex-row justify-between">
             <div className="font-clayno text-lg md:text-2xl">

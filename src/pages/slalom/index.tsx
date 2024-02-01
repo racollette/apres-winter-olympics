@@ -3,8 +3,12 @@ import { Suspense } from "react";
 import Experience from "../../components/slalom/Experience";
 import { KeyboardControls } from "@react-three/drei";
 import Interface from "../../components/slalom/Interface";
+import { useRouter } from "next/router";
 
-function App() {
+function SlalomEvent() {
+  const router = useRouter();
+  const { species, mood, number } = router.query;
+
   return (
     <>
       <KeyboardControls
@@ -19,7 +23,11 @@ function App() {
         <Canvas>
           <color attach="background" args={["black"]} />
           <Suspense fallback={null}>
-            <Experience />
+            <Experience
+              species={atob(species as string)}
+              mood={atob(mood as string)}
+              number={atob(number as string)}
+            />
           </Suspense>
         </Canvas>
         <Interface />
@@ -28,4 +36,4 @@ function App() {
   );
 }
 
-export default App;
+export default SlalomEvent;

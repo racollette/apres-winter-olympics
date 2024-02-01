@@ -8,7 +8,13 @@ import SkiSlope from "./SkiSlope";
 import Skier from "./Skier";
 import Lights from "./Lights";
 
-export default function Experience() {
+export type ModelProps = {
+  species: string;
+  mood: string;
+  number: string;
+};
+
+export default function Experience({ species, mood, number }: ModelProps) {
   return (
     <>
       <Environment
@@ -20,7 +26,7 @@ export default function Experience() {
 
       <Physics debug>
         <Lights />
-        <Skier />
+        <Skier species={species} mood={mood} number={number} />
         <SkiSlope />
       </Physics>
     </>

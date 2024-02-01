@@ -29,7 +29,7 @@ const MetaTags = ({
       <meta name="twitter:card" content={twitterCard} />
 
       <meta name="twitter:image" content={twitterImage} />
-      <link rel="icon" href="/icons/dactyl_colored.svg" />
+      <link rel="icon" href="/favicon.png" />
     </Head>
   );
 };

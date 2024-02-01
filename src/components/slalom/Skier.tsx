@@ -2,11 +2,20 @@ import React, { useRef, useEffect, useState } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import Model from "./Model";
-import { RigidBody, useRapier, RapierRigidBody } from "@react-three/rapier";
-import { Html, useKeyboardControls } from "@react-three/drei";
+import {
+  RigidBody,
+  useRapier,
+  type RapierRigidBody,
+} from "@react-three/rapier";
+import { useKeyboardControls } from "@react-three/drei";
 import useGame from "../../stores/useGame";
+import { type ModelProps } from "./Experience";
 
-const Skier = () => {
+const Skier = ({
+  species = "rex",
+  mood = "confident",
+  number = "3495",
+}: ModelProps) => {
   const body = useRef<RapierRigidBody | null>(null);
   const [subscribeKeys, getKeys] = useKeyboardControls();
   const { rapier, world } = useRapier();
@@ -33,103 +42,109 @@ const Skier = () => {
     // console.log(delta);
 
     const modelForward = new THREE.Vector3(0, 0, 1);
-    const modelRotation = body.current.rotation();
-    const modelQuaternion = new THREE.Quaternion(
-      modelRotation.x,
-      modelRotation.y,
-      modelRotation.z,
-      modelRotation.w
-    );
-    modelForward.applyQuaternion(modelQuaternion);
 
-    if (forward) {
-      impulse.x -= impulseStrength * modelForward.x;
-      impulse.y -= impulseStrength * modelForward.y;
-      impulse.z -= impulseStrength * modelForward.z;
-    }
+    if (body.current) {
+      const modelRotation = body.current.rotation();
+      const modelQuaternion = new THREE.Quaternion(
+        modelRotation.x,
+        modelRotation.y,
+        modelRotation.z,
+        modelRotation.w
+      );
+      modelForward.applyQuaternion(modelQuaternion);
 
-    if (rightward) {
-      torque.y -= torqueStrength;
-      // impulse.x -= impulseStrength * modelForward.x;
-      // impulse.y -= impulseStrength * modelForward.y * 10;
-      // impulse.z -= impulseStrength * modelForward.z;
-    }
+      if (forward) {
+        impulse.x -= impulseStrength * modelForward.x;
+        impulse.y -= impulseStrength * modelForward.y;
+        impulse.z -= impulseStrength * modelForward.z;
+      }
 
-    if (backward) {
-      impulse.x += impulseStrength * modelForward.x;
-      impulse.y += impulseStrength * modelForward.y;
-      impulse.z += impulseStrength * modelForward.z;
-    }
+      if (rightward) {
+        torque.y -= torqueStrength;
+        // impulse.x -= impulseStrength * modelForward.x;
+        // impulse.y -= impulseStrength * modelForward.y * 10;
+        // impulse.z -= impulseStrength * modelForward.z;
+      }
 
-    if (leftward) {
-      torque.y += torqueStrength;
-      // impulse.x -= impulseStrength * modelForward.x;
-      // impulse.y -= impulseStrength * modelForward.y;
-      // impulse.z -= impulseStrength * modelForward.z;
-    }
+      if (backward) {
+        impulse.x += impulseStrength * modelForward.x;
+        impulse.y += impulseStrength * modelForward.y;
+        impulse.z += impulseStrength * modelForward.z;
+      }
 
-    body.current.applyImpulse(impulse, true);
-    body.current.applyTorqueImpulse(torque, true);
+      if (leftward) {
+        torque.y += torqueStrength;
+        // impulse.x -= impulseStrength * modelForward.x;
+        // impulse.y -= impulseStrength * modelForward.y;
+        // impulse.z -= impulseStrength * modelForward.z;
+      }
 
-    /**
-     * Camera
-     */
-    const bodyPosition = body.current.translation();
-    // const bodyQuaternion = body.current.rotation();
+      body.current.applyImpulse(impulse, true);
+      body.current.applyTorqueImpulse(torque, true);
 
-    // Set the initial camera position relative to the skier
-    const initialCameraPosition = new THREE.Vector3(0, 2.5, 3);
+      /**
+       * Camera
+       */
 
-    // Rotate the initial position based on the skier's rotation
-    const rotatedCameraPosition = initialCameraPosition
-      .clone()
-      .applyQuaternion(modelQuaternion);
+      const bodyPosition = body.current.translation();
+      // const bodyQuaternion = body.current.rotation();
 
-    // Update the camera position
-    const cameraPosition = new THREE.Vector3(
-      bodyPosition.x,
-      bodyPosition.y,
-      bodyPosition.z
-    ).add(rotatedCameraPosition);
+      // Set the initial camera position relative to the skier
+      const initialCameraPosition = new THREE.Vector3(0, 2.5, 3);
 
-    // Set the initial camera target relative to the skier
-    const initialCameraTarget = new THREE.Vector3(0, 2, 0);
+      // Rotate the initial position based on the skier's rotation
+      const rotatedCameraPosition = initialCameraPosition
+        .clone()
+        .applyQuaternion(modelQuaternion);
 
-    // Rotate the initial target based on the skier's rotation
-    const rotatedCameraTarget = initialCameraTarget
-      .clone()
-      .applyQuaternion(modelQuaternion);
+      // Update the camera position
+      const cameraPosition = new THREE.Vector3(
+        bodyPosition.x,
+        bodyPosition.y,
+        bodyPosition.z
+      ).add(rotatedCameraPosition);
 
-    // Update the camera target
-    const cameraTarget = new THREE.Vector3(
-      bodyPosition.x,
-      bodyPosition.y,
-      bodyPosition.z
-    ).add(rotatedCameraTarget);
+      // Set the initial camera target relative to the skier
+      const initialCameraTarget = new THREE.Vector3(0, 2, 0);
 
-    smoothedCameraPosition.lerp(cameraPosition, 5 * delta);
-    smoothedCameraTarget.lerp(cameraTarget, 5 * delta);
+      // Rotate the initial target based on the skier's rotation
+      const rotatedCameraTarget = initialCameraTarget
+        .clone()
+        .applyQuaternion(modelQuaternion);
 
-    state.camera.position.copy(smoothedCameraPosition);
-    state.camera.lookAt(smoothedCameraTarget);
+      // Update the camera target
+      const cameraTarget = new THREE.Vector3(
+        bodyPosition.x,
+        bodyPosition.y,
+        bodyPosition.z
+      ).add(rotatedCameraTarget);
 
-    if (bodyPosition.z > 15 || bodyPosition.z < -460) {
-      reset();
-      restart();
+      smoothedCameraPosition.lerp(cameraPosition, 5 * delta);
+      smoothedCameraTarget.lerp(cameraTarget, 5 * delta);
+
+      state.camera.position.copy(smoothedCameraPosition);
+      state.camera.lookAt(smoothedCameraTarget);
+
+      if (bodyPosition.z > 15 || bodyPosition.z < -460) {
+        reset();
+        restart();
+      }
     }
   });
 
   const jump = () => {
-    const origin = body.current.translation();
-    origin.y -= 0.01;
-    const direction = { x: 0, y: -1, z: 0 };
-    const ray = new rapier.Ray(origin, direction);
-    const hit = world.castRay(ray, 10, true);
+    if (body.current) {
+      const origin = body.current.translation();
+      origin.y -= 0.01;
+      const direction = { x: 0, y: -1, z: 0 };
+      const ray = new rapier.Ray(origin, direction);
+      const hit = world.castRay(ray, 10, true);
 
-    console.log(ray);
-    console.log(hit);
-    if (hit && hit.toi <= 0.11) {
-      body.current.applyImpulse({ x: 0, y: 0.5, z: 0 }, true);
+      console.log(ray);
+      console.log(hit);
+      if (hit && hit.toi <= 0.11) {
+        body.current.applyImpulse({ x: 0, y: 0.5, z: 0 }, true);
+      }
     }
   };
 
@@ -188,7 +203,8 @@ const Skier = () => {
             <boxGeometry args={[0.25, 0.1, 3]} />
             <meshBasicMaterial color="blue" />
           </mesh>
-          <Model modelName="rex-idle-confident" nftId="3495" />
+          {/* <Model modelName={`rex-idle-confident`} nftId="3495" /> */}
+          <Model modelName={`${species}-idle-${mood}`} nftId={number} />
         </group>
         {/* <mesh>
           <boxGeometry args={[0.5, 0.5, 0.5]} />

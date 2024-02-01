@@ -147,7 +147,8 @@ export default function LoginModal({
     if (attemptedLogin) {
       if (signedIn && !user) {
         toast({
-          title: "No Clayno.club account found. Please create one first!",
+          title: "No Clayno.club account found! Please create one first.",
+          variant: "destructive",
         });
       }
       setAttemptedLogin(false);
@@ -156,7 +157,8 @@ export default function LoginModal({
       setTimeout(() => {
         if (signedIn && !user) {
           toast({
-            title: "No Clayno.club account found. Please create one first!",
+            title: "No Clayno.club account found! Please create one first.",
+            variant: "destructive",
           });
         }
       }, 1000);
@@ -316,7 +318,7 @@ export default function LoginModal({
                     className="rounded-lg bg-neutral-800 px-4 py-3 text-white"
                     onClick={() => {
                       signIn("discord", {
-                        callbackUrl: "/?redirect=true&provider=discord",
+                        callbackUrl: "/events?redirect=true&provider=discord",
                       });
                     }}
                   >
@@ -334,7 +336,7 @@ export default function LoginModal({
                     className="rounded-lg bg-neutral-800 px-4 py-3 text-white"
                     onClick={() => {
                       signIn("twitter", {
-                        callbackUrl: "/?redirect=true&provider=twitter",
+                        callbackUrl: "/events?redirect=true&provider=twitter",
                       });
                     }}
                   >

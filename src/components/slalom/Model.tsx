@@ -14,9 +14,12 @@ import {
 } from "three";
 
 export default function Model({ modelName, nftId }: any) {
-  // const externalURL = `https://cdn.hellomoon.io/public/claynos/models/${modelName}.gltf.glb`;
+  console.log(modelName);
+  console.log(nftId);
+  const externalURL = `https://cdn.hellomoon.io/public/claynos/models/${modelName}.gltf.glb`;
 
-  const { scene, animations } = useGLTF(`/models/${modelName}.gltf.glb`);
+  // const { scene, animations } = useGLTF(`/models/${modelName}.gltf.glb`);
+  const { scene, animations } = useGLTF(externalURL);
 
   // console.log(scene);
   // console.log(animations);
@@ -40,12 +43,12 @@ export default function Model({ modelName, nftId }: any) {
 
   if (nftId) {
     textureShaderA.current = loadTexture(
-      // `https://cdn.hellomoon.io/public/claynos/textures/${nftId}_1001.jpg`
-      `textures/${nftId}_1001.jpg`
+      `https://cdn.hellomoon.io/public/claynos/textures/${nftId}_1001.jpg`
+      // `textures/${nftId}_1001.jpg`
     );
     textureShaderB.current = loadTexture(
-      // `https://cdn.hellomoon.io/public/claynos/textures/${nftId}_1002.jpg`
-      `/textures/${nftId}_1002.jpg`
+      `https://cdn.hellomoon.io/public/claynos/textures/${nftId}_1002.jpg`
+      // `/textures/${nftId}_1002.jpg`
     );
   }
 

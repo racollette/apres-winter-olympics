@@ -19,37 +19,17 @@ type ImageState = "gif" | "pfp" | "class";
 
 const Item = ({ item, type }: ItemProps) => {
   const [imageState, setImageState] = useState<ImageState>("gif");
-  const [imageBlobs, setImageBlobs] = useState({
-    pfp: null,
-    gif: null,
-    class: null,
-  });
 
   const isDino = type === "dino";
   const isClay = type === "clay";
   const isClaymaker = type === "claymaker";
   const isConsumable = type === "consumable";
-  const isPizza = item.symbol === "PIZZA";
 
   const attributesArray = Object.entries(item.attributes ?? {});
 
-  const handleDownload = (name: string, extension: string) => {
-    const blob = imageBlobs[imageState];
-
-    if (blob) {
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      const imageName =
-        imageState === "class"
-          ? `${item.name}_${item.attributes.class}`
-          : item.name;
-      link.setAttribute("download", `${imageName}.${extension}`);
-      document.body.appendChild(link);
-      link.click();
-      link?.parentNode?.removeChild(link);
-    }
-  };
+  const encodedSpecies = btoa(item.attributes.species.toLowerCase());
+  const encodedMood = btoa(item.attributes.mood.toLowerCase());
+  const encodedNumber = btoa(item.name.split("#")[1]);
 
   return (
     <div
@@ -210,6 +190,14 @@ const Item = ({ item, type }: ItemProps) => {
                         )}
                     </>
                   )}
+                </div>
+                <div className="mt-2 flex justify-center">
+                  <Link
+                    href={`/slalom?species=${encodedSpecies}&mood=${encodedMood}&number=${encodedNumber}`}
+                    className="w-full cursor-pointer justify-center rounded-lg bg-purple-900 px-4 py-2 text-center font-clayno text-2xl hover:scale-105 hover:animate-pulse"
+                  >
+                    Ski!
+                  </Link>
                 </div>
                 <div className="flex flex-row gap-2 place-self-end">
                   <Link
