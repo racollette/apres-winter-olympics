@@ -27,10 +27,10 @@ export default function Home() {
   useEffect(() => {
     setSelected(dino);
     if (dino?.attributes?.species && dino?.attributes?.mood && dino?.name) {
-      const encodedSpecies = btoa(dino.attributes.species.toLowerCase());
-      const encodedMood = btoa(dino.attributes.mood.toLowerCase());
+      const encodedSpecies = dino.attributes.species.toLowerCase();
+      const encodedMood = dino.attributes.mood.toLowerCase();
       const claynoNumber = dino?.name.split("#")[1] ?? "10176";
-      const encodedNumber = btoa(claynoNumber);
+      const encodedNumber = claynoNumber;
       setGameLink(
         `/slalom?species=${encodedSpecies}&mood=${encodedMood}&number=${encodedNumber}`
       );

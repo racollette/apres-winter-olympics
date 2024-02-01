@@ -24,9 +24,9 @@ function SlalomEvent() {
           <color attach="background" args={["black"]} />
           <Suspense fallback={null}>
             <Experience
-              species={atob(species as string)}
-              mood={atob(mood as string)}
-              number={atob(number as string)}
+              species={species as string}
+              mood={mood as string}
+              number={number as string}
             />
           </Suspense>
         </Canvas>
