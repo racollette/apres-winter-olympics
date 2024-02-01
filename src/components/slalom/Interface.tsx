@@ -6,7 +6,7 @@ import { api } from "~/utils/api";
 import Link from "next/link";
 
 export default function Interface() {
-  const time = useRef();
+  const time = useRef<HTMLDivElement | null>(null);
   // const gatesActivated = useRef();
   const [gatesActivated, setGatesActivated] = useState(0);
 
@@ -15,11 +15,11 @@ export default function Interface() {
   const userId = useGame((state) => state.userId);
   const dino = useGame((state) => state.dino);
 
-  const forward = useKeyboardControls((state) => state.forward);
-  const backward = useKeyboardControls((state) => state.backward);
-  const leftward = useKeyboardControls((state) => state.leftward);
-  const rightward = useKeyboardControls((state) => state.rightward);
-  const jump = useKeyboardControls((state) => state.jump);
+  const forward = useKeyboardControls((state) => !!state.forward);
+  const backward = useKeyboardControls((state) => !!state.backward);
+  const leftward = useKeyboardControls((state) => !!state.leftward);
+  const rightward = useKeyboardControls((state) => !!state.rightward);
+  const jump = useKeyboardControls((state) => !!state.jump);
 
   const recordResult = api.leaderboard.recordResult.useMutation();
 
