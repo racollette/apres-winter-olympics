@@ -21,8 +21,16 @@ import { shortAccount } from "~/utils/addresses";
 import { getQueryString } from "~/utils/routes";
 import { useSession } from "next-auth/react";
 import { useWallet } from "@solana/wallet-adapter-react";
+import { type Dino } from "@prisma/client";
+import useGame from "~/stores/useGame";
 
-const Inventory = ({ username }: { username: string | null }) => {
+const Inventory = ({
+  username,
+  userId,
+}: {
+  username: string | null;
+  userId: string;
+}) => {
   const { data: session } = useSession();
   const { publicKey } = useWallet();
 
@@ -32,6 +40,7 @@ const Inventory = ({ username }: { username: string | null }) => {
 
   const [originalSpecies, setOriginalSpecies] = useState<Character[]>([]);
   const [sagaSpecies, setSagaSpecies] = useState<Character[]>([]);
+  const [selected, setSelected] = useState<Character | null>(null);
 
   // const favoriteDomain = getFavoriteDomain(wallets)
 
@@ -86,6 +95,14 @@ const Inventory = ({ username }: { username: string | null }) => {
     setSagaSpecies(sagaSorted);
   };
 
+  const playerInformation = useGame((state) => state.playerInformation);
+
+  useEffect(() => {
+    if (selected) {
+      playerInformation(userId, selected);
+    }
+  }, [selected, userId]);
+
   return (
     <>
       <section className="flex flex-col items-center justify-center gap-y-8 text-white md:container md:p-2">
@@ -109,8 +126,14 @@ const Inventory = ({ username }: { username: string | null }) => {
             </div>
           </div>
           <div className="mb-8 flex flex-row flex-wrap gap-2">
-            {originalSpecies?.map((dino: any) => (
-              <div key={dino.mint}>
+            {originalSpecies?.map((dino: Character) => (
+              <div
+                key={dino.mint}
+                onClick={() => setSelected(dino)}
+                className={`overflow-clip rounded-xl border-4 ${
+                  selected === dino ? `border-sky-400` : `border-transparent`
+                }`}
+              >
                 <Item item={dino} type={"dino"} />
               </div>
             ))}
@@ -120,7 +143,13 @@ const Inventory = ({ username }: { username: string | null }) => {
           </div>
           <div className="mb-8 flex flex-row flex-wrap gap-2">
             {sagaSpecies?.map((dino: any) => (
-              <div key={dino.mint}>
+              <div
+                key={dino.mint}
+                onClick={() => setSelected(dino)}
+                className={`overflow-clip rounded-xl border-4 border-transparent ${
+                  selected === dino.mint && ` border-sky-400`
+                }`}
+              >
                 <Item item={dino} type={"dino"} />
               </div>
             ))}
