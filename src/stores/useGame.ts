@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { subscribeWithSelector } from "zustand/middleware";
+import { type Character } from "~/utils/inventory";
 
 type State = {
   blocksCount: number;
@@ -8,10 +9,13 @@ type State = {
   endTime: number;
   phase: string;
   gatesActivated: number;
+  userId: string;
+  dino: Character | null;
   start: () => void;
   restart: () => void;
   end: () => void;
   gateActivated: () => void;
+  playerInformation: (userId: string, dino: Character | null) => void;
 };
 
 export default create(
@@ -42,6 +46,14 @@ export default create(
          */
         gatesActivated: 0,
 
+        // Player information
+        userId: "",
+        dino: {} as Character | null,
+
+        playerInformation: (userId: string, dino: Character | null) => {
+          set((state) => ({ ...state, userId, dino }));
+        },
+
         start: () => {
           set((state) => {
             if (state.phase === "ready")
@@ -54,8 +66,6 @@ export default create(
         gateActivated: () => {
           set((state) => {
             return { gatesActivated: state.gatesActivated + 1 };
-
-            return {};
           });
         },
 
