@@ -32,6 +32,7 @@ model Dino {
   holder      Holder?     @relation(fields: [holderOwner], references: [owner])
   subdaos     SubDAO[]
   herd        Herd?       @relation(fields: [herdId], references: [id])
+  results     Result[]
 
   @@index([holderOwner])
   @@index([herdId])
@@ -118,6 +119,7 @@ model User {
   collages       Collage[]
   AudioFile      AudioFile[]
   Voter          Voter?
+  results        Result[]
 }
 
 model Discord {
@@ -354,4 +356,40 @@ model TelegramMember {
   exception   Boolean   @default(false)
   subDAOId    String
   userId      String?   @unique
+}
+
+model Competition {
+  id        Int       @id @default(autoincrement())
+  name      String
+  startDate DateTime?
+  endDate   DateTime?
+  events    Event[]
+}
+
+model Event {
+  id            Int         @id @default(autoincrement())
+  name          String
+  description   String?
+  date          DateTime?
+  competitionId Int
+  scoringType   String?
+  competition   Competition @relation(fields: [competitionId], references: [id])
+  results       Result[]
+
+  @@index([competitionId])
+}
+
+model Result {
+  id      Int     @id @default(autoincrement())
+  eventId Int
+  userId  String
+  score   Float
+  dinoId  String?
+  dino    Dino?   @relation(fields: [dinoId], references: [mint])
+  event   Event   @relation(fields: [eventId], references: [id])
+  user    User    @relation(fields: [userId], references: [id])
+
+  @@index([eventId])
+  @@index([userId])
+  @@index([dinoId])
 }
