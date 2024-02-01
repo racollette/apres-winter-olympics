@@ -27,7 +27,7 @@ export default function Leaderboard() {
       <main className="text-white">
         <div className="flex flex-col items-center justify-center gap-12 p-4 pb-16">
           <section className="flex w-full flex-col items-center justify-center gap-8 rounded-xl bg-blue-950 p-4 md:w-3/4">
-            <h1 className="text-2xl font-bold">Events</h1>
+            <h1 className="font-clayno text-2xl font-extrabold">Events</h1>
             {events?.map((event) => (
               <EventResults key={event.competitionId} event={event} />
             ))}
