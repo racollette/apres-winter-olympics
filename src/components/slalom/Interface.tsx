@@ -1,7 +1,9 @@
 import { useKeyboardControls } from "@react-three/drei";
 import useGame from "../../stores/useGame";
-import { useEffect, useRef, useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
 import { addEffect } from "@react-three/fiber";
+import { api } from "~/utils/api";
+import Link from "next/link";
 
 export default function Interface() {
   const time = useRef();
@@ -10,6 +12,8 @@ export default function Interface() {
 
   const restart = useGame((state) => state.restart);
   const phase = useGame((state) => state.phase);
+  const userId = useGame((state) => state.userId);
+  const dino = useGame((state) => state.dino);
 
   const forward = useKeyboardControls((state) => state.forward);
   const backward = useKeyboardControls((state) => state.backward);
@@ -17,23 +21,29 @@ export default function Interface() {
   const rightward = useKeyboardControls((state) => state.rightward);
   const jump = useKeyboardControls((state) => state.jump);
 
+  const recordResult = api.leaderboard.recordResult.useMutation();
+
+  const [score, setScore] = useState(0);
+  const totalGates = 21;
+
   useEffect(() => {
     const unsubscribeEffect = addEffect(() => {
       const state = useGame.getState();
-
       let elapsedTime = 0;
 
-      if (state.phase === "playing") elapsedTime = Date.now() - state.startTime;
-      else if (state.phase === "ended")
-        elapsedTime = state.endTime - state.startTime;
+      if (state.phase === "playing") {
+        elapsedTime = (Date.now() - state.startTime) / 1000;
+        setScore(0);
+      } else if (state.phase === "ended") {
+        setGatesActivated(state.gatesActivated);
+        elapsedTime = (state.endTime - state.startTime) / 1000;
+        console.log(state.gatesActivated);
+        const score = elapsedTime + (totalGates - state.gatesActivated) * 5;
+        console.log(score);
+        setScore(score);
+      }
 
-      elapsedTime /= 1000;
-      elapsedTime = elapsedTime.toFixed(2);
-
-      if (time.current) time.current.textContent = elapsedTime;
-
-      console.log(state.gatesActivated);
-      setGatesActivated(state.gatesActivated);
+      if (time.current) time.current.textContent = elapsedTime.toFixed(2);
     });
 
     return () => {
@@ -41,7 +51,16 @@ export default function Interface() {
     };
   }, []);
 
-  const missedGates = 21 - gatesActivated;
+  useEffect(() => {
+    if (phase === "ended" && userId && dino?.mint && score) {
+      recordResult.mutate({
+        eventId: 1,
+        userId,
+        score: score,
+        dinoId: dino?.mint ?? "",
+      });
+    }
+  }, [score]);
 
   return (
     <div className="pointer-events-none fixed left-0 top-0 h-screen w-screen">
@@ -52,13 +71,9 @@ export default function Interface() {
 
       {phase === "ended" && (
         <div className="absolute left-0 top-1/4 flex w-full flex-col items-center justify-center gap-2 py-4 text-4xl text-white">
-          <div>Missed Gates: {missedGates}</div>
-          <div>Time Penalty: {missedGates * 5} seconds</div>
-          <div>
-            Total Time:{" "}
-            {(Number(time.current.textContent) + missedGates * 5).toFixed(4)}{" "}
-            seconds
-          </div>
+          <div>Missed Gates: {totalGates - gatesActivated}</div>
+          <div>Time Penalty: {(totalGates - gatesActivated) * 5} seconds</div>
+          <div>Total Time: {score.toFixed(4)} seconds</div>
         </div>
       )}
 
@@ -74,6 +89,13 @@ export default function Interface() {
           <div className="pointer-events-auto cursor-pointer rounded-lg border-2 border-emerald-500 p-2">
             Next Event
           </div>
+          <Link
+            href={`/leaderboard`}
+            target="_blank"
+            className="pointer-events-auto cursor-pointer rounded-lg border-2 border-emerald-500 p-2"
+          >
+            Leaderboard
+          </Link>
         </div>
       )}
 
