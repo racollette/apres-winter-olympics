@@ -16,11 +16,6 @@ import {
 import useGame from "../../stores/useGame";
 import { MeshPhysicalMaterial } from "three";
 
-const NUMBER_OF_GATES = 15;
-const SPACING = 30;
-const SPACING_VARIABILITY = 5;
-const RANGE = 50;
-
 const GATE_POSITIONS = [
   [0, 0, -20],
   [10, 0, -40],
@@ -144,14 +139,21 @@ const SkiSlope = () => {
         </group> */}
 
         <group position={[0, 0, -30]}>
-          {GATE_POSITIONS.map((position, idx) => (
-            <SlalomGate
-              key={idx}
-              positionX={position[0]}
-              positionZ={position[2]}
-              index={idx}
-            />
-          ))}
+          {GATE_POSITIONS.map((position, idx) => {
+            if (
+              typeof position[0] === "number" &&
+              typeof position[2] === "number"
+            ) {
+              return (
+                <SlalomGate
+                  key={idx}
+                  positionX={position[0]}
+                  positionZ={position[2]}
+                  index={idx}
+                />
+              );
+            }
+          })}
         </group>
 
         {/* Finish */}
@@ -271,8 +273,13 @@ const Gate = (props: GateProps) => {
   );
 };
 
-const SlalomGate = (props) => {
-  const { positionX, positionZ, index } = props;
+type SlalomGateProps = {
+  positionX: number;
+  positionZ: number;
+  index: number;
+};
+
+const SlalomGate = ({ positionX, positionZ }: SlalomGateProps) => {
   const [intersected, setIntersected] = useState(false);
   const gateActivated = useGame((state) => state.gateActivated);
 
