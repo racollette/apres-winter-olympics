@@ -63,39 +63,62 @@ export default function Interface() {
   }, [score]);
 
   return (
-    <div className="pointer-events-none fixed left-0 top-0 h-screen w-screen">
+    <div className="pointer-events-none fixed left-0 top-0 h-screen w-screen font-clayno">
       {/* Time */}
       <div className="top-15% absolute left-0 mt-2 flex w-full flex-row justify-center gap-4 bg-black/50 py-2 text-center text-2xl text-white">
         <div ref={time}>0.00</div>
       </div>
 
       {phase === "ended" && (
-        <div className="absolute left-0 top-1/4 flex w-full flex-col items-center justify-center gap-2 py-4 text-4xl text-white">
-          <div>Missed Gates: {totalGates - gatesActivated}</div>
-          <div>Time Penalty: {(totalGates - gatesActivated) * 5} seconds</div>
-          <div>Total Time: {score.toFixed(4)} seconds</div>
+        <div className="absolute left-0 top-1/4 flex w-full flex-col items-center justify-center gap-2 bg-black/50 py-4 text-4xl text-white">
+          <div className="text-xl">
+            Missed Gates: {totalGates - gatesActivated}
+          </div>
+          <div className="text-xl">
+            Penalty: {(totalGates - gatesActivated) * 5} seconds
+          </div>
+          <div className="text-2xl font-extrabold">
+            Score: {score.toFixed(4)} seconds
+          </div>
         </div>
       )}
 
       {/* Restart */}
       {phase === "ended" && (
-        <div className="absolute left-0 top-1/2 flex w-full items-center justify-center gap-8 bg-black/50 py-4 text-4xl uppercase text-white">
+        <div className="absolute left-0 top-1/2 flex w-full items-center justify-center gap-8 bg-black/50 py-4 text-xl font-bold text-white">
           <div
-            className="pointer-events-auto cursor-pointer rounded-lg border-2 border-emerald-500 p-2"
+            className="pointer-events-auto cursor-pointer rounded-lg bg-emerald-500 p-2"
             onClick={restart}
           >
             Restart
           </div>
-          <div className="pointer-events-auto cursor-pointer rounded-lg border-2 border-emerald-500 p-2">
+          {/* <div className="pointer-events-auto cursor-pointer rounded-lg bg-sky-500 p-2">
             Next Event
-          </div>
+          </div> */}
+          <Link
+            href={`/events`}
+            className="pointer-events-auto cursor-pointer rounded-lg bg-sky-500 p-2"
+          >
+            Menu
+          </Link>
           <Link
             href={`/leaderboard`}
             target="_blank"
-            className="pointer-events-auto cursor-pointer rounded-lg border-2 border-emerald-500 p-2"
+            className="pointer-events-auto cursor-pointer rounded-lg bg-purple-500 p-2"
           >
             Leaderboard
           </Link>
+        </div>
+      )}
+
+      {phase === "playing" && (
+        <div className="absolute bottom-5 left-10 flex w-full items-center py-4 text-xl uppercase text-white">
+          <div
+            className="pointer-events-auto cursor-pointer rounded-lg border-2 border-emerald-500 bg-black/50 p-2"
+            onClick={restart}
+          >
+            Restart
+          </div>
         </div>
       )}
 
