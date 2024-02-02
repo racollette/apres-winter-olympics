@@ -60,7 +60,7 @@ export default function Home() {
                   <div className="mt-2 flex w-full justify-center">
                     <Link
                       href={gameLink}
-                      className="w-full animate-pulse cursor-pointer justify-center rounded-lg bg-purple-800 px-4 py-2 text-center font-clayno text-2xl hover:scale-105"
+                      className="w-4/5 animate-pulse cursor-pointer justify-center rounded-lg bg-purple-800 px-4 py-2 text-center font-clayno text-2xl hover:scale-105"
                     >
                       <div className="flex flex-row items-center justify-center gap-2">
                         <Image
