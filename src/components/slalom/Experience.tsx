@@ -24,7 +24,7 @@ export default function Experience({ species, mood, number }: ModelProps) {
       />
       <OrbitControls />
 
-      <Physics debug>
+      <Physics debug={false}>
         <Lights />
         <Skier species={species} mood={mood} number={number} />
         <SkiSlope />
