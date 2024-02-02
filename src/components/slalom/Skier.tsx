@@ -7,7 +7,7 @@ import {
   useRapier,
   type RapierRigidBody,
 } from "@react-three/rapier";
-import { useKeyboardControls } from "@react-three/drei";
+import { useKeyboardControls, useTexture } from "@react-three/drei";
 import useGame from "../../stores/useGame";
 import { type ModelProps } from "./Experience";
 
@@ -181,6 +181,8 @@ const Skier = ({
     };
   }, []);
 
+  const matcap = useTexture("/textures/7877EE_D87FC5_75D9C7_1C78C0-256px.png");
+
   return (
     <>
       <RigidBody
@@ -197,11 +199,11 @@ const Skier = ({
         <group position={[0, 1.05, 0]} castShadow>
           <mesh position={[-0.2, 0, -0.75]}>
             <boxGeometry args={[0.25, 0.1, 3]} />
-            <meshBasicMaterial color="red" />
+            <meshMatcapMaterial matcap={matcap} />
           </mesh>
           <mesh position={[0.15, 0, -0.75]}>
             <boxGeometry args={[0.25, 0.1, 3]} />
-            <meshBasicMaterial color="blue" />
+            <meshMatcapMaterial matcap={matcap} />
           </mesh>
           {/* <Model modelName={`rex-idle-confident`} nftId="3495" /> */}
           <Model modelName={`${species}-idle-${mood}`} nftId={number} />

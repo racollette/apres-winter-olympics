@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { use, useEffect, useRef, useState } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { CuboidCollider, RigidBody, RigidBodyProps } from "@react-three/rapier";
@@ -62,6 +62,12 @@ const SkiSlope = () => {
   const aoTexture = useTexture("/textures/Snow_002_OCC.jpg");
   const roughnessTexture = useTexture("/textures/Snow_002_ROUGH.jpg");
 
+  const matcap1 = useTexture("/textures/7877EE_D87FC5_75D9C7_1C78C0-256px.png");
+  const matcap2 = useTexture("/textures/C7C7D7_4C4E5A_818393_6C6C74-256px.png");
+
+  const matcap3 = useTexture("/textures/6C5DC3_352D66_5C4CAB_544CA5-256px.png");
+  const matcap4 = useTexture("/textures/68049F_C90DE6_A404CF_B304DC-256px.png");
+
   return (
     <>
       <group rotation={[-0.35, 0, 0]} position={[0, 0, 0]}>
@@ -106,7 +112,7 @@ const SkiSlope = () => {
           rotation={[0, 0, 0]}
         >
           2024 Winter Olympics
-          <meshBasicMaterial color="green" />
+          <meshMatcapMaterial matcap={matcap3} />
         </Text3D>
 
         <Text3D
@@ -115,7 +121,7 @@ const SkiSlope = () => {
           rotation={[0, 0, 0]}
         >
           Sponsored by Apres Mountain Lodge
-          <meshBasicMaterial color="yellow" />
+          <meshMatcapMaterial matcap={matcap4} />
         </Text3D>
 
         <Gate
@@ -168,7 +174,7 @@ const SkiSlope = () => {
         <RigidBody type="fixed">
           <mesh position={[0, 0, -490]}>
             <boxGeometry args={[500, 10, 0.5]} />
-            <meshBasicMaterial color="green" />
+            <meshMatcapMaterial matcap={matcap1} />
           </mesh>
         </RigidBody>
 
@@ -283,7 +289,9 @@ const SlalomGate = ({ positionX, positionZ }: SlalomGateProps) => {
   const [intersected, setIntersected] = useState(false);
   const gateActivated = useGame((state) => state.gateActivated);
 
-  const color = intersected ? "red" : "blue";
+  const matcap3 = useTexture("/textures/6C5DC3_352D66_5C4CAB_544CA5-256px.png");
+  const matcap4 = useTexture("/textures/68049F_C90DE6_A404CF_B304DC-256px.png");
+  const texture = intersected ? matcap3 : matcap4;
 
   useEffect(() => {
     if (intersected) {
@@ -313,11 +321,11 @@ const SlalomGate = ({ positionX, positionZ }: SlalomGateProps) => {
     >
       <mesh position={[-4, 0.5, 0]} castShadow>
         <boxGeometry args={[0.1, 5, 0.1]} />
-        <meshBasicMaterial color={color} />
+        <meshMatcapMaterial matcap={texture} />
       </mesh>
       <mesh position={[4, 0.5, 0]}>
         <boxGeometry args={[0.1, 5, 0.1]} />
-        <meshBasicMaterial color={color} />
+        <meshMatcapMaterial matcap={texture} />
       </mesh>
       <CuboidCollider
         position={[0, 0, 0]}
