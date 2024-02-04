@@ -11,6 +11,7 @@ type State = {
   gatesActivated: number;
   userId: string;
   dino: Character | null;
+  velocity: number;
   start: () => void;
   restart: () => void;
   end: () => void;
@@ -49,9 +50,14 @@ export default create(
         // Player information
         userId: "",
         dino: {} as Character | null,
+        velocity: 0,
 
         playerInformation: (userId: string, dino: Character | null) => {
           set((state) => ({ ...state, userId, dino }));
+        },
+
+        setSpeed: (velocity: number) => {
+          set((state) => ({ ...state, velocity }));
         },
 
         start: () => {

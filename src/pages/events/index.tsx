@@ -31,6 +31,16 @@ export default function Home() {
       const encodedMood = dino.attributes.mood.toLowerCase();
       const claynoNumber = dino?.name.split("#")[1] ?? "10176";
       const encodedNumber = claynoNumber;
+
+      if (
+        dino?.attributes?.species === "Spino" ||
+        dino?.attributes?.species === "Para" ||
+        dino?.attributes?.species === "Dactyl"
+      ) {
+        setGameLink(`/slalom?species=rex&mood=excited&number=5630`);
+        return;
+      }
+
       setGameLink(
         `/slalom?species=${encodedSpecies}&mood=${encodedMood}&number=${encodedNumber}`
       );

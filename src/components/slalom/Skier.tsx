@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
-import Model from "./Model";
+import Model from "../Model";
 import {
   RigidBody,
   useRapier,

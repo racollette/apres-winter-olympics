@@ -146,8 +146,8 @@ const Inventory = ({
               <div
                 key={dino.mint}
                 onClick={() => setSelected(dino)}
-                className={`overflow-clip rounded-xl border-4 border-transparent ${
-                  selected === dino.mint && ` border-sky-400`
+                className={`overflow-clip rounded-xl border-4 ${
+                  selected === dino ? `border-sky-400` : `border-transparent`
                 }`}
               >
                 <Item item={dino} type={"dino"} />

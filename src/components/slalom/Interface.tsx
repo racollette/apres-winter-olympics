@@ -9,6 +9,7 @@ export default function Interface() {
   const time = useRef<HTMLDivElement | null>(null);
   // const gatesActivated = useRef();
   const [gatesActivated, setGatesActivated] = useState(0);
+  const [playing, setPlaying] = useState(true);
 
   const restart = useGame((state) => state.restart);
   const phase = useGame((state) => state.phase);
@@ -34,13 +35,15 @@ export default function Interface() {
       if (state.phase === "playing") {
         elapsedTime = (Date.now() - state.startTime) / 1000;
         setScore(0);
+        setPlaying(true);
       } else if (state.phase === "ended") {
-        setGatesActivated(state.gatesActivated);
         elapsedTime = (state.endTime - state.startTime) / 1000;
-        console.log(state.gatesActivated);
-        const score = elapsedTime + (totalGates - state.gatesActivated) * 5;
-        console.log(score);
-        setScore(score);
+        if (playing) {
+          setGatesActivated(state.gatesActivated);
+          const score = elapsedTime + (totalGates - state.gatesActivated) * 5;
+          setScore(score);
+        }
+        setPlaying(false);
       }
 
       if (time.current) time.current.textContent = elapsedTime.toFixed(2);
@@ -49,7 +52,7 @@ export default function Interface() {
     return () => {
       unsubscribeEffect();
     };
-  }, []);
+  }, [playing]);
 
   useEffect(() => {
     if (phase === "ended" && userId && dino?.mint && score) {
@@ -114,7 +117,7 @@ export default function Interface() {
       {phase === "playing" && (
         <div className="absolute bottom-5 left-10 flex w-full items-center py-4 text-xl uppercase text-white">
           <div
-            className="pointer-events-auto cursor-pointer rounded-lg border-2 border-emerald-500 bg-black/50 p-2"
+            className="pointer-events-auto cursor-pointer rounded-lg bg-emerald-500 p-2"
             onClick={restart}
           >
             Restart
