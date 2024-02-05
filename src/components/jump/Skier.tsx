@@ -106,22 +106,23 @@ const Skier = ({
       );
       torqueInLocalSpace.applyQuaternion(modelQuaternion);
 
-      const maxRotation = Math.PI / 36; // Adjust this value as needed
+      const maxRotationX = Math.PI / 6; // Adjust this value as needed
+      const maxRotationYZ = Math.PI / 24; // Adjust this value as needed
 
       torqueInLocalSpace.x = THREE.MathUtils.clamp(
         torqueInLocalSpace.x,
-        -maxRotation,
-        maxRotation
+        -maxRotationX,
+        maxRotationX
       );
       torqueInLocalSpace.y = THREE.MathUtils.clamp(
         torqueInLocalSpace.y,
-        -maxRotation,
-        maxRotation
+        -maxRotationYZ,
+        maxRotationYZ
       );
       torqueInLocalSpace.z = THREE.MathUtils.clamp(
         torqueInLocalSpace.z,
-        -maxRotation,
-        maxRotation
+        -maxRotationYZ,
+        maxRotationYZ
       );
 
       body.current.applyTorqueImpulse(torqueInLocalSpace, true);
@@ -137,7 +138,7 @@ const Skier = ({
       // const bodyQuaternion = body.current.rotation();
 
       // Set the initial camera position relative to the skier
-      const initialCameraPosition = new THREE.Vector3(0, 2.5, 3);
+      const initialCameraPosition = new THREE.Vector3(0, 2.5, 9);
 
       // Rotate the initial position based on the skier's rotation
       const rotatedCameraPosition = initialCameraPosition
@@ -166,8 +167,8 @@ const Skier = ({
         bodyPosition.z
       ).add(rotatedCameraTarget);
 
-      smoothedCameraPosition.lerp(cameraPosition, 10 * delta);
-      smoothedCameraTarget.lerp(cameraTarget, 10 * delta);
+      smoothedCameraPosition.lerp(cameraPosition, 5 * delta);
+      smoothedCameraTarget.lerp(cameraTarget, 5 * delta);
 
       state.camera.position.copy(smoothedCameraPosition);
       state.camera.lookAt(smoothedCameraTarget);
