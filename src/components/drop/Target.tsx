@@ -11,11 +11,10 @@ const Target = () => {
 
   return (
     <>
-      <group rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]}>
-        {/* Ski Jump Ramp */}
+      <group rotation={[0, 0, 0]} position={[0, 0, 0]}>
         <RigidBody type="fixed" restitution={0} friction={0}>
           <mesh ref={targetRef} position={[0, -1, 0]} receiveShadow>
-            <circleGeometry args={[100]} />
+            <cylinderGeometry args={[100, 100, 1]} />
             {/* <meshBasicMaterial color="white" /> */}
             <meshMatcapMaterial map={matcap4} />
           </mesh>

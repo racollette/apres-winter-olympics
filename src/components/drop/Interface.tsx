@@ -66,9 +66,9 @@ export default function Interface() {
   return (
     <div className="pointer-events-none fixed left-0 top-0 h-screen w-screen font-clayno">
       {/* Time */}
-      <div className="top-15% absolute left-0 mt-2 flex w-full flex-row justify-center gap-4 bg-black/50 py-2 text-center text-2xl text-white">
+      {/* <div className="top-15% absolute left-0 mt-2 flex w-full flex-row justify-center gap-4 bg-black/50 py-2 text-center text-2xl text-white">
         <div>{Math.abs(velocity).toFixed(0)}</div>
-      </div>
+      </div> */}
 
       {phase === "ended" && (
         <div className="absolute left-0 top-1/4 flex w-full flex-col items-center justify-center gap-2 bg-black/50 py-4 text-4xl text-white">
