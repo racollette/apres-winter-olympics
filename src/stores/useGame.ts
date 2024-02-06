@@ -17,6 +17,7 @@ type State = {
   end: () => void;
   gateActivated: () => void;
   playerInformation: (userId: string, dino: Character | null) => void;
+  setSpeed: (velocity: number) => void;
 };
 
 export default create(
