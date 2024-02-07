@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from "react";
-import { useFrame } from "@react-three/fiber";
+import { useFrame, GroupProps } from "@react-three/fiber";
 import * as THREE from "three";
 import Model from "../Model";
 import {
@@ -8,9 +8,16 @@ import {
   RapierRigidBody,
   RigidBodyOptions,
   CuboidCollider,
+  useSphericalJoint,
+  MeshCollider,
 } from "@react-three/rapier";
 import { RigidBodyTypeString } from "@react-three/rapier";
-import { useKeyboardControls, useTexture } from "@react-three/drei";
+import {
+  Box,
+  Sphere,
+  useKeyboardControls,
+  useTexture,
+} from "@react-three/drei";
 import useGame from "../../stores/useGame";
 import { type ModelProps } from "./Experience";
 
@@ -19,12 +26,11 @@ const Dactyl = ({
   mood = "confident",
   number = "3495",
 }: ModelProps) => {
-  const dactylRef = useRef<THREE.Mesh | null>(null);
-  const packageRef = useRef<RapierRigidBody | null>(null);
-  // const packageRigidBodyRef = useRef<RapierRigidBody | null>(null);
+  const dactylRef = useRef<RapierRigidBody>(null);
+  const packageRef = useRef<RapierRigidBody>(null);
   const [subscribeKeys, getKeys] = useKeyboardControls();
   const [dropped, setDropped] = useState(false);
-  const { rapier, world } = useRapier();
+
   const [smoothedCameraPosition] = useState(
     () => new THREE.Vector3(2000, 2000, 2000)
   );
@@ -33,10 +39,15 @@ const Dactyl = ({
   const startingPosition = { x: 0, y: 50, z: 75 };
   const timeRef = useRef(0);
 
+  // const joint = useSphericalJoint(packageRef, dactylRef, [
+  //   // Position of the joint in bodyA's local space
+  //   [0, 0, 0],
+  //   // Position of the joint in bodyB's local space
+  //   [0, -2, 0],
+  // ]);
+
   // useEffect(() => {
-  //   if (packageRef.current) {
-  //     packageRef.current.sleep();
-  //   }
+  //   dactylRef.current?.sleep();
   // }, []);
 
   useFrame((state, delta) => {
@@ -49,41 +60,35 @@ const Dactyl = ({
     const impulse = { x: 0, y: 0, z: 0 };
     const torque = { x: 0, y: 0, z: 0 };
 
-    const impulseStrength = 200 * delta;
-    const torqueStrength = 25 * delta;
+    const impulseStrength = 0.02 * delta;
+    const torqueStrength = 250 * delta;
 
     const x = Math.sin(1 * timeRef.current) * 5 + startingPosition.x;
     const y = Math.cos(1 * timeRef.current) * 2 + startingPosition.y;
     const z = -2 * timeRef.current + startingPosition.z;
-    // const z = Math.sin(1 * timeRef.current) * 5 + startingPosition.z;
 
     if (dactylRef.current) {
-      dactylRef.current.position.x = x;
-      dactylRef.current.position.y = y;
-      dactylRef.current.position.z = z;
-
-      // packageRef.current.applyImpulse({ x: 0, y: 0, z: 1 }, true);
-      // packageRef.current?.addForce({ x: 0, y: 9.81, z: -8 }, true);
-
       if (rightward) {
-        torque.z -= torqueStrength;
+        // dactylRef.current?.setRotation({ x: 0, y: 0, z: -0.5, w: 1 }, false);
+        // torque.x -= torqueStrength;
       }
 
       if (leftward) {
+        console.log("leftward");
+        torque.y += torqueStrength;
         torque.z += torqueStrength;
+        torque.x += torqueStrength;
       }
 
       if (!dropped) {
-        packageRef.current?.setTranslation({ x, y, z }, false);
-        packageRef.current?.applyTorqueImpulse(torque, true);
+        dactylRef.current?.setTranslation({ x, y, z }, false);
       }
-
-      // packageRef.current?.rotation
 
       /**
        * Camera
        */
-      const bodyPosition = dactylRef.current.position;
+
+      const bodyPosition = dactylRef.current.translation();
 
       // Set the initial camera position relative to the dactyl
       const initialCameraPosition = new THREE.Vector3(
@@ -132,21 +137,6 @@ const Dactyl = ({
       state.camera.lookAt(smoothedCameraTarget);
     }
   });
-  // const jump = () => {
-  //   if (body.current) {
-  //     const origin = body.current.translation();
-  //     origin.y -= 0.25;
-  //     const direction = { x: 0, y: -1, z: 0 };
-  //     const ray = new rapier.Ray(origin, direction);
-  //     const hit = world.castRay(ray, 10, true);
-
-  //     console.log(ray);
-  //     console.log(hit);
-  //     if (hit && hit.toi <= 0.6) {
-  //       body.current.applyImpulse({ x: 0, y: 70, z: 0 }, true);
-  //     }
-  //   }
-  // };
 
   // const reset = () => {
   //   body.current?.setTranslation({ x: 0, y: 50, z: 40 }, false);
@@ -186,27 +176,16 @@ const Dactyl = ({
 
   return (
     <>
-      <group
-      // position={[startingPosition.x, startingPosition.y, startingPosition.z]}
-      >
-        <mesh position={[0, 0, 0]} ref={dactylRef}>
+      <RigidBody type="fixed" ref={dactylRef}>
+        <mesh>
           <Model modelName={`dactyl-flap-excited`} nftId={10176} />
         </mesh>
-        <RigidBody
-          ref={packageRef}
-          restitution={0}
-          friction={0.25}
-          linearDamping={0.35}
-          angularDamping={0.5}
-          colliders="cuboid"
-        >
-          <mesh position={[0, 0, 0]} rotation={[0, 0, 0]}>
-            <Model modelName={`raptor-idle-scared`} nft={3411} />
-            {/* <boxGeometry args={[11, 11, 11]} /> */}
-            {/* <meshBasicMaterial color="red" /> */}
-          </mesh>
-        </RigidBody>
-      </group>
+      </RigidBody>
+      <RigidBody ref={packageRef}>
+        <mesh>
+          <Model modelName={`raptor-idle-scared`} nft={3411} />
+        </mesh>
+      </RigidBody>
     </>
   );
 };
