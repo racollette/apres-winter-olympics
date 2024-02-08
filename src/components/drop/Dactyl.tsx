@@ -20,14 +20,18 @@ import {
 } from "@react-three/drei";
 import useGame from "../../stores/useGame";
 import { type ModelProps } from "./Experience";
+import { link } from "fs";
 
 const Dactyl = ({
   species = "rex",
   mood = "confident",
   number = "3495",
 }: ModelProps) => {
-  const dactylRef = useRef<RapierRigidBody>(null);
-  const packageRef = useRef<RapierRigidBody>(null);
+  const dactylRef = useRef<THREE.Group>(null);
+  const payloadRef = useRef<THREE.Group>(null);
+  const payloadMeshRef = useRef<THREE.Mesh>(null);
+  const payloadRigidBodyRef = useRef<RapierRigidBody>(null);
+  const linkedRef = useRef<THREE.Group>(null);
   const [subscribeKeys, getKeys] = useKeyboardControls();
   const [dropped, setDropped] = useState(false);
 
@@ -36,10 +40,14 @@ const Dactyl = ({
   );
   const [smoothedCameraTarget] = useState(() => new THREE.Vector3(0, 10, 0));
 
-  const startingPosition = { x: 0, y: 50, z: 75 };
+  const startingPosition = { x: 0, y: 100, z: 0 };
+  const startingRotation = { x: 0, y: 0, z: 0 }; // Store starting rotation
+
+  // Calculate rotation difference
+
   const timeRef = useRef(0);
 
-  // const joint = useSphericalJoint(packageRef, dactylRef, [
+  // const joint = useSphericalJoint(payloadRef, dactylRef, [
   //   // Position of the joint in bodyA's local space
   //   [0, 0, 0],
   //   // Position of the joint in bodyB's local space
@@ -47,7 +55,7 @@ const Dactyl = ({
   // ]);
 
   // useEffect(() => {
-  //   dactylRef.current?.sleep();
+  //   payloadRigidBodyRef.current?.sleep();
   // }, []);
 
   useFrame((state, delta) => {
@@ -68,73 +76,146 @@ const Dactyl = ({
     const z = -2 * timeRef.current + startingPosition.z;
 
     if (dactylRef.current) {
-      if (rightward) {
-        // dactylRef.current?.setRotation({ x: 0, y: 0, z: -0.5, w: 1 }, false);
-        // torque.x -= torqueStrength;
-      }
+      const rotationDiff = {
+        x: startingRotation.x - dactylRef.current?.rotation.x,
+        y: startingRotation.y - dactylRef.current?.rotation.y,
+        z: startingRotation.z - dactylRef.current?.rotation.z,
+      };
 
-      if (leftward) {
-        console.log("leftward");
-        torque.y += torqueStrength;
-        torque.z += torqueStrength;
-        torque.x += torqueStrength;
-      }
+      // dactylRef.current.position.set(x, y, z);
 
       if (!dropped) {
-        dactylRef.current?.setTranslation({ x, y, z }, false);
+        linkedRef.current.position.set(x, y, z);
+        // payloadRef.current.position.set(x, y, z);
+        payloadRigidBodyRef.current?.setTranslation({ x, y, z }, false);
+
+        if (rightward) {
+          console.log("rightward");
+          const rotationZ = dactylRef.current.rotation.z;
+          if (rotationZ > -0.75) {
+            dactylRef.current?.rotateZ(-0.02);
+          }
+        }
+
+        if (leftward) {
+          console.log("leftward");
+          const rotationZ = dactylRef.current.rotation.z;
+          if (rotationZ < 0.75) {
+            dactylRef.current?.rotateZ(0.02);
+          }
+        }
+
+        if (forward) {
+          console.log("forward");
+          const rotationX = dactylRef.current.rotation.x;
+          if (rotationX > -0.5) {
+            dactylRef.current?.rotateX(-0.02);
+          }
+        }
+
+        if (backward) {
+          console.log("backward");
+          const rotationX = dactylRef.current.rotation.x;
+          if (rotationX < 0.5) {
+            dactylRef.current?.rotateX(0.02);
+          }
+        }
+
+        dactylRef.current.rotation.x += rotationDiff.x * 0.75 * delta;
+        dactylRef.current.rotation.y += rotationDiff.y * 0.75 * delta;
+        dactylRef.current.rotation.z += rotationDiff.z * 0.75 * delta;
+
+        // Inside the useEffect hook or any relevant event handler for dropping the model
+
+        // Debugging statements to check positions before and after drop
+        console.log(
+          "Raptor position before drop:",
+          payloadRef.current?.position
+        );
+        console.log(
+          "RigidBody position before drop:",
+          payloadRigidBodyRef.current?.translation()
+        );
+      }
+
+      if (dropped) {
+        // Perform the drop action here
+
+        console.log(
+          "Raptor position after drop:",
+          payloadRef.current?.position
+        );
+        console.log(
+          "RigidBody position after drop:",
+          payloadRigidBodyRef.current?.translation()
+        );
+        const payloadTranslation = payloadRigidBodyRef.current?.translation();
+        if (payloadTranslation) {
+          linkedRef.current.position.set(
+            payloadTranslation.x,
+            payloadTranslation.y,
+            payloadTranslation.z
+          );
+        }
       }
 
       /**
        * Camera
        */
 
-      const bodyPosition = dactylRef.current.translation();
+      const targetPosition = dropped
+        ? payloadRef.current?.position
+        : dactylRef.current.position;
 
-      // Set the initial camera position relative to the dactyl
-      const initialCameraPosition = new THREE.Vector3(
-        // startingPosition.x + 3,
-        // startingPosition.y + 7,
-        // startingPosition.z + 3
-        3,
-        7,
-        3
-      );
+      // console.log(targetPosition);
 
-      // Rotate the initial position based on the dactyl's rotation
-      const rotatedCameraPosition = initialCameraPosition.clone();
+      if (targetPosition) {
+        // Set the initial camera position relative to the dactyl
+        const initialCameraPosition = new THREE.Vector3(
+          // startingPosition.x + 3,
+          // startingPosition.y + 7,
+          // startingPosition.z + 3
+          3,
+          7,
+          3
+        );
 
-      // Update the camera position relative to the dactyl's position
-      const cameraPosition = new THREE.Vector3(
-        bodyPosition.x + rotatedCameraPosition.x,
-        bodyPosition.y + rotatedCameraPosition.y,
-        bodyPosition.z + rotatedCameraPosition.z
-      );
+        // Rotate the initial position based on the dactyl's rotation
+        const rotatedCameraPosition = initialCameraPosition.clone();
 
-      // Set the initial camera target relative to the dactyl
-      const initialCameraTarget = new THREE.Vector3(
-        // startingPosition.x,
-        // startingPosition.y,
-        // startingPosition.z
-        0,
-        0,
-        0
-      );
+        // Update the camera position relative to the dactyl's position
+        const cameraPosition = new THREE.Vector3(
+          targetPosition.x + rotatedCameraPosition.x,
+          targetPosition.y + rotatedCameraPosition.y,
+          targetPosition.z + rotatedCameraPosition.z
+        );
 
-      // Rotate the initial target based on the dactyl's rotation
-      const rotatedCameraTarget = initialCameraTarget.clone();
+        // Set the initial camera target relative to the dactyl
+        const initialCameraTarget = new THREE.Vector3(
+          // startingPosition.x,
+          // startingPosition.y,
+          // startingPosition.z
+          0,
+          0,
+          0
+        );
 
-      // Update the camera target relative to the dactyl's position
-      const cameraTarget = new THREE.Vector3(
-        bodyPosition.x + rotatedCameraTarget.x,
-        bodyPosition.y + rotatedCameraTarget.y,
-        bodyPosition.z + rotatedCameraTarget.z
-      );
+        // Rotate the initial target based on the dactyl's rotation
+        const rotatedCameraTarget = initialCameraTarget.clone();
 
-      smoothedCameraPosition.lerp(cameraPosition, 5 * delta);
-      smoothedCameraTarget.lerp(cameraTarget, 5 * delta);
+        // Update the camera target relative to the dactyl's position
+        const cameraTarget = new THREE.Vector3(
+          targetPosition.x + rotatedCameraTarget.x,
+          targetPosition.y + rotatedCameraTarget.y,
+          targetPosition.z + rotatedCameraTarget.z
+        );
 
-      state.camera.position.copy(smoothedCameraPosition);
-      state.camera.lookAt(smoothedCameraTarget);
+        smoothedCameraPosition.lerp(cameraPosition, 5 * delta);
+        smoothedCameraTarget.lerp(cameraTarget, 5 * delta);
+
+        // state.camera.position.copy(smoothedCameraPosition);
+        // state.camera.lookAt(smoothedCameraTarget);
+      }
     }
   });
 
@@ -158,7 +239,12 @@ const Dactyl = ({
       (value) => {
         if (value) {
           setDropped(true);
-          packageRef.current?.wakeUp();
+          // payloadRigidBodyRef.current?.setTranslation(
+          //   { x: 0, y: 50, z: 0 },
+          //   false
+          // );
+          payloadRigidBodyRef.current?.wakeUp();
+          // payloadRigidBodyRef.current?.setBodyType("dynamic", true);
         }
       }
     );
@@ -176,16 +262,30 @@ const Dactyl = ({
 
   return (
     <>
-      <RigidBody type="fixed" ref={dactylRef}>
-        <mesh>
+      <group ref={linkedRef}>
+        <group ref={dactylRef}>
           <Model modelName={`dactyl-flap-excited`} nftId={10176} />
-        </mesh>
-      </RigidBody>
-      <RigidBody ref={packageRef}>
-        <mesh>
-          <Model modelName={`raptor-idle-scared`} nft={3411} />
-        </mesh>
-      </RigidBody>
+        </group>
+
+        <group
+        // ref={payloadRef}
+        >
+          <RigidBody
+            type="dynamic"
+            colliders="ball"
+            restitution={0.5}
+            friction={0.5}
+            // ref={payloadRigidBodyRef}
+          >
+            <mesh>
+              <boxGeometry args={[10, 10, 10]} />
+              <meshBasicMaterial color="red" />
+              {/* <Model modelName={`raptor-idle-scared`} nft={3411} /> */}
+              {/* <CuboidCollider position={[0, 0.5, 0]} args={[0.5, 0.5, 0.5]} /> */}
+            </mesh>
+          </RigidBody>
+        </group>
+      </group>
     </>
   );
 };
