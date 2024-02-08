@@ -85,7 +85,6 @@ const Dactyl = ({
       // dactylRef.current.position.set(x, y, z);
 
       if (!dropped) {
-        linkedRef.current.position.set(x, y, z);
         // payloadRef.current.position.set(x, y, z);
         payloadRigidBodyRef.current?.setTranslation({ x, y, z }, false);
 
@@ -149,14 +148,14 @@ const Dactyl = ({
           "RigidBody position after drop:",
           payloadRigidBodyRef.current?.translation()
         );
-        const payloadTranslation = payloadRigidBodyRef.current?.translation();
-        if (payloadTranslation) {
-          linkedRef.current.position.set(
-            payloadTranslation.x,
-            payloadTranslation.y,
-            payloadTranslation.z
-          );
-        }
+        // const payloadTranslation = payloadRigidBodyRef.current?.translation();
+        // if (payloadTranslation) {
+        //   payloadRef.current.position.set(
+        //     payloadTranslation.x,
+        //     payloadTranslation.y,
+        //     payloadTranslation.z
+        //   );
+        // }
       }
 
       /**
@@ -262,30 +261,30 @@ const Dactyl = ({
 
   return (
     <>
-      <group ref={linkedRef}>
-        <group ref={dactylRef}>
-          <Model modelName={`dactyl-flap-excited`} nftId={10176} />
-        </group>
-
-        <group
-        // ref={payloadRef}
-        >
-          <RigidBody
-            type="dynamic"
-            colliders="ball"
-            restitution={0.5}
-            friction={0.5}
-            // ref={payloadRigidBodyRef}
-          >
-            <mesh>
-              <boxGeometry args={[10, 10, 10]} />
-              <meshBasicMaterial color="red" />
-              {/* <Model modelName={`raptor-idle-scared`} nft={3411} /> */}
-              {/* <CuboidCollider position={[0, 0.5, 0]} args={[0.5, 0.5, 0.5]} /> */}
-            </mesh>
-          </RigidBody>
-        </group>
+      {/* <group ref={linkedRef}> */}
+      <group ref={dactylRef}>
+        <Model modelName={`dactyl-flap-excited`} nftId={10176} />
       </group>
+
+      {/* <group
+        ref={payloadRef}
+        > */}
+      <RigidBody
+        type="dynamic"
+        colliders="ball"
+        restitution={0.5}
+        friction={0.5}
+        ref={payloadRigidBodyRef}
+      >
+        <mesh>
+          <boxGeometry args={[10, 10, 10]} />
+          <meshBasicMaterial color="red" />
+          {/* <Model modelName={`raptor-idle-scared`} nft={3411} /> */}
+          {/* <CuboidCollider position={[0, 0.5, 0]} args={[0.5, 0.5, 0.5]} /> */}
+        </mesh>
+      </RigidBody>
+      {/* </group> */}
+      {/* </group> */}
     </>
   );
 };
