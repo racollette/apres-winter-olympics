@@ -2,6 +2,7 @@ import {
   Environment,
   FirstPersonControls,
   OrbitControls,
+  Sparkles,
 } from "@react-three/drei";
 import { Physics } from "@react-three/rapier";
 import Target from "./Target";
@@ -26,6 +27,7 @@ export default function Experience({ species, mood, number }: ModelProps) {
 
       <Physics debug>
         <Lights />
+        {/* <Sparkles count={100000} noise={2} size={5} color="white" scale={5}/> */}
         <Dactyl species={species} mood={mood} number={number} />
         <Target />
       </Physics>
