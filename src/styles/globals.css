@@ -1,41 +1,39 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
- 
+
 @layer base {
   :root {
     --radius: 0.5rem;
 
-    background-image: url("../../public/textures/apres_triangles.png");
+    background-image: url("../../public/textures/apres_triangles_transformed.png");
     background-size: 100%;
   }
 }
 
 @font-face {
-    font-family: Claynotopia-Regular;
-    font-weight: 400;
-    src:  url("../../public/fonts/Claynotopia-Regular.otf")
+  font-family: Claynotopia-Regular;
+  font-weight: 400;
+  src: url("../../public/fonts/Claynotopia-Regular.otf");
 }
 
 @font-face {
-    font-family: Claynotopia-Shadow;
-    font-weight: 400;
-    src: url("../../public/fonts/Claynotopia-Shadow.otf")
+  font-family: Claynotopia-Shadow;
+  font-weight: 400;
+  src: url("../../public/fonts/Claynotopia-Shadow.otf");
 }
 
 #root {
   width: 100vw;
   height: 100vh;
-
 }
 
-*{
-  margin : 0;
+* {
+  margin: 0;
   padding: 0;
 }
 
-canvas{
+canvas {
   width: 100vw;
   height: 100vh;
 }
-
