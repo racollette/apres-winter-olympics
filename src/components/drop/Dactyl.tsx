@@ -40,12 +40,13 @@ const Dactyl = ({
   );
   const [smoothedCameraTarget] = useState(() => new THREE.Vector3(0, 10, 0));
 
-  const startingPosition = { x: 0, y: 100, z: 0 };
+  const startingPosition = { x: 0, y: 100, z: 75 };
   const startingRotation = { x: 0, y: 0, z: 0 }; // Store starting rotation
 
   // Calculate rotation difference
 
   const timeRef = useRef(0);
+  let dropImpulseApplied: boolean = false;
 
   // const joint = useSphericalJoint(payloadRef, dactylRef, [
   //   // Position of the joint in bodyA's local space
@@ -54,9 +55,9 @@ const Dactyl = ({
   //   [0, -2, 0],
   // ]);
 
-  // useEffect(() => {
-  //   payloadRigidBodyRef.current?.sleep();
-  // }, []);
+  useEffect(() => {
+    payloadRigidBodyRef.current?.setGravityScale(0, true);
+  }, []);
 
   useFrame((state, delta) => {
     timeRef.current += delta;
@@ -68,7 +69,7 @@ const Dactyl = ({
     const impulse = { x: 0, y: 0, z: 0 };
     const torque = { x: 0, y: 0, z: 0 };
 
-    const impulseStrength = 0.02 * delta;
+    const impulseStrength = 0.01 * delta;
     const torqueStrength = 250 * delta;
 
     const x = Math.sin(1 * timeRef.current) * 5 + startingPosition.x;
@@ -82,15 +83,16 @@ const Dactyl = ({
         z: startingRotation.z - dactylRef.current?.rotation.z,
       };
 
-      // dactylRef.current.position.set(x, y, z);
+      dactylRef.current.position.set(x, y, z);
 
       if (!dropped) {
         // payloadRef.current.position.set(x, y, z);
-        payloadRigidBodyRef.current?.setTranslation({ x, y, z }, false);
+        payloadRigidBodyRef.current?.setTranslation({ x, y: y - 2, z }, false);
 
         if (rightward) {
           console.log("rightward");
           const rotationZ = dactylRef.current.rotation.z;
+
           if (rotationZ > -0.75) {
             dactylRef.current?.rotateZ(-0.02);
           }
@@ -124,38 +126,34 @@ const Dactyl = ({
         dactylRef.current.rotation.y += rotationDiff.y * 0.75 * delta;
         dactylRef.current.rotation.z += rotationDiff.z * 0.75 * delta;
 
-        // Inside the useEffect hook or any relevant event handler for dropping the model
+        const dactylRotation =
+          dactylRef.current?.rotation.clone() ?? new THREE.Euler();
+        // Convert Euler angles to quaternion
+        const quaternion = new THREE.Quaternion().setFromEuler(dactylRotation);
 
-        // Debugging statements to check positions before and after drop
-        console.log(
-          "Raptor position before drop:",
-          payloadRef.current?.position
-        );
-        console.log(
-          "RigidBody position before drop:",
-          payloadRigidBodyRef.current?.translation()
-        );
+        // Update the rotation of the payload rigid body with quaternion
+        if (payloadRigidBodyRef.current && quaternion) {
+          payloadRigidBodyRef.current.setRotation(quaternion, true);
+        }
       }
 
       if (dropped) {
-        // Perform the drop action here
+        // apply an impulse to the payload in the direction of the rotation of the dactyl
+        if (!dropImpulseApplied) {
+          const dactylRotation = dactylRef.current?.rotation.clone();
+          const dactylQuaternion = new THREE.Quaternion().setFromEuler(
+            dactylRotation
+          );
+          const direction = new THREE.Vector3(0, 0, 1);
+          direction.applyQuaternion(dactylQuaternion);
 
-        console.log(
-          "Raptor position after drop:",
-          payloadRef.current?.position
-        );
-        console.log(
-          "RigidBody position after drop:",
-          payloadRigidBodyRef.current?.translation()
-        );
-        // const payloadTranslation = payloadRigidBodyRef.current?.translation();
-        // if (payloadTranslation) {
-        //   payloadRef.current.position.set(
-        //     payloadTranslation.x,
-        //     payloadTranslation.y,
-        //     payloadTranslation.z
-        //   );
-        // }
+          impulse.x = -direction.x * impulseStrength;
+          impulse.y = -direction.y * impulseStrength;
+          impulse.z = -direction.z * impulseStrength;
+
+          payloadRigidBodyRef.current?.applyImpulse(impulse, true);
+          dropImpulseApplied = true;
+        }
       }
 
       /**
@@ -242,7 +240,7 @@ const Dactyl = ({
           //   { x: 0, y: 50, z: 0 },
           //   false
           // );
-          payloadRigidBodyRef.current?.wakeUp();
+          payloadRigidBodyRef.current?.setGravityScale(1, true);
           // payloadRigidBodyRef.current?.setBodyType("dynamic", true);
         }
       }
@@ -275,13 +273,14 @@ const Dactyl = ({
         restitution={0.5}
         friction={0.5}
         ref={payloadRigidBodyRef}
+        canSleep={false}
       >
-        <mesh>
-          <boxGeometry args={[10, 10, 10]} />
-          <meshBasicMaterial color="red" />
-          {/* <Model modelName={`raptor-idle-scared`} nft={3411} /> */}
-          {/* <CuboidCollider position={[0, 0.5, 0]} args={[0.5, 0.5, 0.5]} /> */}
-        </mesh>
+        {/* <mesh> */}
+        {/* <boxGeometry args={[10, 10, 10]} /> */}
+        {/* <meshBasicMaterial color="red" /> */}
+        <Model modelName={`raptor-idle-scared`} nft={3411} />
+        {/* <CuboidCollider position={[0, 0.5, 0]} args={[0.5, 0.5, 0.5]} /> */}
+        {/* </mesh> */}
       </RigidBody>
       {/* </group> */}
       {/* </group> */}
