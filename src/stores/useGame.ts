@@ -12,12 +12,14 @@ type State = {
   userId: string;
   dino: Character | null;
   velocity: number;
+  distanceFromCenter: number;
   start: () => void;
   restart: () => void;
   end: () => void;
   gateActivated: () => void;
   playerInformation: (userId: string, dino: Character | null) => void;
   setSpeed: (velocity: number) => void;
+  setDistance: (distanceFromCenter: number) => void;
 };
 
 export default create(
@@ -48,6 +50,9 @@ export default create(
          */
         gatesActivated: 0,
 
+        // Results
+        distanceFromCenter: 0,
+
         // Player information
         userId: "",
         dino: {} as Character | null,
@@ -74,6 +79,10 @@ export default create(
           set((state) => {
             return { gatesActivated: state.gatesActivated + 1 };
           });
+        },
+
+        setDistance: (distanceFromCenter: number) => {
+          set((state) => ({ ...state, distanceFromCenter }));
         },
 
         restart: () => {
