@@ -19,12 +19,12 @@ export default function Experience({ species, mood, number }: ModelProps) {
     <>
       <Environment
         // preset="sunset"
-        files="/textures/Dreamlike_hdri-hdr_VR360_Snow_capped_peaks_147910178_10003270.hdr"
+        files="/textures/Dreamlike_hdri-hdr_VR360_Snow_capped_peaks_2075292812_10080786.hdr"
         background
       />
       <OrbitControls />
 
-      <Physics debug={false}>
+      <Physics debug={true}>
         <Lights />
         <Skier species={species} mood={mood} number={number} />
         <SkiSlope />
