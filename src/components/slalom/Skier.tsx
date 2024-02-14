@@ -6,8 +6,9 @@ import {
   RigidBody,
   useRapier,
   type RapierRigidBody,
+  CuboidCollider,
 } from "@react-three/rapier";
-import { useKeyboardControls, useTexture } from "@react-three/drei";
+import { useGLTF, useKeyboardControls, useTexture } from "@react-three/drei";
 import useGame from "../../stores/useGame";
 import { type ModelProps } from "./Experience";
 
@@ -140,8 +141,6 @@ const Skier = ({
       const ray = new rapier.Ray(origin, direction);
       const hit = world.castRay(ray, 10, true);
 
-      console.log(ray);
-      console.log(hit);
       if (hit && hit.toi <= 0.11) {
         body.current.applyImpulse({ x: 0, y: 0.5, z: 0 }, true);
       }
@@ -183,6 +182,8 @@ const Skier = ({
 
   const matcap = useTexture("/textures/7877EE_D87FC5_75D9C7_1C78C0-256px.png");
 
+  const skis = useGLTF("/models/skis.glb");
+
   return (
     <>
       <RigidBody
@@ -197,21 +198,25 @@ const Skier = ({
         // position={[0, 1, 0]}
       >
         <group position={[0, 1.05, 0]} castShadow>
-          <mesh position={[-0.2, 0, -0.75]}>
+          {/* <mesh position={[-0.2, 0, -0.75]}>
             <boxGeometry args={[0.25, 0.1, 3]} />
             <meshMatcapMaterial matcap={matcap} />
           </mesh>
           <mesh position={[0.15, 0, -0.75]}>
             <boxGeometry args={[0.25, 0.1, 3]} />
             <meshMatcapMaterial matcap={matcap} />
-          </mesh>
+          </mesh> */}
+          <primitive
+            scale={0.75}
+            // rotation={[0, Math.PI / 2, 0]}
+            // position={[0, 0, 0]}
+            object={skis.scene}
+          />
+
           {/* <Model modelName={`rex-idle-confident`} nftId="3495" /> */}
           <Model modelName={`${species}-idle-${mood}`} nftId={number} />
+          {/* <CuboidCollider position={[0, 0.5, 0]} args={[0.5, 0.5, 0.5]} /> */}
         </group>
-        {/* <mesh>
-          <boxGeometry args={[0.5, 0.5, 0.5]} />
-          <meshBasicMaterial color="red" />
-        </mesh> */}
       </RigidBody>
     </>
   );
