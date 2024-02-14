@@ -174,7 +174,7 @@ const SkiSlope = () => {
         <RigidBody type="fixed">
           <mesh position={[0, 0, -490]}>
             <boxGeometry args={[500, 10, 0.5]} />
-            <meshMatcapMaterial matcap={matcap1} />
+            <meshMatcapMaterial matcap={matcap4} />
           </mesh>
         </RigidBody>
 
@@ -205,9 +205,23 @@ type GateProps = RigidBodyProps & {
 const Gate = (props: GateProps) => {
   const { version, ...rigidBodyProps } = props;
   const [intersecting, setIntersection] = useState(false);
-  const material = new MeshPhysicalMaterial();
-  const gateTexture = useTexture("/textures/triangles.jpg");
-  material.map = gateTexture;
+
+  // Create separate textures for vertical and horizontal materials
+  const gateTextureVert = useTexture(
+    "/textures/apres_triangles_transformed.png"
+  );
+  const gateTextureHorz = useTexture(
+    "/textures/apres_triangles_transformed_1.png"
+  );
+
+  gateTextureVert.repeat.x = 0.5;
+  gateTextureVert.repeat.y = 1;
+  // Adjust repeat settings for horizontal texture
+  gateTextureHorz.repeat.x = 3;
+  gateTextureHorz.repeat.y = 0.5;
+  gateTextureHorz.wrapS = THREE.RepeatWrapping;
+  gateTextureHorz.wrapT = THREE.RepeatWrapping;
+  gateTextureHorz.colorSpace = THREE.SRGBColorSpace;
 
   const end = useGame((state) => state.end);
   const start = useGame((state) => state.start);
@@ -225,24 +239,15 @@ const Gate = (props: GateProps) => {
 
   return (
     <RigidBody {...rigidBodyProps}>
-      <Box
-        scale={[11, 1, 1]}
-        position={[0, 3.5, 0]}
-        material={material}
-        castShadow
-      />
-      <Box
-        scale={[1, 6, 1]}
-        position={[-5, 0, 0]}
-        material={material}
-        castShadow
-      />
-      <Box
-        scale={[1, 6, 1]}
-        position={[5, 0, 0]}
-        material={material}
-        castShadow
-      />
+      <Box scale={[11, 1, 1]} position={[0, 3.5, 0]} castShadow>
+        <meshPhysicalMaterial map={gateTextureHorz} />
+      </Box>
+      <Box scale={[1, 6, 1]} position={[-5, 0, 0]} castShadow>
+        <meshPhysicalMaterial map={gateTextureVert} />
+      </Box>
+      <Box scale={[1, 6, 1]} position={[5, 0, 0]} castShadow>
+        <meshPhysicalMaterial map={gateTextureVert} />
+      </Box>
 
       {/* <Box
         scale={[1, 1, 3]}
@@ -291,6 +296,7 @@ const SlalomGate = ({ positionX, positionZ }: SlalomGateProps) => {
 
   const matcap3 = useTexture("/textures/6C5DC3_352D66_5C4CAB_544CA5-256px.png");
   const matcap4 = useTexture("/textures/68049F_C90DE6_A404CF_B304DC-256px.png");
+
   const texture = intersected ? matcap3 : matcap4;
 
   useEffect(() => {
