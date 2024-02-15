@@ -7,6 +7,8 @@ import { Physics } from "@react-three/rapier";
 import SkiSlope from "./SkiSlope";
 import Skier from "./Skier";
 import Lights from "./Lights";
+import useGame from "../../stores/useGame";
+import { useEffect } from "react";
 
 export type ModelProps = {
   species: string;
