@@ -1,27 +1,15 @@
 import React, { useRef, useEffect, useState, useMemo, use } from "react";
-import { useFrame, GroupProps } from "@react-three/fiber";
+import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import Model from "../Model";
 import {
   RigidBody,
-  useRapier,
   RapierRigidBody,
-  RigidBodyOptions,
   CuboidCollider,
-  useSphericalJoint,
-  MeshCollider,
 } from "@react-three/rapier";
-import { RigidBodyTypeString } from "@react-three/rapier";
-import {
-  Box,
-  Sphere,
-  useGLTF,
-  useKeyboardControls,
-  useTexture,
-} from "@react-three/drei";
+import { useGLTF, useKeyboardControls } from "@react-three/drei";
 import useGame from "../../stores/useGame";
 import { type ModelProps } from "./Experience";
-import { link } from "fs";
 import { calculateDistance } from "~/utils/math";
 
 const Dactyl = ({
@@ -100,7 +88,7 @@ const Dactyl = ({
         payloadRigidBodyRef.current?.setTranslation({ x, y: y - 2, z }, false);
 
         if (rightward) {
-          console.log("rightward");
+          // console.log("rightward");
           const rotationZ = dactylRef.current.rotation.z;
 
           if (rotationZ > -0.75) {
@@ -109,7 +97,7 @@ const Dactyl = ({
         }
 
         if (leftward) {
-          console.log("leftward");
+          // console.log("leftward");
           const rotationZ = dactylRef.current.rotation.z;
           if (rotationZ < 0.75) {
             dactylRef.current?.rotateZ(0.02);
@@ -117,7 +105,7 @@ const Dactyl = ({
         }
 
         if (forward) {
-          console.log("forward");
+          // console.log("forward");
           const rotationX = dactylRef.current.rotation.x;
           if (rotationX > -0.5) {
             dactylRef.current?.rotateX(-0.02);
@@ -125,7 +113,7 @@ const Dactyl = ({
         }
 
         if (backward) {
-          console.log("backward");
+          // console.log("backward");
           const rotationX = dactylRef.current.rotation.x;
           if (rotationX < 0.5) {
             dactylRef.current?.rotateX(0.02);
@@ -178,7 +166,6 @@ const Dactyl = ({
           0
         );
 
-        console.log(distanceFromCenter);
         setDistanceFromCenter(distanceFromCenter ?? null);
 
         const velocity = payloadRigidBodyRef.current?.linvel();
@@ -189,7 +176,6 @@ const Dactyl = ({
               velocity.y * velocity.y +
               velocity.z * velocity.z
           );
-          console.log(speed);
           if (speed < 0.01) {
             recordResult(distanceFromCenter);
           }
@@ -213,7 +199,7 @@ const Dactyl = ({
         // Set the initial camera position relative to the dactyl
         const initialCameraPosition = new THREE.Vector3(
           dropped ? 15 : 3,
-          dropped ? 20 : 7,
+          dropped ? 20 : 8,
           dropped ? 15 : 3
         );
 
@@ -312,20 +298,20 @@ const Dactyl = ({
   return (
     <>
       <group ref={dactylRef}>
-        <Model modelName={`dactyl-flap-excited`} nftId={10176} />
+        <Model modelName={`dactyl-flap-excited`} nftId={10162} />
       </group>
 
       <RigidBody
         type="dynamic"
-        colliders="cuboid"
+        // colliders="trimesh"
         restitution={0.5}
         friction={0.5}
         ref={payloadRigidBodyRef}
         canSleep={false}
       >
         <primitive scale={0.75} object={skis.scene} />
-        <Model modelName={`raptor-idle-scared`} nft={3411} />
-        {/* <CuboidCollider position={[0, 0.5, 0]} args={[0.5, 0.5, 0.5]} /> */}
+        <Model modelName={`${species}-idle-${mood}`} nft={number} />
+        <CuboidCollider position={[0, 1, 0]} args={[1, 1, 1]} />
       </RigidBody>
     </>
   );
