@@ -20,8 +20,6 @@ const Skier = ({
   const body = useRef<RapierRigidBody | null>(null);
   const [subscribeKeys, getKeys] = useKeyboardControls();
   const { rapier, world } = useRapier();
-  const start = useGame((state) => state.start);
-  const end = useGame((state) => state.end);
   const restart = useGame((state) => state.restart);
   const [smoothedCameraPosition] = useState(
     () => new THREE.Vector3(2000, 2000, 2000)
