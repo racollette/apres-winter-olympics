@@ -20,6 +20,7 @@ type State = {
   playerInformation: (userId: string, dino: Character | null) => void;
   setSpeed: (velocity: number) => void;
   setDistance: (distanceFromCenter: number) => void;
+  reset: () => void;
 };
 
 export default create(
@@ -104,6 +105,21 @@ export default create(
               return { phase: "ended", endTime: Date.now() };
 
             return {};
+          });
+        },
+
+        reset: () => {
+          set({
+            blocksCount: 10,
+            blocksSeed: 0,
+            startTime: 0,
+            endTime: 0,
+            phase: "ready",
+            gatesActivated: 0,
+            userId: "",
+            dino: null,
+            velocity: 0,
+            distanceFromCenter: 0,
           });
         },
       };
