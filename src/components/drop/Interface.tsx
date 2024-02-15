@@ -28,21 +28,12 @@ export default function Interface() {
   useEffect(() => {
     const unsubscribeEffect = addEffect(() => {
       const state = useGame.getState();
-      let elapsedTime = 0;
 
-      if (state.phase === "playing") {
-        // elapsedTime = (Date.now() - state.startTime) / 1000;
-        // setScore(0);
-      } else if (state.phase === "ended") {
-        // setGatesActivated(state.gatesActivated);
-        // elapsedTime = (state.endTime - state.startTime) / 1000;
-        // console.log(state.gatesActivated);
-        // const score = elapsedTime + (totalGates - state.gatesActivated) * 5;
-        // console.log(score);
-        // setScore(score);
+      if (state.phase === "ended") {
+        console.log("ended");
+        console.log(distanceFromCenter);
+        setScore(state.distanceFromCenter);
       }
-
-      if (time.current) time.current.textContent = elapsedTime.toFixed(2);
     });
 
     return () => {
@@ -53,7 +44,7 @@ export default function Interface() {
   useEffect(() => {
     if (phase === "ended" && userId && dino?.mint && score) {
       recordResult.mutate({
-        eventId: 1,
+        eventId: 2,
         userId,
         score: score,
         dinoId: dino?.mint ?? "",
