@@ -9,13 +9,10 @@ import { EventResults } from "~/components/leaderboard/EventResults";
 
 export default function Leaderboard() {
   const { user } = useUser();
-  const { username } = extractProfileFromUser(user);
 
   const { data: events, isLoading } = api.leaderboard.getAllEvents.useQuery({
     competitionId: 1,
   });
-
-  console.log(events);
 
   return (
     <>
