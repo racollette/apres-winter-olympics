@@ -111,7 +111,7 @@ const Inventory = ({
             <div className="font-clayno text-lg md:text-2xl">
               Claynosaurz {`(${originalSpecies?.length})`}
             </div>
-            <div>
+            {/* <div>
               <Select onValueChange={(v) => handleSort(v)}>
                 <SelectTrigger className="w-[100px] font-clayno text-sm md:w-[180px]">
                   <SelectValue placeholder="Rarity" />
@@ -123,7 +123,7 @@ const Inventory = ({
                   <SelectItem value="color">Color</SelectItem>
                 </SelectContent>
               </Select>
-            </div>
+            </div> */}
           </div>
           <div className="mb-8 flex flex-row flex-wrap gap-2">
             {originalSpecies?.map((dino: Character) => (
