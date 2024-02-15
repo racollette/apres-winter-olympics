@@ -45,8 +45,6 @@ export const EventResults = ({ event }: EventResultsProps) => {
             const { username, userPFP, userHandle } = extractProfileFromUser(
               result.user
             );
-            console.log(userPFP);
-            console.log(result);
             return (
               <tr key={result.id}>
                 <td className="px-4">
