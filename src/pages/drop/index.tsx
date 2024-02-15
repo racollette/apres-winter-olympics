@@ -1,14 +1,16 @@
 import { Canvas } from "@react-three/fiber";
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 import Experience from "../../components/drop/Experience";
 import { KeyboardControls } from "@react-three/drei";
 import Interface from "../../components/drop/Interface";
 import { useRouter } from "next/router";
+import { LoadingScreen } from "~/components/LoadingScreen";
 
 function DropEvent() {
   const router = useRouter();
   const { species, mood, number } = router.query;
 
+  const [start, setStart] = useState(false);
   return (
     <>
       <KeyboardControls
@@ -30,7 +32,12 @@ function DropEvent() {
             />
           </Suspense>
         </Canvas>
-        <Interface />
+        {start && <Interface />}
+        <LoadingScreen
+          totalFiles={15}
+          started={start}
+          startExperience={() => setStart(true)}
+        />
       </KeyboardControls>
     </>
   );

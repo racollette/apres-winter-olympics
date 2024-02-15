@@ -1,13 +1,16 @@
 import { Canvas } from "@react-three/fiber";
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 import Experience from "../../components/slalom/Experience";
 import { KeyboardControls } from "@react-three/drei";
 import Interface from "../../components/slalom/Interface";
 import { useRouter } from "next/router";
+import { LoadingScreen } from "~/components/LoadingScreen";
 
 function SlalomEvent() {
   const router = useRouter();
   const { species, mood, number } = router.query;
+
+  const [start, setStart] = useState(false);
 
   return (
     <>
@@ -31,6 +34,11 @@ function SlalomEvent() {
           </Suspense>
         </Canvas>
         <Interface />
+        <LoadingScreen
+          totalFiles={20}
+          started={start}
+          startExperience={() => setStart(true)}
+        />
       </KeyboardControls>
     </>
   );
