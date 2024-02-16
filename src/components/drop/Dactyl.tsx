@@ -41,7 +41,7 @@ const Dactyl = ({
   // Calculate rotation difference
 
   const timeRef = useRef(0);
-  let dropImpulseApplied: boolean = false;
+  let dropImpulseApplied = false;
 
   // const joint = useSphericalJoint(payloadRef, dactylRef, [
   //   // Position of the joint in bodyA's local space
