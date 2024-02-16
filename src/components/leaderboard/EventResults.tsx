@@ -37,7 +37,7 @@ export const EventResults = ({ event }: EventResultsProps) => {
             <th className="px-4 py-2 text-left">Rank</th>
             <th className="px-4 py-2 text-left">Player</th>
             <th className="px-4 py-2 text-left">Clayno</th>
-            <th className="px-4 py-2 text-left">Time (s)</th>
+            <th className="px-4 py-2 text-left">{event.scoringType}</th>
           </tr>
         </thead>
         <tbody>
@@ -86,7 +86,7 @@ export const EventResults = ({ event }: EventResultsProps) => {
                   </div>
                 </td>
                 <td className="px-4">
-                  <div className="max-w-xs">{result.score}</div>
+                  <div className="max-w-xs">{result.score.toFixed(2)}</div>
                 </td>
               </tr>
             );
