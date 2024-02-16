@@ -8,6 +8,7 @@ import { Controls } from "../Controls";
 
 export default function Interface() {
   const time = useRef<HTMLDivElement | null>(null);
+  const [playing, setPlaying] = useState(true);
 
   const restart = useGame((state) => state.restart);
   const phase = useGame((state) => state.phase);
@@ -29,17 +30,21 @@ export default function Interface() {
     const unsubscribeEffect = addEffect(() => {
       const state = useGame.getState();
 
-      if (state.phase === "ended") {
-        console.log("ended");
-        console.log(distanceFromCenter);
-        setScore(state.distanceFromCenter);
+      if (state.phase === "playing") {
+        console.log("playing")
+        setPlaying(true)
+      } else if (state.phase === "ended") {
+        if (playing) {
+          setScore(state.distanceFromCenter);
+          setPlaying(false);
+        }
       }
     });
 
     return () => {
       unsubscribeEffect();
     };
-  }, []);
+  }, [playing]);
 
   useEffect(() => {
     if (phase === "ended" && userId && dino?.mint && score) {
