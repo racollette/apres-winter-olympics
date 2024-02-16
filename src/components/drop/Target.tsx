@@ -13,7 +13,7 @@ const Target = () => {
   return (
     <>
       <group rotation={[0, 0, 0]} position={[0, 0, 0]}>
-        <RigidBody type="fixed" restitution={0.1} friction={0.05}>
+        <RigidBody type="fixed" restitution={0} friction={0.25}>
           <mesh ref={targetRef} position={[0, -1, 0]} receiveShadow>
             <cylinderGeometry args={[100, 100, 1]} />
             {/* <meshBasicMaterial color="white" /> */}
