@@ -26,7 +26,6 @@ const Dactyl = ({
   const setDistance = useGame((state) => state.setDistance);
 
   const dactylRef = useRef<THREE.Group>(null);
-  const payloadRef = useRef<THREE.Group>(null);
   const payloadRigidBodyRef = useRef<RapierRigidBody>(null);
   const [subscribeKeys, getKeys] = useKeyboardControls();
   const [dropped, setDropped] = useState(false);
@@ -42,9 +41,6 @@ const Dactyl = ({
   // Calculate rotation difference
 
   const timeRef = useRef(0);
-  const [distanceFromCenter, setDistanceFromCenter] = useState<number | null>(
-    null
-  );
   let dropImpulseApplied: boolean = false;
 
   // const joint = useSphericalJoint(payloadRef, dactylRef, [
@@ -151,6 +147,32 @@ const Dactyl = ({
 
           payloadRigidBodyRef.current?.applyImpulse(impulse, true);
           dropImpulseApplied = true;
+
+          // if (rightward) {
+          //   const rotationZ = payloadRigidBodyRef.current?.rotation().z
+          //   if (rotationZ && rotationZ > -0.75) {
+          //     payloadRigidBodyRef.current?.applyTorqueImpulse({ x: 0, y: 0, z: 0.1 }, true)
+          //   }
+          // }
+          // if (leftward) {
+          //   const rotationZ = payloadRigidBodyRef.current?.rotation().z
+          //   if (rotationZ && rotationZ < 0.75) {
+          //     payloadRigidBodyRef.current?.applyTorqueImpulse({ x: 0, y: 0, z: -0.1 }, true)
+          //   }
+          // }
+          // if (forward) {
+          //   const rotationX = payloadRigidBodyRef.current?.rotation().x
+          //   if (rotationX && rotationX > -0.5) {
+          //     payloadRigidBodyRef.current?.applyTorqueImpulse({ x: 2, y: 0, z: 0 }, true)
+          //   }
+          // }
+          // if (backward) {
+          //   const rotationX = payloadRigidBodyRef.current?.rotation().x
+          //   if (rotationX && rotationX < 0.5) {
+          //     payloadRigidBodyRef.current?.applyTorqueImpulse({ x: -2, y: 0, z: 0 }, true)
+          //   }
+          // }
+  
         }
 
         // calculate distance of payLoadRigidBodyref from 0, 0
@@ -165,8 +187,6 @@ const Dactyl = ({
           0,
           0
         );
-
-        setDistanceFromCenter(distanceFromCenter ?? null);
 
         const velocity = payloadRigidBodyRef.current?.linvel();
 
@@ -247,7 +267,6 @@ const Dactyl = ({
       false
     );
 
-    setDistanceFromCenter(null);
     dropImpulseApplied = false;
     payloadRigidBodyRef.current?.setGravityScale(0, true);
     timeRef.current = 0;
@@ -303,15 +322,15 @@ const Dactyl = ({
 
       <RigidBody
         type="dynamic"
-        // colliders="trimesh"
-        restitution={0.5}
+        // colliders="hull"
+        restitution={0}
         friction={0.5}
         ref={payloadRigidBodyRef}
         canSleep={false}
       >
         <primitive scale={0.75} object={skis.scene} />
-        <Model modelName={`${species}-idle-${mood}`} nft={number} />
-        <CuboidCollider position={[0, 1, 0]} args={[1, 1, 1]} />
+        <Model modelName={`${species}-idle-${mood}`} nftId={number} />
+        <CuboidCollider restitution={0.2} position={[0, 0.5, 0]} args={[0.5, 0.65, 1]} />
       </RigidBody>
     </>
   );
