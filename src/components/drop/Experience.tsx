@@ -25,7 +25,7 @@ export default function Experience({ species, mood, number }: ModelProps) {
       />
       <OrbitControls />
 
-      <Physics debug>
+      <Physics>
         <Lights />
         {/* <Sparkles count={100000} noise={2} size={5} color="white" scale={5}/> */}
         <Dactyl species={species} mood={mood} number={number} />
