@@ -33,7 +33,9 @@ function SlalomEvent() {
             />
           </Suspense>
         </Canvas>
-        <Interface />
+        <Interface          species={species as string}
+              mood={mood as string}
+              number={number as string} />
         <LoadingScreen
           totalFiles={20}
           started={start}

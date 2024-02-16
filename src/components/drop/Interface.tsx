@@ -6,8 +6,9 @@ import { api } from "~/utils/api";
 import Link from "next/link";
 import { Controls } from "../Controls";
 
-export default function Interface() {
-  const time = useRef<HTMLDivElement | null>(null);
+export default function Interface({ species, mood, number }: { species: string;
+  mood: string;
+  number: string;}) {
   const [playing, setPlaying] = useState(true);
 
   const restart = useGame((state) => state.restart);
@@ -31,7 +32,6 @@ export default function Interface() {
       const state = useGame.getState();
 
       if (state.phase === "playing") {
-        console.log("playing")
         setPlaying(true)
       } else if (state.phase === "ended") {
         if (playing) {
@@ -56,6 +56,10 @@ export default function Interface() {
       });
     }
   }, [score]);
+
+  useEffect(() => {
+restart()
+  }, [])
 
   return (
     <div className="pointer-events-none fixed left-0 top-0 h-screen w-screen font-clayno">
@@ -106,6 +110,12 @@ export default function Interface() {
             className="pointer-events-auto cursor-pointer rounded-lg bg-purple-500 p-2"
           >
             Leaderboard
+          </Link>
+          <Link
+            href={`/delivery?species=${species}&mood=${mood}&number=${number}`}
+            className="pointer-events-auto cursor-pointer rounded-lg bg-blue-600 p-2"
+          >
+            Next Event
           </Link>
         </div>
       )}

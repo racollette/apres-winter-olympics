@@ -5,11 +5,7 @@ import { addEffect } from "@react-three/fiber";
 import { api } from "~/utils/api";
 import Link from "next/link";
 
-export default function Interface({ species, mood, number }: { 
-  species: string;
-  mood: string;
-  number: string;
-}) {
+export default function Interface() {
   const time = useRef<HTMLDivElement | null>(null);
   // const gatesActivated = useRef();
   const [gatesActivated, setGatesActivated] = useState(0);
@@ -118,12 +114,6 @@ export default function Interface({ species, mood, number }: {
             className="pointer-events-auto cursor-pointer rounded-lg bg-purple-500 p-2"
           >
             Leaderboard
-          </Link>
-          <Link
-            href={`/drop?species=${species}&mood=${mood}&number=${number}`}
-            className="pointer-events-auto cursor-pointer rounded-lg bg-blue-600 p-2"
-          >
-            Next Event
           </Link>
         </div>
       )}

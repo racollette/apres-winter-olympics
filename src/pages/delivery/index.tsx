@@ -1,16 +1,17 @@
 import { Canvas } from "@react-three/fiber";
 import { Suspense, useState } from "react";
-import Experience from "../../components/drop/Experience";
+import Experience from "../../components/slalom/Experience";
 import { KeyboardControls } from "@react-three/drei";
-import Interface from "../../components/drop/Interface";
+import Interface from "../../components/slalom/Interface";
 import { useRouter } from "next/router";
 import { LoadingScreen } from "~/components/LoadingScreen";
 
-function DropEvent() {
+function DeliveryEvent() {
   const router = useRouter();
   const { species, mood, number } = router.query;
 
   const [start, setStart] = useState(false);
+
   return (
     <>
       <KeyboardControls
@@ -32,13 +33,11 @@ function DropEvent() {
             />
           </Suspense>
         </Canvas>
-        {start && <Interface  
-              species={species as string}
+        <Interface          species={species as string}
               mood={mood as string}
-              number={number as string} 
-        />}
+              number={number as string} />
         <LoadingScreen
-          totalFiles={15}
+          totalFiles={20}
           started={start}
           startExperience={() => setStart(true)}
         />
@@ -47,4 +46,4 @@ function DropEvent() {
   );
 }
 
-export default DropEvent;
+export default DeliveryEvent;
