@@ -29,24 +29,24 @@ export default function Home() {
                     className="relative flex aspect-square cursor-pointer flex-col items-center justify-center gap-2 rounded-lg bg-purple-950 p-2 hover:scale-105 hover:bg-cyan-500"
                   >
                     <Image
-                      src="/images/lodge.jpeg"
+                      src="/images/slalom.png"
                       alt="Time Trial"
                       width={200}
                       height={200}
-                      className="rounded-md"
+                      className="rounded-md aspect-square"
                     />
                     <p className="font-bold">Time Trial</p>
                   </Link>
                   <Link
                     href="/events/select?event=drop"
-                    className="flex  cursor-pointer flex-col items-center justify-center gap-2 rounded-lg bg-purple-950 p-2 hover:scale-105 hover:bg-cyan-500"
+                    className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg bg-purple-950 p-2 hover:scale-105 hover:bg-cyan-500"
                   >
                     <Image
-                      src="/images/lodge.jpeg"
+                      src="/images/drop.png"
                       alt="Taxi Training"
                       width={200}
                       height={200}
-                      className="rounded-md"
+                      className="rounded-md aspect-square"
                     />
                     <p className="font-bold">Taxi Training</p>
                   </Link>
@@ -59,7 +59,7 @@ export default function Home() {
                       alt="Delivery"
                       width={200}
                       height={200}
-                      className="rounded-md"
+                      className="rounded-md aspect-square"
                     />
                     <p className="font-bold">Delivery</p>
                   </Link>
