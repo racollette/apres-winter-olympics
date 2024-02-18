@@ -28,6 +28,8 @@ const Player = ({
   );
   const [smoothedCameraTarget] = useState(() => new THREE.Vector3());
 
+  const jumpStrength = 40;
+
   useFrame((state, delta) => {
     /**
      * Controls
@@ -37,7 +39,7 @@ const Player = ({
     const impulse = { x: 0, y: 0, z: 0 };
     const torque = { x: 0, y: 0, z: 0 };
 
-    const impulseStrength = 50 * delta;
+    const impulseStrength = 60 * delta;
     const torqueStrength = 30 * delta;
 
     // console.log(delta);
@@ -76,6 +78,28 @@ const Player = ({
         torque.y += torqueStrength;
       }
 
+      // Apply corrective torque to counteract rotation
+      const currentRotation = body.current.rotation();
+      const uprightQuaternion = new THREE.Quaternion().setFromEuler(
+        new THREE.Euler(0, currentRotation.y, 0)
+      );
+
+      // Get the up vector from the upright quaternion
+      const upVector = new THREE.Vector3(0, 1, 0);
+      upVector.applyQuaternion(uprightQuaternion);
+
+      // Get the up vector from the model quaternion
+      const modelUpVector = new THREE.Vector3(0, 1, 0);
+      modelUpVector.applyQuaternion(modelQuaternion);
+
+      // Calculate the corrective torque
+      const correctiveTorque = new THREE.Vector3();
+      correctiveTorque.crossVectors(modelUpVector, upVector);
+
+      torque.x += correctiveTorque.x * torqueStrength;
+      torque.y += correctiveTorque.y * torqueStrength;
+      torque.z += correctiveTorque.z * torqueStrength;
+
       body.current.applyImpulse(impulse, true);
       body.current.applyTorqueImpulse(torque, true);
       // body.current.applyTorqueImpulse({ x: 0, y: 0.5, z: 0}, true);
@@ -105,9 +129,9 @@ const Player = ({
       const initialCameraPosition = new THREE.Vector3(0, 2.5, 4);
 
       // Rotate the initial position based on the skier's rotation
-      // const rotatedCameraPosition = initialCameraPosition
-      // .clone()
-      // .applyQuaternion(modelQuaternion);
+      const rotatedCameraPosition = initialCameraPosition
+        .clone()
+        .applyQuaternion(modelQuaternion);
 
       // Update the camera position
       const cameraPosition = new THREE.Vector3(
@@ -132,7 +156,7 @@ const Player = ({
         bodyPosition.z
       ).add(rotatedCameraTarget);
 
-      smoothedCameraPosition.lerp(cameraPosition, 5 * delta);
+      smoothedCameraPosition.lerp(cameraPosition, 3 * delta);
       smoothedCameraTarget.lerp(cameraTarget, 5 * delta);
 
       state.camera.position.copy(smoothedCameraPosition);
@@ -156,7 +180,7 @@ const Player = ({
 
       if (hit && hit.toi <= 0.01) {
         console.log(hit.toi);
-        body.current.applyImpulse({ x: 0, y: 30, z: 0 }, true);
+        body.current.applyImpulse({ x: 0, y: jumpStrength, z: 0 }, true);
       }
     }
   };
@@ -205,13 +229,13 @@ const Player = ({
         linearDamping={0.5}
         angularDamping={0.5}
       >
-        <group position={[0, 1.05, 0]} castShadow>
+        <group position={[0, 0, 0]} castShadow>
           <Model
             modelName={`${species}-trot-${mood}`}
             nftId={number}
             playAnimation={playAnimation}
           />
-          <CuboidCollider position={[0, 0.35, 0]} args={[1, 0.4, 1]} />
+          <CuboidCollider position={[0, 0.8, 0]} args={[0.75, 0.75, 0.75]} />
         </group>
       </RigidBody>
     </>
