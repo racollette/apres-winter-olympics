@@ -26,6 +26,9 @@ const Mountain = () => {
   //   // You can add animation logic here if needed
   // });
 
+  const cliff = useGLTF("/models/cliff.glb");
+  const ledge = useGLTF("/models/ledge.glb");
+
   return (
     <>
       <group rotation={[0, 0, 0]} position={[0, 0, 0]}>
@@ -38,42 +41,17 @@ const Mountain = () => {
         </RigidBody>
       </group>
 
+      <group scale={[15, 10, 10]}>
+        <RigidBody type="fixed">
+          <primitive object={cliff.scene} position={[0, 6, -10]} />
+          <CuboidCollider args={[10, 10, 10]} />
+        </RigidBody>
+      </group>
+
       <group position={[0, 0, -40]}>
-        <RigidBody type="fixed" colliders="cuboid">
-          <mesh>
-            <boxGeometry args={[10, 2, 10]} />
-            <meshBasicMaterial color="blue" />
-          </mesh>
-          <mesh position={[0, 2, -6]}>
-            <boxGeometry args={[4, 2, 4]} />
-            <meshBasicMaterial color="pink" />
-          </mesh>
-          <mesh position={[0, 4, -10]}>
-            <boxGeometry args={[4, 2, 4]} />
-            <meshBasicMaterial color="cyan" />
-          </mesh>
-          <mesh position={[0, 6, -14]}>
-            <boxGeometry args={[4, 2, 4]} />
-            <meshBasicMaterial color="green" />
-          </mesh>
-          <mesh position={[0, 8, -18]}>
-            <boxGeometry args={[4, 2, 4]} />
-            <meshBasicMaterial color="blue" />
-          </mesh>
-          <mesh position={[0, 10, -22]}>
-            <boxGeometry args={[4, 2, 4]} />
-            <meshBasicMaterial color="red" />
-          </mesh>
-          <mesh position={[0, 12, -26]}>
-            <boxGeometry args={[4, 2, 4]} />
-            <meshBasicMaterial color="blue" />
-          </mesh>
-          <mesh position={[0, 14, -30]}>
-            <boxGeometry args={[4, 2, 4]} />
-            <meshBasicMaterial color="red" />
-          </mesh>
-          <mesh position={[0, 16, -34]}>
-            <boxGeometry args={[4, 2, 4]} />
+        <RigidBody type="fixed" position={[0, 2, -50]}>
+          <mesh position={[0, 0, 0]}>
+            <boxGeometry args={[8, 1.5, 8]} />
             <meshBasicMaterial color="blue" />
           </mesh>
         </RigidBody>
