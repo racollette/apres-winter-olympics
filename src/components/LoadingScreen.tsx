@@ -39,7 +39,7 @@ export const LoadingScreen = ({
     >
       <div className="mx-8 flex w-full flex-col items-center justify-center gap-3 md:mx-0 md:gap-6">
         <div className="font-pangolin text-xl font-extrabold text-white md:text-3xl">
-          Tuning Skis...
+          Tuning skis...
         </div>
         <div className="relative flex h-[45px] w-full items-center justify-center overflow-clip rounded-xl border-4 border-fuchsia-700/80 p-4 md:w-1/3">
           <div

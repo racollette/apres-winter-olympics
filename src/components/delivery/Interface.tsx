@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { addEffect } from "@react-three/fiber";
 import { api } from "~/utils/api";
 import Link from "next/link";
+import { Controls } from "../Controls";
 
 export default function Interface() {
   const time = useRef<HTMLDivElement | null>(null);
@@ -25,7 +26,6 @@ export default function Interface() {
   const recordResult = api.leaderboard.recordResult.useMutation();
 
   const [score, setScore] = useState(0);
-  const totalGates = 21;
 
   useEffect(() => {
     const unsubscribeEffect = addEffect(() => {
@@ -33,16 +33,8 @@ export default function Interface() {
       let elapsedTime = 0;
 
       if (state.phase === "playing") {
-        elapsedTime = (Date.now() - state.startTime) / 1000;
-        setScore(0);
         setPlaying(true);
       } else if (state.phase === "ended") {
-        elapsedTime = (state.endTime - state.startTime) / 1000;
-        if (playing) {
-          setGatesActivated(state.gatesActivated);
-          const score = elapsedTime + (totalGates - state.gatesActivated) * 5;
-          setScore(score);
-        }
         setPlaying(false);
       }
 
@@ -72,20 +64,29 @@ export default function Interface() {
   return (
     <div className="pointer-events-none fixed left-0 top-0 h-screen w-screen font-clayno">
       {/* Time */}
-      <div className="top-15% absolute left-0 mt-2 flex w-full flex-row justify-center gap-4 bg-black/50 py-2 text-center text-2xl text-white">
+      {/* <div className="top-15% absolute left-0 mt-2 flex w-full flex-row justify-center gap-4 bg-black/50 py-2 text-center text-2xl text-white">
         <div ref={time}>0.00</div>
-      </div>
+      </div> */}
+
+      {phase === "ready" && (
+        <div className="absolute left-0 top-1/4 flex w-full flex-col items-center justify-center gap-2 bg-black/50 py-4 text-4xl text-white">
+          <div className="text-2xl">Triangle Emergency</div>
+          <div className="text-xl">
+            The Lodge has run out of triangles! Deliver this package to them, at your own peril.
+          </div>
+
+          <Controls spaceInstruction="Jump" wasdInstruction="Move" spacebar />
+        </div>
+      )}
 
       {phase === "ended" && (
         <div className="absolute left-0 top-1/4 flex w-full flex-col items-center justify-center gap-2 bg-black/50 py-4 text-4xl text-white">
+         
           <div className="text-xl">
-            Missed Gates: {totalGates - gatesActivated}
-          </div>
-          <div className="text-xl">
-            Penalty: {(totalGates - gatesActivated) * 5} seconds
+            {/* Penalty: {(totalGates - gatesActivated) * 5} seconds */}
           </div>
           <div className="text-2xl font-extrabold">
-            Score: {score.toFixed(4)} seconds
+            {/* Score: {score.toFixed(4)} seconds */}
           </div>
         </div>
       )}
@@ -99,9 +100,6 @@ export default function Interface() {
           >
             Restart
           </div>
-          {/* <div className="pointer-events-auto cursor-pointer rounded-lg bg-sky-500 p-2">
-            Next Event
-          </div> */}
           <Link
             href={`/events`}
             className="pointer-events-auto cursor-pointer rounded-lg bg-sky-500 p-2"

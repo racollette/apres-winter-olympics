@@ -12,15 +12,17 @@ import { useGLTF, useKeyboardControls, useTexture } from "@react-three/drei";
 import useGame from "../../stores/useGame";
 import { type ModelProps } from "./Experience";
 
-const Skier = ({
+const Player = ({
   species = "rex",
   mood = "confident",
   number = "3495",
 }: ModelProps) => {
   const body = useRef<RapierRigidBody | null>(null);
+  const [playAnimation, setPlayAnimation] = useState<boolean>(false);
   const [subscribeKeys, getKeys] = useKeyboardControls();
   const { rapier, world } = useRapier();
   const restart = useGame((state) => state.restart);
+  const start = useGame((state) => state.start);
   const [smoothedCameraPosition] = useState(
     () => new THREE.Vector3(2000, 2000, 2000)
   );
@@ -35,8 +37,8 @@ const Skier = ({
     const impulse = { x: 0, y: 0, z: 0 };
     const torque = { x: 0, y: 0, z: 0 };
 
-    const impulseStrength = 2 * delta;
-    const torqueStrength = 0.5 * delta;
+    const impulseStrength = 50 * delta;
+    const torqueStrength = 30 * delta;
 
     // console.log(delta);
 
@@ -59,10 +61,8 @@ const Skier = ({
       }
 
       if (rightward) {
+        console.log("right");
         torque.y -= torqueStrength;
-        // impulse.x -= impulseStrength * modelForward.x;
-        // impulse.y -= impulseStrength * modelForward.y * 10;
-        // impulse.z -= impulseStrength * modelForward.z;
       }
 
       if (backward) {
@@ -72,14 +72,27 @@ const Skier = ({
       }
 
       if (leftward) {
+        console.log("left");
         torque.y += torqueStrength;
-        // impulse.x -= impulseStrength * modelForward.x;
-        // impulse.y -= impulseStrength * modelForward.y;
-        // impulse.z -= impulseStrength * modelForward.z;
       }
 
       body.current.applyImpulse(impulse, true);
       body.current.applyTorqueImpulse(torque, true);
+      // body.current.applyTorqueImpulse({ x: 0, y: 0.5, z: 0}, true);
+
+      const velocity = body.current.linvel();
+      if (velocity) {
+        const speed = Math.sqrt(
+          velocity.x * velocity.x +
+            velocity.y * velocity.y +
+            velocity.z * velocity.z
+        );
+        if (speed > 0.01) {
+          setPlayAnimation(true);
+        } else {
+          setPlayAnimation(false);
+        }
+      }
 
       /**
        * Camera
@@ -89,19 +102,20 @@ const Skier = ({
       // const bodyQuaternion = body.current.rotation();
 
       // Set the initial camera position relative to the skier
-      const initialCameraPosition = new THREE.Vector3(0, 2.5, 3);
+      const initialCameraPosition = new THREE.Vector3(0, 2.5, 4);
 
       // Rotate the initial position based on the skier's rotation
-      const rotatedCameraPosition = initialCameraPosition
-        .clone()
-        .applyQuaternion(modelQuaternion);
+      // const rotatedCameraPosition = initialCameraPosition
+      // .clone()
+      // .applyQuaternion(modelQuaternion);
 
       // Update the camera position
       const cameraPosition = new THREE.Vector3(
         bodyPosition.x,
         bodyPosition.y,
         bodyPosition.z
-      ).add(rotatedCameraPosition);
+      ).add(initialCameraPosition);
+      // .add(rotatedCameraPosition);
 
       // Set the initial camera target relative to the skier
       const initialCameraTarget = new THREE.Vector3(0, 2, 0);
@@ -132,15 +146,17 @@ const Skier = ({
   });
 
   const jump = () => {
+    console.log("jump");
     if (body.current) {
       const origin = body.current.translation();
-      origin.y -= 0.01;
+      origin.y -= -0.02;
       const direction = { x: 0, y: -1, z: 0 };
       const ray = new rapier.Ray(origin, direction);
       const hit = world.castRay(ray, 10, true);
 
-      if (hit && hit.toi <= 0.11) {
-        body.current.applyImpulse({ x: 0, y: 0.5, z: 0 }, true);
+      if (hit && hit.toi <= 0.01) {
+        console.log(hit.toi);
+        body.current.applyImpulse({ x: 0, y: 30, z: 0 }, true);
       }
     }
   };
@@ -168,7 +184,7 @@ const Skier = ({
     );
 
     const unsubscribeAny = subscribeKeys(() => {
-      // start();
+      start();
     });
 
     return () => {
@@ -178,46 +194,28 @@ const Skier = ({
     };
   }, []);
 
-  const matcap = useTexture("/textures/7877EE_D87FC5_75D9C7_1C78C0-256px.png");
-
-  const skis = useGLTF("/models/skis.glb");
-
   return (
     <>
       <RigidBody
-        // type="fixed"
         ref={body}
         canSleep={false}
-        colliders="cuboid"
+        colliders={false}
         restitution={0}
-        friction={0.75}
+        friction={0.5}
         linearDamping={0.5}
         angularDamping={0.5}
-        // position={[0, 1, 0]}
       >
         <group position={[0, 1.05, 0]} castShadow>
-          {/* <mesh position={[-0.2, 0, -0.75]}>
-            <boxGeometry args={[0.25, 0.1, 3]} />
-            <meshMatcapMaterial matcap={matcap} />
-          </mesh>
-          <mesh position={[0.15, 0, -0.75]}>
-            <boxGeometry args={[0.25, 0.1, 3]} />
-            <meshMatcapMaterial matcap={matcap} />
-          </mesh> */}
-          <primitive
-            scale={0.75}
-            // rotation={[0, Math.PI / 2, 0]}
-            // position={[0, 0, 0]}
-            object={skis.scene}
+          <Model
+            modelName={`${species}-trot-${mood}`}
+            nftId={number}
+            playAnimation={playAnimation}
           />
-
-          {/* <Model modelName={`rex-idle-confident`} nftId="3495" /> */}
-          <Model modelName={`${species}-idle-${mood}`} nftId={number} />
-          {/* <CuboidCollider position={[0, 0.5, 0]} args={[0.5, 0.5, 0.5]} /> */}
+          <CuboidCollider position={[0, 0.35, 0]} args={[1, 0.4, 1]} />
         </group>
       </RigidBody>
     </>
   );
 };
 
-export default Skier;
+export default Player;

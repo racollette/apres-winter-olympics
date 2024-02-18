@@ -1,8 +1,8 @@
 import { Canvas } from "@react-three/fiber";
 import { Suspense, useState } from "react";
-import Experience from "../../components/slalom/Experience";
+import Experience from "../../components/delivery/Experience";
 import { KeyboardControls } from "@react-three/drei";
-import Interface from "../../components/slalom/Interface";
+import Interface from "../../components/delivery/Interface";
 import { useRouter } from "next/router";
 import { LoadingScreen } from "~/components/LoadingScreen";
 
@@ -33,14 +33,12 @@ function DeliveryEvent() {
             />
           </Suspense>
         </Canvas>
-        <Interface          species={species as string}
-              mood={mood as string}
-              number={number as string} />
-        <LoadingScreen
+        {/* <Interface/> */}
+        {/* <LoadingScreen
           totalFiles={20}
           started={start}
           startExperience={() => setStart(true)}
-        />
+        /> */}
       </KeyboardControls>
     </>
   );

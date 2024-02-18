@@ -1,14 +1,13 @@
 import {
   Environment,
-  FirstPersonControls,
   OrbitControls,
 } from "@react-three/drei";
 import { Physics } from "@react-three/rapier";
-import SkiSlope from "./SkiSlope";
-import Skier from "./Skier";
 import Lights from "./Lights";
 import useGame from "../../stores/useGame";
 import { useEffect } from "react";
+import Mountain from "./Mountain";
+import Player from "./Player";
 
 export type ModelProps = {
   species: string;
@@ -26,10 +25,10 @@ export default function Experience({ species, mood, number }: ModelProps) {
       />
       <OrbitControls />
 
-      <Physics>
+      <Physics debug={true}>
         <Lights />
-        <Skier species={species} mood={mood} number={number} />
-        <SkiSlope />
+        <Player species={species} mood={mood} number={number} />
+        <Mountain />
       </Physics>
     </>
   );

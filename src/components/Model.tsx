@@ -13,7 +13,17 @@ import {
   SRGBColorSpace,
 } from "three";
 
-export default function Model({ modelName, nftId }: any) {
+type ModelProps = {
+  modelName: string;
+  nftId: string;
+  playAnimation?: boolean;
+};
+
+export default function Model({
+  modelName,
+  nftId,
+  playAnimation = false,
+}: ModelProps) {
   // weird bug with trice moods
   let model = modelName;
   const species = modelName.split("-")[0];
@@ -150,6 +160,14 @@ export default function Model({ modelName, nftId }: any) {
       meshRef.current = scene.children[0] as Group;
     }
   }, [scene]);
+
+  useEffect(() => {
+    if (playAnimation) {
+      animations.forEach((clip) => mixer.clipAction(clip, scene).play());
+    } else {
+      mixer.stopAllAction();
+    }
+  }, [playAnimation]);
 
   useFrame((_, delta) => {
     mixer.update(delta);
