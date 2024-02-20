@@ -27,10 +27,11 @@ export default function Model({
   // weird bug with trice moods
   let model = modelName;
   const species = modelName.split("-")[0];
+  const motion = modelName.split("-")[1];
   const mood = modelName.split("-")[2];
   if (species === "trice") {
     if (mood === "confident" || mood === "happy" || mood === "sad") {
-      model = "trice-idle-excited";
+      model = `trice-${motion}-excited`;
     }
   }
 
