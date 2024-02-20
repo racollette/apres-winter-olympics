@@ -30,7 +30,7 @@ export default function Interface() {
   useEffect(() => {
     const unsubscribeEffect = addEffect(() => {
       const state = useGame.getState();
-      let elapsedTime = 0;
+      const elapsedTime = 0;
 
       if (state.phase === "playing") {
         setPlaying(true);

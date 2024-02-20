@@ -112,6 +112,7 @@ const Mountain = () => {
       <group position={[0, 0, -50]}>
         {ledgePositions.map((position, index) => (
           <RigidBody
+            key={index}
             type="fixed"
             position={[position.x, position.y, position.z]}
           >
