@@ -12,6 +12,34 @@ import { useGLTF, useKeyboardControls, useTexture } from "@react-three/drei";
 import useGame from "../../stores/useGame";
 import { type ModelProps } from "./Experience";
 
+type CrossaintPositions = {
+  [key: string]: {
+    x: number;
+    y: number;
+    z: number;
+    scale: number;
+    rotationY: number;
+  };
+};
+
+const CrossaintPositions: CrossaintPositions = {
+  ankylo: { x: 0, y: 0.18, z: -0.77, scale: 0.5, rotationY: 0 },
+  stego: { x: 0, y: 0.175, z: -0.78, scale: 0.5, rotationY: 0 },
+  rex: { x: 0, y: 0.95, z: -0.8, scale: 1, rotationY: 0 },
+  trice: { x: 0, y: 0.175, z: -0.75, scale: 0.75, rotationY: 0 },
+  raptor: { x: 0, y: 0.9, z: -0.7, scale: 0.75, rotationY: 0 },
+  bronto: { x: 0, y: 1.8, z: -1.1, scale: 1.8, rotationY: 0 },
+};
+
+const CrossaintPositionsAnimated: CrossaintPositions = {
+  ankylo: { x: 0, y: 0.18, z: -0.77, scale: 0.5, rotationY: 0 },
+  stego: { x: 0, y: 0.175, z: -0.78, scale: 0.5, rotationY: 0 },
+  rex: { x: 0, y: 0.95, z: -0.8, scale: 1, rotationY: 0 },
+  trice: { x: 0, y: 0.175, z: -0.75, scale: 0.75, rotationY: 0 },
+  raptor: { x: 0, y: 0.9, z: -0.7, scale: 0.75, rotationY: 0 },
+  bronto: { x: 0, y: 1.65, z: -1.5, scale: 1.8, rotationY: 0 },
+};
+
 const Player = ({
   species = "rex",
   mood = "confident",
@@ -24,11 +52,12 @@ const Player = ({
   const restart = useGame((state) => state.restart);
   const start = useGame((state) => state.start);
   const [smoothedCameraPosition] = useState(
-    () => new THREE.Vector3(2000, 2000, 2000)
+    () => new THREE.Vector3(2000, 4000, -2000)
   );
   const [smoothedCameraTarget] = useState(() => new THREE.Vector3());
 
-  const jumpStrength = 40;
+  const jumpStrength = 26;
+  const cameraHeight = species === "bronto" ? 4 : 2;
 
   useFrame((state, delta) => {
     /**
@@ -39,8 +68,8 @@ const Player = ({
     const impulse = { x: 0, y: 0, z: 0 };
     const torque = { x: 0, y: 0, z: 0 };
 
-    const impulseStrength = 60 * delta;
-    const torqueStrength = 30 * delta;
+    const impulseStrength = 40 * delta;
+    const torqueStrength = 12 * delta;
 
     // console.log(delta);
 
@@ -126,7 +155,7 @@ const Player = ({
       // const bodyQuaternion = body.current.rotation();
 
       // Set the initial camera position relative to the skier
-      const initialCameraPosition = new THREE.Vector3(0, 2.5, 4);
+      const initialCameraPosition = new THREE.Vector3(0, cameraHeight + 0.5, 4);
 
       // Rotate the initial position based on the skier's rotation
       const rotatedCameraPosition = initialCameraPosition
@@ -138,11 +167,11 @@ const Player = ({
         bodyPosition.x,
         bodyPosition.y,
         bodyPosition.z
-      ).add(initialCameraPosition);
-      // .add(rotatedCameraPosition);
+      ).add(rotatedCameraPosition);
+      //.add(initialCameraPosition);
 
       // Set the initial camera target relative to the skier
-      const initialCameraTarget = new THREE.Vector3(0, 2, 0);
+      const initialCameraTarget = new THREE.Vector3(0, cameraHeight, 0);
 
       // Rotate the initial target based on the skier's rotation
       const rotatedCameraTarget = initialCameraTarget
@@ -173,7 +202,7 @@ const Player = ({
     console.log("jump");
     if (body.current) {
       const origin = body.current.translation();
-      origin.y -= -0.02;
+      origin.y -= -0.01;
       const direction = { x: 0, y: -1, z: 0 };
       const ray = new rapier.Ray(origin, direction);
       const hit = world.castRay(ray, 10, true);
@@ -218,6 +247,8 @@ const Player = ({
     };
   }, []);
 
+  const croissants = useGLTF("/models/croissants.glb");
+
   return (
     <>
       <RigidBody
@@ -228,14 +259,33 @@ const Player = ({
         friction={0.5}
         linearDamping={0.5}
         angularDamping={0.5}
+        position={[0, 2, 0]}
       >
-        <group position={[0, 0, 0]} castShadow>
+        <group castShadow>
           <Model
             modelName={`${species}-trot-${mood}`}
             nftId={number}
             playAnimation={playAnimation}
           />
-          <CuboidCollider position={[0, 0.8, 0]} args={[0.75, 0.75, 0.75]} />
+          <primitive
+            position={
+              !playAnimation
+                ? [
+                    CrossaintPositions[species]?.x,
+                    CrossaintPositions[species]?.y,
+                    CrossaintPositions[species]?.z,
+                  ]
+                : [
+                    CrossaintPositionsAnimated[species]?.x,
+                    CrossaintPositionsAnimated[species]?.y,
+                    CrossaintPositionsAnimated[species]?.z,
+                  ]
+            }
+            scale={CrossaintPositions[species]?.scale}
+            rotation={[0, CrossaintPositions[species]?.rotationY, 0]}
+            object={croissants.scene}
+          />
+          <CuboidCollider position={[0, 0.8, 0]} args={[0.5, 0.75, 0.75]} />
         </group>
       </RigidBody>
     </>
