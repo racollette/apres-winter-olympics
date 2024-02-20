@@ -259,17 +259,17 @@ const Player = ({
         friction={0.5}
         linearDamping={0.5}
         angularDamping={0.5}
-        position={[0, 180, -170]}
+        position={[0, 2, 0]}
       >
         <group castShadow>
           <Model
             modelName={`${species}-trot-${mood}`}
             nftId={number}
-            playAnimation={!playAnimation}
+            playAnimation={playAnimation}
           />
           <primitive
             position={
-              playAnimation
+              !playAnimation
                 ? [
                     CrossaintPositions[species]?.x,
                     CrossaintPositions[species]?.y,
