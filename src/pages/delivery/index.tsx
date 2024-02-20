@@ -33,12 +33,12 @@ function DeliveryEvent() {
             />
           </Suspense>
         </Canvas>
-        {/* <Interface/> */}
-        {/* <LoadingScreen
+        <Interface />
+        <LoadingScreen
           totalFiles={20}
           started={start}
           startExperience={() => setStart(true)}
-        /> */}
+        />
       </KeyboardControls>
     </>
   );

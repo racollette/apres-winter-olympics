@@ -33,7 +33,7 @@ export default function Home() {
                       alt="Time Trial"
                       width={200}
                       height={200}
-                      className="rounded-md aspect-square"
+                      className="aspect-square rounded-md"
                     />
                     <p className="font-bold">Time Trial</p>
                   </Link>
@@ -46,7 +46,7 @@ export default function Home() {
                       alt="Taxi Training"
                       width={200}
                       height={200}
-                      className="rounded-md aspect-square"
+                      className="aspect-square rounded-md"
                     />
                     <p className="font-bold">Taxi Training</p>
                   </Link>
@@ -55,11 +55,11 @@ export default function Home() {
                     className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg bg-purple-950 p-2 hover:scale-105 hover:bg-cyan-500"
                   >
                     <Image
-                      src="/images/lodge.jpeg"
+                      src="/images/delivery.png"
                       alt="Delivery"
                       width={200}
                       height={200}
-                      className="rounded-md aspect-square"
+                      className="aspect-square rounded-md"
                     />
                     <p className="font-bold">Delivery</p>
                   </Link>

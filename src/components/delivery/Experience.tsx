@@ -1,7 +1,4 @@
-import {
-  Environment,
-  OrbitControls,
-} from "@react-three/drei";
+import { Environment, OrbitControls } from "@react-three/drei";
 import { Physics } from "@react-three/rapier";
 import Lights from "./Lights";
 import useGame from "../../stores/useGame";
@@ -25,7 +22,8 @@ export default function Experience({ species, mood, number }: ModelProps) {
       />
       <OrbitControls />
 
-      <Physics debug={true}>
+      <Physics>
+        {/* <Physics debug> */}
         <Lights />
         <Player species={species} mood={mood} number={number} />
         <Mountain />

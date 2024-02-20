@@ -56,7 +56,7 @@ const Player = ({
   );
   const [smoothedCameraTarget] = useState(() => new THREE.Vector3());
 
-  const jumpStrength = 26;
+  const jumpStrength = 37;
   const cameraHeight = species === "bronto" ? 4 : 2;
 
   useFrame((state, delta) => {
@@ -68,8 +68,8 @@ const Player = ({
     const impulse = { x: 0, y: 0, z: 0 };
     const torque = { x: 0, y: 0, z: 0 };
 
-    const impulseStrength = 40 * delta;
-    const torqueStrength = 12 * delta;
+    const impulseStrength = 50 * delta;
+    const torqueStrength = 22 * delta;
 
     // console.log(delta);
 
@@ -259,17 +259,17 @@ const Player = ({
         friction={0.5}
         linearDamping={0.5}
         angularDamping={0.5}
-        position={[0, 2, 0]}
+        position={[0, 180, -170]}
       >
         <group castShadow>
           <Model
             modelName={`${species}-trot-${mood}`}
             nftId={number}
-            playAnimation={playAnimation}
+            playAnimation={!playAnimation}
           />
           <primitive
             position={
-              !playAnimation
+              playAnimation
                 ? [
                     CrossaintPositions[species]?.x,
                     CrossaintPositions[species]?.y,
@@ -285,7 +285,7 @@ const Player = ({
             rotation={[0, CrossaintPositions[species]?.rotationY, 0]}
             object={croissants.scene}
           />
-          <CuboidCollider position={[0, 0.8, 0]} args={[0.5, 0.75, 0.75]} />
+          <CuboidCollider position={[0, 0.8, 0]} args={[0.75, 0.75, 0.75]} />
         </group>
       </RigidBody>
     </>

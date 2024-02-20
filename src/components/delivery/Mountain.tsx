@@ -56,9 +56,6 @@ const ledgePositions = [
   { x: 12, y: 140, z: -64 },
   { x: 0, y: 144, z: -64 },
   { x: -12, y: 148, z: -65 },
-  { x: -24, y: 152, z: -65 },
-  { x: -36, y: 156, z: -65 },
-  { x: -48, y: 160, z: -65 },
 ];
 
 const Mountain = () => {
@@ -83,24 +80,11 @@ const Mountain = () => {
 
   const cliff = useGLTF("/models/cliff.glb");
   const ledge = useGLTF("/models/ledge.glb");
+  const snowfield = useGLTF("/models/snowfield.glb");
 
   return (
     <>
-      <group rotation={[0, 0, 0]} position={[0, 0, 0]}>
-        {/* Platform */}
-        <RigidBody type="fixed" restitution={0.2} friction={1}>
-          <mesh ref={slopeRef} position={[0, -1, -240]} receiveShadow>
-            <boxGeometry args={[500, 1, 500]} />
-            <meshStandardMaterial
-              map={colorTexture}
-              // displacementMap={displacementTexture}
-              aoMap={aoTexture}
-              roughnessMap={roughnessTexture}
-              normalMap={normalTexture}
-            />
-          </mesh>
-        </RigidBody>
-      </group>
+      <Floor />
 
       <group scale={[15, 10, 10]}>
         <primitive object={cliff.scene} position={[0, 6, -11]} />
@@ -109,6 +93,18 @@ const Mountain = () => {
             rotation={[-0.12, 0, 0]}
             position={[0, 7, -11.75]}
             args={[6.5, 7.5, 0.9]}
+          />
+        </RigidBody>
+      </group>
+
+      <group rotation={[0, 0, 0]} position={[0, 0, 0]}>
+        {/* Platform */}
+        <RigidBody type="fixed" restitution={0.2} friction={1}>
+          <primitive
+            scale={[34, 4, 20]}
+            rotation={[Math.PI, 0, 0]}
+            object={snowfield.scene}
+            position={[-22, 150, -164]}
           />
         </RigidBody>
       </group>
@@ -132,8 +128,52 @@ const Mountain = () => {
           </RigidBody>
         ))}
       </group>
+
+      <Lodge />
     </>
   );
 };
 
 export default Mountain;
+
+const Floor = () => {
+  const snowfield1 = useGLTF("/models/snowfield1.glb");
+
+  return (
+    <group rotation={[0, 0, 0]} position={[0, 0, 0]}>
+      {/* Platform */}
+      <RigidBody type="fixed" restitution={0.2} friction={1}>
+        {/* <mesh ref={slopeRef} position={[0, -1, -240]} receiveShadow>
+        <boxGeometry args={[500, 1, 500]} />
+        <meshStandardMaterial
+          map={colorTexture}
+          // displacementMap={displacementTexture}
+          aoMap={aoTexture}
+          roughnessMap={roughnessTexture}
+          normalMap={normalTexture}
+        />
+      </mesh> */}
+        <primitive
+          scale={[48, 4, 20]}
+          rotation={[Math.PI, 0, 0]}
+          object={snowfield1.scene}
+          position={[-25, -3.5, -50]}
+        />
+      </RigidBody>
+    </group>
+  );
+};
+
+const Lodge = () => {
+  const lodge = useGLTF("/models/lodge.glb");
+
+  return (
+    <group rotation={[0, -0.25, 0]} position={[20, 173, -180]}>
+      <primitive
+        scale={[10, 10, 10]}
+        object={lodge.scene}
+        position={[0, 0, 0]}
+      />
+    </group>
+  );
+};

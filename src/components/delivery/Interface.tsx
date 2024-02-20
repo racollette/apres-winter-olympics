@@ -59,7 +59,7 @@ export default function Interface() {
 
   useEffect(() => {
     restart();
-  }, [])
+  }, []);
 
   return (
     <div className="pointer-events-none fixed left-0 top-0 h-screen w-screen font-clayno">
@@ -70,9 +70,13 @@ export default function Interface() {
 
       {phase === "ready" && (
         <div className="absolute left-0 top-1/4 flex w-full flex-col items-center justify-center gap-2 bg-black/50 py-4 text-4xl text-white">
-          <div className="text-2xl">Triangle Emergency</div>
-          <div className="text-xl">
-            The Lodge has run out of triangles! Deliver this package to them, at your own peril.
+          <div className="text-2xl font-bold">Croissant Emergency</div>
+          <div className="text-lg">
+            The Lodge has run out of croissants! Take these to them wif
+            immediate haste.
+          </div>
+          <div className="text-sm">
+            Be warned, The Crimson Clan is known to lurk in these parts.
           </div>
 
           <Controls spaceInstruction="Jump" wasdInstruction="Move" spacebar />
@@ -81,7 +85,6 @@ export default function Interface() {
 
       {phase === "ended" && (
         <div className="absolute left-0 top-1/4 flex w-full flex-col items-center justify-center gap-2 bg-black/50 py-4 text-4xl text-white">
-         
           <div className="text-xl">
             {/* Penalty: {(totalGates - gatesActivated) * 5} seconds */}
           </div>
