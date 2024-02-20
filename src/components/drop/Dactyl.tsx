@@ -172,7 +172,6 @@ const Dactyl = ({
           //     payloadRigidBodyRef.current?.applyTorqueImpulse({ x: -2, y: 0, z: 0 }, true)
           //   }
           // }
-  
         }
 
         // calculate distance of payLoadRigidBodyref from 0, 0
@@ -317,9 +316,8 @@ const Dactyl = ({
   return (
     <>
       <group ref={dactylRef}>
-        <Model modelName={`dactyl-flap-excited`} nftId={10162} />
+        <Model modelName={`dactyl-flap-excited`} nftId="10162" />
       </group>
-
       <RigidBody
         type="dynamic"
         // colliders="hull"
@@ -330,7 +328,11 @@ const Dactyl = ({
       >
         <primitive scale={0.75} object={skis.scene} />
         <Model modelName={`${species}-idle-${mood}`} nftId={number} />
-        <CuboidCollider restitution={0.2} position={[0, 0.5, 0]} args={[0.5, 0.65, 1]} />
+        <CuboidCollider
+          restitution={0.2}
+          position={[0, 0.5, 0]}
+          args={[0.5, 0.65, 1]}
+        />
       </RigidBody>
     </>
   );
