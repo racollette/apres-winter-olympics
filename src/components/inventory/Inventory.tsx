@@ -1,27 +1,11 @@
 import { useEffect, useState } from "react";
-import Layout from "~/components/Layout";
 import { api } from "~/utils/api";
 import Item from "./Item";
 import { sortByRarity, type Character } from "~/utils/inventory";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "~/@/components/ui/select";
-import Link from "next/link";
-import Image from "next/image";
 import { sortByAttribute } from "~/utils/inventory";
 import { useFetchUserWallets } from "~/hooks/useFetchUserWallets";
-import { groupByColor, groupByEdition, groupBySymbol } from "~/utils/inventory";
-import MetaTags from "~/components/MetaTags";
-import { HiExternalLink, HiReply } from "react-icons/hi";
-import { shortAccount } from "~/utils/addresses";
-import { getQueryString } from "~/utils/routes";
 import { useSession } from "next-auth/react";
 import { useWallet } from "@solana/wallet-adapter-react";
-import { type Dino } from "@prisma/client";
 import useGame from "~/stores/useGame";
 
 const Inventory = ({
@@ -106,53 +90,47 @@ const Inventory = ({
   return (
     <>
       <section className="flex flex-col items-center justify-center gap-y-8 text-white md:container md:p-2">
-        <div className="flex w-full flex-col gap-4">
-          <div className="flex flex-row justify-between">
-            <div className="font-clayno text-lg md:text-2xl">
-              Claynosaurz {`(${originalSpecies?.length})`}
+        <div className="hidden md:block">
+          <div className="flex w-full flex-col gap-4">
+            <div className="flex flex-row justify-between">
+              <div className="font-clayno text-lg md:text-2xl">
+                Claynosaurz {`(${originalSpecies?.length})`}
+              </div>
             </div>
-            {/* <div>
-              <Select onValueChange={(v) => handleSort(v)}>
-                <SelectTrigger className="w-[100px] font-clayno text-sm md:w-[180px]">
-                  <SelectValue placeholder="Rarity" />
-                </SelectTrigger>
-                <SelectContent className=" font-clayno text-sm">
-                  <SelectItem value="rarity">Rarity</SelectItem>
-                  <SelectItem value="species">Species</SelectItem>
-                  <SelectItem value="skin">Skin</SelectItem>
-                  <SelectItem value="color">Color</SelectItem>
-                </SelectContent>
-              </Select>
-            </div> */}
-          </div>
-          <div className="mb-8 flex flex-row flex-wrap gap-2">
-            {originalSpecies?.map((dino: Character) => (
-              <div
-                key={dino.mint}
-                onClick={() => setSelected(dino)}
-                className={`overflow-clip rounded-xl border-4 ${
-                  selected === dino ? `border-sky-400` : `border-transparent`
-                }`}
-              >
-                <Item item={dino} type={"dino"} />
-              </div>
-            ))}
-          </div>
-          <div className="font-clayno text-lg md:text-2xl">
-            Call of Saga {`(${sagaSpecies?.length})`}
-          </div>
-          <div className="mb-8 flex flex-row flex-wrap gap-2">
-            {sagaSpecies?.map((dino: any) => (
-              <div
-                key={dino.mint}
-                onClick={() => setSelected(dino)}
-                className={`overflow-clip rounded-xl border-4 ${
-                  selected === dino ? `border-sky-400` : `border-transparent`
-                }`}
-              >
-                <Item item={dino} type={"dino"} />
-              </div>
-            ))}
+            <div className="mb-8 flex flex-row flex-wrap gap-2">
+              {originalSpecies?.map((dino: Character) => (
+                <div
+                  key={dino.mint}
+                  onClick={() => setSelected(dino)}
+                  className={`overflow-clip rounded-xl border-4 ${
+                    selected === dino ? `border-sky-400` : `border-transparent`
+                  }`}
+                >
+                  <Item item={dino} type={"dino"} />
+                </div>
+              ))}
+            </div>
+            <div className="font-clayno text-lg md:text-2xl">
+              Call of Saga {`(${sagaSpecies?.length})`}
+            </div>
+            <div className="font-semibold italic text-white">
+              Note: 3D models for Sagas are not yet available, so you'll be
+              provided with a default Rex for use in game. However, your Saga
+              will still show up on the leaderboard.
+            </div>
+            <div className="mb-8 flex flex-row flex-wrap gap-2">
+              {sagaSpecies?.map((dino: any) => (
+                <div
+                  key={dino.mint}
+                  onClick={() => setSelected(dino)}
+                  className={`overflow-clip rounded-xl border-4 ${
+                    selected === dino ? `border-sky-400` : `border-transparent`
+                  }`}
+                >
+                  <Item item={dino} type={"dino"} />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
