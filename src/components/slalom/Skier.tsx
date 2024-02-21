@@ -21,6 +21,7 @@ const Skier = ({
   const [subscribeKeys, getKeys] = useKeyboardControls();
   const { rapier, world } = useRapier();
   const restart = useGame((state) => state.restart);
+  const start = useGame((state) => state.start);
   const [smoothedCameraPosition] = useState(
     () => new THREE.Vector3(2000, 2000, 2000)
   );
@@ -168,7 +169,7 @@ const Skier = ({
     );
 
     const unsubscribeAny = subscribeKeys(() => {
-      // start();
+      start();
     });
 
     return () => {
