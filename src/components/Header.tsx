@@ -46,7 +46,13 @@ export default function Header() {
           className="text-md cursor-pointer font-clayno text-white"
           href={`/leaderboard`}
         >
-          Leaderboard
+          Leaderboards
+        </Navbar.Link>
+        <Navbar.Link
+          className="text-md cursor-pointer font-clayno text-white"
+          href={`/podium`}
+        >
+          Podium
         </Navbar.Link>
       </Navbar.Collapse>
     </Navbar>
