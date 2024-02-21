@@ -231,9 +231,9 @@ const Gate = (props: GateProps) => {
       if (version === "finish") {
         end();
       }
-      if (version === "start") {
-        start();
-      }
+      // if (version === "start") {
+      //   start();
+      // }
     }
   }, [intersecting, version, end]);
 
