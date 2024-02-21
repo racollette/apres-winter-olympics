@@ -29,15 +29,17 @@ type EventResultsProps = {
 
 export const EventResults = ({ event }: EventResultsProps) => {
   return (
-    <div className="flex flex-col items-center justify-center gap-4 rounded-lg bg-purple-900 p-6 font-clayno">
+    <div className="flex flex-col items-center justify-center gap-4 rounded-lg bg-blue-950 p-3 font-clayno text-sm md:p-6">
       <div className="text-xl font-extrabold">{event.name}</div>
       <table className="w-full table-auto border-separate border-spacing-2">
         <thead>
           <tr>
-            <th className="px-4 py-2 text-left">Rank</th>
-            <th className="px-4 py-2 text-left">Player</th>
-            <th className="px-4 py-2 text-left">Clayno</th>
-            <th className="px-4 py-2 text-left">{event.scoringType}</th>
+            <th className="px-2 py-1 text-left md:px-4 md:py-2">Rank</th>
+            <th className="px-2 py-1 text-left md:px-4 md:py-2">Player</th>
+            <th className="px-2 py-1 text-left md:px-4 md:py-2">Clayno</th>
+            <th className="px-2 py-1 text-left md:px-4 md:py-2">
+              {event.scoringType}
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -47,22 +49,23 @@ export const EventResults = ({ event }: EventResultsProps) => {
             );
             return (
               <tr key={result.id}>
-                <td className="px-4">
+                <td className="px-2 md:px-4">
                   <div className="max-w-xs">{idx + 1}</div>
                 </td>
-                <td className="px-4">
-                  <div className="flex items-center gap-2">
-                    <Image
-                      src={
-                        userPFP ??
-                        `https://ui-avatars.com/api/?name=${result.user.defaultAddress}&background=random`
-                      }
-                      alt={username as string}
-                      width={32}
-                      height={32}
-                      className="rounded-full"
-                      onError={handleUserPFPDoesNotExist}
-                    />
+                <td className="px-2 md:px-4">
+                  <div className="flex items-center gap-2 ">
+                    <div className="relative h-6 w-6 md:h-10 md:w-10">
+                      <Image
+                        src={
+                          userPFP ??
+                          `https://ui-avatars.com/api/?name=${result.user.defaultAddress}&background=random`
+                        }
+                        alt={username as string}
+                        fill
+                        className="rounded-full"
+                        onError={handleUserPFPDoesNotExist}
+                      />
+                    </div>
                     <div className="max-w-xs">
                       {" "}
                       {userHandle
@@ -71,13 +74,12 @@ export const EventResults = ({ event }: EventResultsProps) => {
                     </div>
                   </div>
                 </td>
-                <td className="px-4">
-                  <div className="flex items-center gap-2">
+                <td className="px-2 md:px-4">
+                  <div className="relative flex h-10 w-10 items-center gap-2 md:h-14 md:w-14">
                     <Image
                       src={`https://prod-image-cdn.tensor.trade/images/slug=claynosaurz/400x400/freeze=false/${result?.dino?.gif}`}
                       alt={result?.dino?.name as string}
-                      width={50}
-                      height={50}
+                      fill
                       className="rounded-xl"
                     />
                     {/* <div className="max-w-xs">
@@ -85,7 +87,7 @@ export const EventResults = ({ event }: EventResultsProps) => {
                     </div> */}
                   </div>
                 </td>
-                <td className="px-4">
+                <td className="px-2 md:px-4">
                   <div className="max-w-xs">{result.score.toFixed(2)}</div>
                 </td>
               </tr>
