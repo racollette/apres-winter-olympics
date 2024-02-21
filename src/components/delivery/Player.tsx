@@ -188,8 +188,8 @@ const Player = ({
       smoothedCameraPosition.lerp(cameraPosition, 3 * delta);
       smoothedCameraTarget.lerp(cameraTarget, 5 * delta);
 
-      state.camera.position.copy(smoothedCameraPosition);
-      state.camera.lookAt(smoothedCameraTarget);
+      // state.camera.position.copy(smoothedCameraPosition);
+      // state.camera.lookAt(smoothedCameraTarget);
 
       if (bodyPosition.z > 15 || bodyPosition.z < -460) {
         reset();
@@ -259,7 +259,7 @@ const Player = ({
         friction={0.5}
         linearDamping={0.5}
         angularDamping={0.5}
-        position={[0, 2, 0]}
+        position={[0, 170, -180]}
       >
         <group castShadow>
           <Model

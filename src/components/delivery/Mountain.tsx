@@ -101,10 +101,10 @@ const Mountain = () => {
         {/* Platform */}
         <RigidBody type="fixed" restitution={0.2} friction={1}>
           <primitive
-            scale={[34, 4, 20]}
+            scale={[44, 4, 24]}
             rotation={[Math.PI, 0, 0]}
             object={snowfield.scene}
-            position={[-22, 150, -164]}
+            position={[-22, 150, -226]}
           />
         </RigidBody>
       </group>
@@ -169,7 +169,7 @@ const Lodge = () => {
   const lodge = useGLTF("/models/lodge.glb");
 
   return (
-    <group rotation={[0, -0.25, 0]} position={[20, 173, -180]}>
+    <group scale={0.2} rotation={[0, 0, 0]} position={[-45, 100, -280]}>
       <primitive
         scale={[10, 10, 10]}
         object={lodge.scene}
