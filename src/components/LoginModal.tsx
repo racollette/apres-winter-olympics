@@ -146,10 +146,13 @@ export default function LoginModal({
   useEffect(() => {
     if (attemptedLogin) {
       if (signedIn && !user) {
-        toast({
-          title: "No Clayno.club account found! Please create one first.",
-          variant: "destructive",
-        });
+        setTimeout(() => {
+          if (signedIn && !user) {
+            toast({
+              title: "No Clayno.club account found! Please create one first.",
+            });
+          }
+        }, 2000);
       }
       setAttemptedLogin(false);
     } else if (redirect) {
@@ -158,7 +161,6 @@ export default function LoginModal({
         if (signedIn && !user) {
           toast({
             title: "No Clayno.club account found! Please create one first.",
-            variant: "destructive",
           });
         }
       }, 2000);
