@@ -32,7 +32,7 @@ export default function Leaderboard() {
                 #1: Apres Ski Games
               </h2>
               {events?.map((event) => (
-                <div className="w-full">
+                <div key={event.id} className="w-full">
                   <EventResults key={event.competitionId} event={event} />
                 </div>
               ))}

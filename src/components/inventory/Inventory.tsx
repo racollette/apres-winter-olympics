@@ -88,9 +88,9 @@ const Inventory = ({
               Call of Saga {`(${sagaSpecies?.length})`}
             </div>
             <div className="font-semibold italic text-white">
-              Note: 3D models for Sagas are not yet available, so you'll be
+              {`Note: 3D models for Sagas are not yet available, so you'll be
               provided with a default Rex for use in game. However, your Saga
-              will still show up on the leaderboard.
+              will still show up on the leaderboard.`}
             </div>
             <div className="mb-8 flex flex-row flex-wrap gap-2">
               {sagaSpecies?.map((dino: any) => (
