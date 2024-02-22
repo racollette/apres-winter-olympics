@@ -3,6 +3,7 @@ import { bindingRouter } from "./routers/binding";
 import { generalRouter } from "./routers/general";
 import { inventoryRouter } from "./routers/inventory";
 import { leaderboardRouter } from "./routers/leaderboard";
+import { memeRouter } from "./routers/memes";
 
 /**
  * This is the primary router for your server.
@@ -14,6 +15,7 @@ export const appRouter = createTRPCRouter({
   general: generalRouter,
   inventory: inventoryRouter,
   leaderboard: leaderboardRouter,
+  memes: memeRouter,
 });
 
 // export type definition of API
