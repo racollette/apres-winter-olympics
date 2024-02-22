@@ -7,6 +7,7 @@ import { useFetchUserWallets } from "~/hooks/useFetchUserWallets";
 import { useSession } from "next-auth/react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import useGame from "~/stores/useGame";
+import { useItems } from "~/hooks/useItems";
 
 const Inventory = ({
   username,
@@ -15,38 +16,11 @@ const Inventory = ({
   username: string | null;
   userId: string;
 }) => {
-  const { data: session } = useSession();
-  const { publicKey } = useWallet();
-
-  const account = username ?? session?.user.name ?? publicKey?.toString();
-
-  const { wallets } = useFetchUserWallets(account);
+  const { dinos, isLoading } = useItems();
 
   const [originalSpecies, setOriginalSpecies] = useState<Character[]>([]);
   const [sagaSpecies, setSagaSpecies] = useState<Character[]>([]);
   const [selected, setSelected] = useState<Character | null>(null);
-
-  // const favoriteDomain = getFavoriteDomain(wallets)
-
-  const { data: holders, isLoading } = api.inventory.getUserItems.useQuery({
-    wallets: wallets,
-  });
-
-  let dinos = holders?.[0]?.mints;
-  let clay = holders?.[0]?.clay;
-  let claymakers = holders?.[0]?.claymakers;
-  let consumables = holders?.[0]?.consumables;
-
-  if (holders) {
-    for (let i = 1; i < holders.length; i++) {
-      if (holders[i] && holders?.[i]?.mints) {
-        dinos = dinos?.concat(holders?.[i]?.mints ?? []);
-        claymakers = claymakers?.concat(holders?.[i]?.claymakers ?? []);
-        clay = clay?.concat(holders?.[i]?.clay ?? []);
-        consumables = consumables?.concat(holders?.[i]?.consumables ?? []);
-      }
-    }
-  }
 
   useEffect(() => {
     const originalSpecies = dinos?.filter(
@@ -66,18 +40,18 @@ const Inventory = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoading]);
 
-  const handleSort = (attribute: string) => {
-    if (attribute === "rarity") {
-      setOriginalSpecies(sortByRarity(originalSpecies));
-      setSagaSpecies(sortByRarity(sagaSpecies));
-    }
+  // const handleSort = (attribute: string) => {
+  //   if (attribute === "rarity") {
+  //     setOriginalSpecies(sortByRarity(originalSpecies));
+  //     setSagaSpecies(sortByRarity(sagaSpecies));
+  //   }
 
-    const originalSorted = sortByAttribute([...originalSpecies], attribute);
-    setOriginalSpecies(originalSorted);
+  //   const originalSorted = sortByAttribute([...originalSpecies], attribute);
+  //   setOriginalSpecies(originalSorted);
 
-    const sagaSorted = sortByAttribute([...sagaSpecies], attribute);
-    setSagaSpecies(sagaSorted);
-  };
+  //   const sagaSorted = sortByAttribute([...sagaSpecies], attribute);
+  //   setSagaSpecies(sagaSorted);
+  // };
 
   const playerInformation = useGame((state) => state.playerInformation);
 
