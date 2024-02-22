@@ -52,7 +52,7 @@ export default function Memes() {
       return;
     }
 
-    if (dinos && dinos.length === 0) {
+    if (!dinos || dinos.length === 0) {
       toast({
         title: "Sorry, you need to own a Clayno to vote. 😔",
       });
