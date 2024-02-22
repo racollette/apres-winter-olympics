@@ -9,7 +9,7 @@ import {
   type Wallet,
 } from "@prisma/client";
 import Image from "next/image";
-import { truncateAccount } from "~/utils/addresses";
+import { shortAccount, truncateAccount } from "~/utils/addresses";
 import { extractProfileFromUser } from "~/utils/wallet";
 import { handleUserPFPDoesNotExist } from "~/utils/images";
 
@@ -29,15 +29,17 @@ type EventResultsProps = {
 
 export const EventResults = ({ event }: EventResultsProps) => {
   return (
-    <div className="flex flex-col items-center justify-center gap-4 rounded-lg bg-blue-950 p-3 font-clayno text-sm md:p-6">
+    <div className="flex flex-col items-center justify-center gap-4 overflow-x-scroll rounded-lg bg-blue-950 p-3 font-clayno text-xs md:overflow-auto md:p-6 md:text-sm">
       <div className="text-xl font-extrabold">{event.name}</div>
-      <table className="w-full table-auto border-separate border-spacing-2">
+      <table className="table-auto border-separate border-spacing-1 md:border-spacing-2">
         <thead>
           <tr>
-            <th className="px-2 py-1 text-left md:px-4 md:py-2">Rank</th>
+            <th className="hidden px-2 py-1 text-left md:block md:px-4 md:py-2">
+              Rank
+            </th>
             <th className="px-2 py-1 text-left md:px-4 md:py-2">Player</th>
             <th className="px-2 py-1 text-left md:px-4 md:py-2">Clayno</th>
-            <th className="px-2 py-1 text-left md:px-4 md:py-2">
+            <th className="whitespace-nowrap px-2 py-1 text-left md:px-4 md:py-2">
               {event.scoringType}
             </th>
           </tr>
@@ -49,11 +51,12 @@ export const EventResults = ({ event }: EventResultsProps) => {
             );
             return (
               <tr key={result.id}>
-                <td className="px-2 md:px-4">
+                <td className="hidden px-2 md:block md:px-4">
                   <div className="max-w-xs">{idx + 1}</div>
                 </td>
                 <td className="px-2 md:px-4">
                   <div className="flex items-center gap-2 ">
+                    <div className="block max-w-xs md:hidden">{idx + 1}</div>
                     <div className="relative h-6 w-6 md:h-10 md:w-10">
                       <Image
                         src={
@@ -66,8 +69,7 @@ export const EventResults = ({ event }: EventResultsProps) => {
                         onError={handleUserPFPDoesNotExist}
                       />
                     </div>
-                    <div className="max-w-xs">
-                      {" "}
+                    <div className="max-w-[75px] overflow-clip md:max-w-sm">
                       {userHandle
                         ? userHandle
                         : truncateAccount(result.user.defaultAddress)}
