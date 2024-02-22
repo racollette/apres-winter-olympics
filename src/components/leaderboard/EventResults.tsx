@@ -34,9 +34,7 @@ export const EventResults = ({ event }: EventResultsProps) => {
       <table className="table-auto border-separate border-spacing-1 md:border-spacing-2">
         <thead>
           <tr>
-            <th className="hidden px-2 py-1 text-left md:block md:px-4 md:py-2">
-              Rank
-            </th>
+            <th className="items-center justify-center px-2 py-1 text-right md:px-4 md:py-2"></th>
             <th className="px-2 py-1 text-left md:px-4 md:py-2">Player</th>
             <th className="px-2 py-1 text-left md:px-4 md:py-2">Clayno</th>
             <th className="whitespace-nowrap px-2 py-1 text-left md:px-4 md:py-2">
@@ -50,13 +48,12 @@ export const EventResults = ({ event }: EventResultsProps) => {
               result.user
             );
             return (
-              <tr key={result.id}>
-                <td className="hidden px-2 md:block md:px-4">
-                  <div className="max-w-xs">{idx + 1}</div>
+              <tr key={result.id} className="align-middle">
+                <td className="pl-2 md:pl-4">
+                  <div className="text-right">{idx + 1}</div>
                 </td>
                 <td className="px-2 md:px-4">
                   <div className="flex items-center gap-2 ">
-                    <div className="block max-w-xs md:hidden">{idx + 1}</div>
                     <div className="relative h-6 w-6 md:h-10 md:w-10">
                       <Image
                         src={
