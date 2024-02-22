@@ -21,7 +21,7 @@ export const memeRouter = createTRPCRouter({
           userId: input.userId,
         },
         select: {
-          id: true,
+          userId: true,
           votesCast: true,
           votes: {
             select: {

@@ -397,8 +397,7 @@ model Result {
 }
 
 model MemeVoter {
-  id         Int    @id @default(autoincrement())
-  userId     String @unique
+  userId     String @id @unique
   votesCast  Int
   totalVotes Int
   votes      Meme[]
