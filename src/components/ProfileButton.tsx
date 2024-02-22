@@ -3,6 +3,7 @@ import { HiCog, HiLogout, HiViewGrid, HiUser } from "react-icons/hi";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { handleUserPFPDoesNotExist } from "~/utils/images";
+import { shortAccount } from "~/utils/addresses";
 
 type ProfileButtonProps = {
   imageURL: string;
@@ -13,7 +14,7 @@ type ProfileButtonProps = {
 
 export default function ProfileButton(props: ProfileButtonProps) {
   const { imageURL, username, handleSignout, sessionKey } = props;
-  const router = useRouter();
+  const displayName = username?.length > 30 ? shortAccount(username) : username;
 
   return (
     <Dropdown
@@ -28,7 +29,9 @@ export default function ProfileButton(props: ProfileButtonProps) {
             height={20}
             onError={handleUserPFPDoesNotExist}
           />
-          <div className="hidden font-clayno text-sm md:block">{username}</div>
+          <div className="hidden font-clayno text-sm md:block">
+            {displayName}
+          </div>
         </div>
       }
     >
