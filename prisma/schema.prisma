@@ -117,9 +117,11 @@ model User {
   telegram       Telegram?
   wallets        Wallet[]
   collages       Collage[]
+  memes          Meme[]
   AudioFile      AudioFile[]
-  Voter          Voter?
   results        Result[]
+  Voter          Voter?
+  MemeVoter      MemeVoter?
 }
 
 model Discord {
@@ -392,4 +394,24 @@ model Result {
   @@index([eventId])
   @@index([userId])
   @@index([dinoId])
+}
+
+model MemeVoter {
+  id         Int    @id @default(autoincrement())
+  userId     String @unique
+  votesCast  Int
+  totalVotes Int
+  votes      Meme[]
+  user       User   @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+}
+
+model Meme {
+  id     String      @id @default(cuid())
+  url    String
+  userId String      @unique
+  title  String?
+  votes  MemeVoter[]
+  user   User        @relation(fields: [userId], references: [id])
 }
