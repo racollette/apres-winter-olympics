@@ -1,5 +1,6 @@
 import { useWalletModal } from "@solana/wallet-adapter-react-ui";
 import Image from "next/image";
+import Link from "next/link";
 import {
   Button,
   type CustomFlowbiteTheme,
@@ -145,15 +146,13 @@ export default function LoginModal({
 
   useEffect(() => {
     if (attemptedLogin) {
-      if (signedIn && !user) {
-        setTimeout(() => {
-          if (signedIn && !user) {
-            toast({
-              title: "No Clayno.club account found! Please create one first.",
-            });
-          }
-        }, 2000);
-      }
+      setTimeout(() => {
+        if (signedIn && !user) {
+          toast({
+            title: "No Clayno.club account found! Please create one first.",
+          });
+        }
+      }, 2000);
       setAttemptedLogin(false);
     } else if (redirect) {
       // wait 1 second
@@ -304,18 +303,25 @@ export default function LoginModal({
             <div className="bg-neutral-900 text-white">
               <div className="flex flex-col gap-4">
                 <div className="text-lg font-extrabold ">
-                  Log in with your Clayno.club Account
+                  Log in with your{" "}
+                  <Link
+                    href="https://clayno.club"
+                    target="_blank"
+                    className="text-sky-500"
+                  >
+                    Clayno.club
+                  </Link>{" "}
+                  account
                 </div>
 
-                <div className="grid grid-cols-2 justify-start gap-4 md:flex md:flex-row">
-                  <div>
-                    <WalletMultiButtonDynamic
-                      style={{
-                        backgroundColor: "#0369a1",
-                        borderRadius: "8px",
-                      }}
-                    />
-                  </div>
+                <div className="grid grid-cols-1 justify-start gap-4 md:flex md:grid-cols-2 md:flex-row">
+                  <WalletMultiButtonDynamic
+                    className="flex w-full justify-center md:w-fit"
+                    style={{
+                      backgroundColor: "#0369a1",
+                      borderRadius: "8px",
+                    }}
+                  />
                   <button
                     className="rounded-lg bg-neutral-800 px-4 py-3 text-white"
                     onClick={() => {
