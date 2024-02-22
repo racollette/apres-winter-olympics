@@ -74,7 +74,7 @@ export default function Home() {
                     location: "Submissions",
                     url: "https://x.com/ApresMountLodge",
                   },
-                  { location: "Voting", url: "https://x.com/ApresMountLodge" },
+                  { location: "Voting", url: "/memes" },
                 ]}
               ></EventListing>
               <EventListing
