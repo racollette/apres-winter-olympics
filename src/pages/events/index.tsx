@@ -12,10 +12,10 @@ export default function Home() {
       />
       <Header />
       <main className="text-white">
-        <div className="flex flex-col items-center justify-center gap-12 p-4 pb-16">
-          <div className="flex w-3/4 flex-col items-center justify-center gap-2 rounded-xl bg-blue-950 p-4">
+        <div className="flex flex-col items-center justify-center gap-12 p-2 pb-16 md:p-4">
+          <div className="flex w-full flex-col items-center justify-center gap-2 rounded-xl bg-blue-950 p-4 md:w-3/4">
             <h1 className="p-4 font-clayno text-4xl">Event Directory</h1>
-            <div className="flex flex-col items-center justify-center gap-4">
+            <div className="flex w-full flex-col items-center justify-center gap-2 md:gap-4 lg:w-3/4">
               <EventListing
                 number={1}
                 name="Apres Ski Games"
@@ -23,44 +23,47 @@ export default function Home() {
                 endDate="Friday March 1st"
                 description="Compete in a variety of mini-games with your clayno!"
               >
-                <div className="mt-4 flex w-full flex-row items-center justify-between gap-2">
+                <div className="mt-4 grid w-full grid-cols-1 items-center justify-between gap-4 md:grid-cols-3">
                   <Link
                     href="/events/select?event=slalom"
-                    className="relative flex aspect-square cursor-pointer flex-col items-center justify-center gap-2 rounded-lg bg-purple-950 p-2 hover:scale-105 hover:bg-cyan-500"
+                    className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg bg-purple-950 p-2 hover:scale-105 hover:bg-cyan-500"
                   >
-                    <Image
-                      src="/images/slalom.png"
-                      alt="Time Trial"
-                      width={200}
-                      height={200}
-                      className="aspect-square rounded-md"
-                    />
+                    <div className="relative aspect-square w-full">
+                      <Image
+                        src="/images/slalom.png"
+                        alt="Time Trial"
+                        fill
+                        className="rounded-md"
+                      />
+                    </div>
                     <p className="font-bold">Time Trial</p>
                   </Link>
                   <Link
                     href="/events/select?event=drop"
-                    className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg bg-purple-950 p-2 hover:scale-105 hover:bg-cyan-500"
+                    className="flex w-full cursor-pointer flex-col items-center justify-center gap-2 rounded-lg bg-purple-950 p-2 hover:scale-105 hover:bg-cyan-500"
                   >
-                    <Image
-                      src="/images/drop.png"
-                      alt="Taxi Training"
-                      width={200}
-                      height={200}
-                      className="aspect-square rounded-md"
-                    />
+                    <div className="relative aspect-square w-full">
+                      <Image
+                        src="/images/drop.png"
+                        alt="Taxi Training"
+                        fill
+                        className="rounded-md"
+                      />
+                    </div>
                     <p className="font-bold">Taxi Training</p>
                   </Link>
                   <Link
                     href="/events/select?event=delivery"
                     className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg bg-purple-950 p-2 hover:scale-105 hover:bg-cyan-500"
                   >
-                    <Image
-                      src="/images/delivery.png"
-                      alt="Delivery"
-                      width={200}
-                      height={200}
-                      className="aspect-square rounded-md"
-                    />
+                    <div className="relative aspect-square w-full">
+                      <Image
+                        src="/images/delivery.png"
+                        alt="Delivery"
+                        fill
+                        className="rounded-md"
+                      />
+                    </div>
                     <p className="font-bold">Delivery</p>
                   </Link>
                 </div>
@@ -140,16 +143,16 @@ function EventListing({
   children, // Include children prop
 }: EventListingProps & { children?: React.ReactNode }) {
   return (
-    <div className="w-full rounded-lg bg-purple-900 p-4">
+    <div className="w-full rounded-lg bg-purple-900 p-2 md:p-4">
       <div className="text-center font-clayno text-2xl">
         {`#${number}:`} {name}
       </div>
-      <div className="flex flex-col items-center justify-center gap-2 px-4 pb-2">
+      <div className="flex flex-col items-center justify-center gap-2 px-2 pb-2 md:px-4">
         <div className="text-sm">
           {startDate} {endDate && `- ${endDate}`}
         </div>
         {description && (
-          <div className="text-md font-semibold">{description}</div>
+          <div className="text-md text-center font-semibold">{description}</div>
         )}
         {links && (
           <div className="flex flex-row items-center justify-center gap-4 text-sm font-semibold">

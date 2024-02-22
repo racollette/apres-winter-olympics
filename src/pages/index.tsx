@@ -19,9 +19,9 @@ export default function Home() {
       />
       <Header />
       <main className="text-white">
-        <div className="flex flex-col items-center justify-center gap-12 p-4 pb-16">
+        <div className="flex flex-col items-center justify-center gap-6 p-4 pb-16 md:gap-12">
           <section
-            className="relative flex aspect-[2/1] w-3/4 flex-col items-center justify-center gap-4 rounded-xl px-4 py-12 md:flex-row md:gap-8"
+            className="relative flex aspect-[2/1] w-full flex-col items-center justify-center gap-4 rounded-xl px-4 py-12 md:w-3/4 md:flex-row md:gap-8"
             // style={{
             //   background: `url('/images/hero_banner.jpeg')`,
             //   backgroundSize: `contain`,
@@ -33,16 +33,18 @@ export default function Home() {
               fill
               className="rounded-xl"
             ></Image>
-            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-xl bg-purple-900 p-4">
-              <h2 className="font-clayno text-4xl text-white">
+            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-xl bg-purple-900 p-2 md:p-4">
+              <h2 className="text-md whitespace-nowrap font-clayno text-white md:text-4xl">
                 Apres Winter Olympics
               </h2>
             </div>
           </section>
           <section className="w-full md:w-3/4">
-            <div className="flex w-full flex-col items-center gap-2 rounded-xl bg-purple-950 p-4">
-              <h2 className="text-2xl font-extrabold">How to participate?</h2>
-              <ul className="text-md flex flex-col gap-2 font-semibold">
+            <div className="flex w-full flex-col items-center gap-2 rounded-xl bg-purple-950 p-2 md:p-4">
+              <h2 className="text-lg font-extrabold md:text-2xl">
+                How to participate?
+              </h2>
+              <ul className="md:text-md flex flex-col gap-2 text-sm">
                 <li>1. Hold a Claynosaurz or Clayno Saga NFT.</li>
                 <li>
                   {`2. If you haven't already`}, create an account on{" "}
@@ -53,10 +55,10 @@ export default function Home() {
                   >
                     Clayno.club
                   </a>{" "}
-                  and link your Solana wallet.
+                  using your Solana wallet and link your X account.
                 </li>
                 <li>
-                  3. Sign in using your{" "}
+                  3. Sign in here using your{" "}
                   <a
                     href="https://clayno.club"
                     target="_blank"
@@ -64,34 +66,36 @@ export default function Home() {
                   >
                     Clayno.club
                   </a>{" "}
-                  credentials and select your Claynosaurz.
+                  credentials.
                 </li>
                 <li>
-                  4. Compete in events for a chance to make it onto the podium!
+                  4. Visit the events page to compete in events for a chance to
+                  make it onto the podium!
                 </li>
               </ul>
             </div>
           </section>
-          <section className="flex w-1/2 cursor-pointer justify-center md:w-1/2">
+          <section className="flex w-full justify-center">
             <Link
               href="/events"
-              className="flex flex-col items-center gap-4 rounded-xl bg-sky-400 p-6 font-clayno text-4xl hover:animate-wiggle"
+              className="flex w-full cursor-pointer flex-col items-center gap-4 rounded-xl bg-sky-400 p-6 font-clayno text-4xl hover:animate-wiggle md:w-fit "
             >
-              <Image
-                src="/images/start.jpeg"
-                width="300"
-                height="300"
-                alt="2024 Winter Olympics"
-                className="rounded-lg hover:scale-105"
-              />
+              <div className="relative aspect-square w-full md:w-[400px]">
+                <Image
+                  src="/images/start.jpeg"
+                  fill
+                  alt="2024 Winter Olympics"
+                  className="rounded-lg hover:scale-105"
+                />
+              </div>
               <div> {`Let's go`}</div>
             </Link>
           </section>
-          <section className="flex w-full flex-col items-center justify-center rounded-xl bg-blue-950 p-4 pb-12 md:w-3/4">
-            <div className="py-4 font-clayno text-2xl text-white">
+          <section className="flex w-full flex-col items-center justify-center rounded-xl bg-blue-950 p-4 md:w-3/4">
+            <div className="py-2 font-clayno text-xl text-white md:text-2xl">
               Hosted by
             </div>
-            <div className="flex w-full flex-row items-center justify-center gap-8">
+            <div className="grid w-full grid-cols-1 items-center justify-center gap-4 p-4 lg:grid-cols-2 lg:gap-2">
               <Link
                 href="https://x.com/ApresMountLodge"
                 target="_blank"
@@ -108,7 +112,7 @@ export default function Home() {
               <Link
                 href="https://clayno.club"
                 target="_blank"
-                className="relative aspect-[3/1] w-[600px] overflow-hidden hover:scale-105"
+                className="relative aspect-[3/1] w-full overflow-hidden hover:scale-105"
               >
                 <Image
                   src="/images/claynoclub_banner.jpeg"
@@ -116,7 +120,7 @@ export default function Home() {
                   fill
                   className="rounded-xl"
                 ></Image>
-                <div className="absolute left-5 top-5 rounded-lg bg-blue-950 px-4 py-2 font-clayno text-2xl text-white">
+                <div className="absolute left-5 top-5 rounded-lg bg-blue-950/75 p-1 font-clayno text-lg text-white md:px-4 md:py-2 md:text-2xl">
                   Clayno.club
                 </div>
               </Link>
