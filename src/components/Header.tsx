@@ -5,7 +5,6 @@ import Image from "next/image";
 
 export default function Header() {
   const router = useRouter();
-  const isHerdsPage = router.pathname === "/herds";
 
   return (
     <Navbar className="bg-purple-900 text-white" fluid>
@@ -31,7 +30,6 @@ export default function Header() {
         </span>
       </Navbar.Brand>
       <div className="flex gap-2 md:order-2">
-        {/* <VoterInfo /> */}
         <LoginModal />
         <Navbar.Toggle className="bg-transparent text-white hover:bg-transparent focus:ring-zinc-500" />
       </div>

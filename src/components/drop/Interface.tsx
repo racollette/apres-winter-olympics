@@ -5,10 +5,17 @@ import { addEffect } from "@react-three/fiber";
 import { api } from "~/utils/api";
 import Link from "next/link";
 import { Controls } from "../Controls";
+import { OLYMPICS_ENDED } from "~/utils/constants";
 
-export default function Interface({ species, mood, number }: { species: string;
+export default function Interface({
+  species,
+  mood,
+  number,
+}: {
+  species: string;
   mood: string;
-  number: string;}) {
+  number: string;
+}) {
   const [playing, setPlaying] = useState(true);
 
   const restart = useGame((state) => state.restart);
@@ -32,7 +39,7 @@ export default function Interface({ species, mood, number }: { species: string;
       const state = useGame.getState();
 
       if (state.phase === "playing") {
-        setPlaying(true)
+        setPlaying(true);
       } else if (state.phase === "ended") {
         if (playing) {
           setScore(state.distanceFromCenter);
@@ -47,6 +54,7 @@ export default function Interface({ species, mood, number }: { species: string;
   }, [playing]);
 
   useEffect(() => {
+    if (OLYMPICS_ENDED) return;
     if (phase === "ended" && userId && dino?.mint && score) {
       recordResult.mutate({
         eventId: 2,
@@ -58,8 +66,8 @@ export default function Interface({ species, mood, number }: { species: string;
   }, [score]);
 
   useEffect(() => {
-restart()
-  }, [])
+    restart();
+  }, []);
 
   return (
     <div className="pointer-events-none fixed left-0 top-0 h-screen w-screen font-clayno">

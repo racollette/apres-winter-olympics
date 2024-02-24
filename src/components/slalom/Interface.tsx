@@ -4,8 +4,13 @@ import { useEffect, useRef, useState } from "react";
 import { addEffect } from "@react-three/fiber";
 import { api } from "~/utils/api";
 import Link from "next/link";
+import { OLYMPICS_ENDED } from "~/utils/constants";
 
-export default function Interface({ species, mood, number }: { 
+export default function Interface({
+  species,
+  mood,
+  number,
+}: {
   species: string;
   mood: string;
   number: string;
@@ -59,6 +64,7 @@ export default function Interface({ species, mood, number }: {
   }, [playing]);
 
   useEffect(() => {
+    if (OLYMPICS_ENDED) return;
     if (phase === "ended" && userId && dino?.mint && score) {
       recordResult.mutate({
         eventId: 1,
@@ -71,7 +77,7 @@ export default function Interface({ species, mood, number }: {
 
   useEffect(() => {
     restart();
-  }, [])
+  }, []);
 
   return (
     <div className="pointer-events-none fixed left-0 top-0 h-screen w-screen font-clayno">

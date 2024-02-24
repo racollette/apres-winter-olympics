@@ -103,7 +103,8 @@ export default function Podium() {
               Podium
             </h1>
             <p className="text-sm italic">
-              The podium is updated following the completion of each event.
+              The podium is updated in real time for the mini-games, and when
+              the results are in for the other events.
             </p>
             <div className="flex h-[300px] w-full flex-col items-center justify-center gap-4 rounded-lg bg-purple-900 p-2 md:h-[600px] md:w-3/4 md:p-6">
               <Canvas className="cursor-grab rounded-lg">

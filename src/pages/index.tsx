@@ -45,7 +45,7 @@ export default function Home() {
                 How to participate?
               </h2>
               <ul className="md:text-md flex flex-col gap-2 text-sm">
-                <li>1. Hold a Claynosaurz or Clayno Saga NFT.</li>
+                <li>1. Hold a Claynosaurz or Call of Saga NFT.</li>
                 <li>
                   {`2. If you haven't already`}, create an account on{" "}
                   <a
@@ -69,8 +69,8 @@ export default function Home() {
                   credentials.
                 </li>
                 <li>
-                  4. Visit the events page to compete in events for a chance to
-                  make it onto the podium!
+                  4. Visit the events page to compete for a chance to make it
+                  onto the podium!
                 </li>
               </ul>
             </div>

@@ -4,6 +4,7 @@ import { use, useEffect, useRef, useState } from "react";
 import { addEffect } from "@react-three/fiber";
 import { api } from "~/utils/api";
 import Link from "next/link";
+import { OLYMPICS_ENDED } from "~/utils/constants";
 
 export default function Interface() {
   const time = useRef<HTMLDivElement | null>(null);
@@ -53,6 +54,7 @@ export default function Interface() {
   }, []);
 
   useEffect(() => {
+    if (OLYMPICS_ENDED) return;
     if (phase === "ended" && userId && dino?.mint && score) {
       recordResult.mutate({
         eventId: 1,

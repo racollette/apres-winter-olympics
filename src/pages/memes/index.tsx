@@ -8,6 +8,7 @@ import { useState } from "react";
 import { useToast } from "~/@/components/ui/use-toast";
 import { useSession } from "next-auth/react";
 import { useItems } from "~/hooks/useItems";
+import { OLYMPICS_ENDED } from "~/utils/constants";
 
 export default function Memes() {
   const { toast } = useToast();
@@ -42,6 +43,13 @@ export default function Memes() {
 
   const handleCastVote = (memeId: string) => {
     if (castVoteLoading || removeVoteLoading) {
+      return;
+    }
+
+    if (OLYMPICS_ENDED) {
+      toast({
+        title: "Voting has ended!",
+      });
       return;
     }
 
@@ -110,6 +118,13 @@ export default function Memes() {
 
   const handleRemoveVote = (memeId: string) => {
     if (castVoteLoading || removeVoteLoading) {
+      return;
+    }
+
+    if (OLYMPICS_ENDED) {
+      toast({
+        title: "Voting has ended!",
+      });
       return;
     }
 

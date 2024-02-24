@@ -73,7 +73,7 @@ export default function Select() {
                 />
               </div>
             </div>
-            <div className="hidden md:block">
+            <div className="hidden w-full md:block">
               {user ? (
                 <div className="flex flex-col items-center justify-center gap-2 p-4">
                   <div className="font-clayno text-3xl">
@@ -107,7 +107,7 @@ export default function Select() {
                     Sign in to begin!
                   </div>
                   <div className="flex w-full flex-row justify-center gap-2">
-                    <div className="relative aspect-[1/1] w-1/2 md:w-1/4">
+                    <div className="relative aspect-square w-1/2 md:w-1/4">
                       <Image
                         src="/images/lodge.jpeg"
                         alt="The Lodge"
@@ -115,7 +115,7 @@ export default function Select() {
                         className="rounded-lg"
                       />
                     </div>
-                    <div className="relative w-1/2 md:w-1/4">
+                    <div className="relative aspect-square w-1/2 md:w-1/4">
                       <Image
                         src="/images/relax.jpeg"
                         alt="Apres Ski"

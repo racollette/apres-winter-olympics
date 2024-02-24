@@ -5,8 +5,10 @@ import { addEffect } from "@react-three/fiber";
 import { api } from "~/utils/api";
 import Link from "next/link";
 import { Controls } from "../Controls";
+import { OLYMPICS_ENDED } from "~/utils/constants";
 
 export default function Interface() {
+  console.log(OLYMPICS_ENDED);
   const time = useRef<HTMLDivElement | null>(null);
   // const gatesActivated = useRef();
   const [gatesActivated, setGatesActivated] = useState(0);
@@ -47,6 +49,7 @@ export default function Interface() {
   }, [playing]);
 
   useEffect(() => {
+    if (OLYMPICS_ENDED) return;
     if (phase === "ended" && userId && dino?.mint && score) {
       recordResult.mutate({
         eventId: 1,
