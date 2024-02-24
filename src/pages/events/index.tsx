@@ -17,11 +17,25 @@ export default function Home() {
             <h1 className="p-4 font-clayno text-4xl">Event Directory</h1>
             <div className="flex w-full flex-col items-center justify-center gap-2 md:gap-4 lg:w-3/4">
               <EventListing
+                name="Overall"
+                description="Each event contributes points to the overall competition leaderboard. The top 3 will make the podium!"
+                prizes={[
+                  "🥇 Gold: 1 Saga Clayno, 1 Claymaker, 4 Clay",
+                  "🥈 Silver: 5 SOL, 3 Claymakers, 3 Clay",
+                  "🥉 Bronze: 2 SOL, 2 Claymakers, 2 Clay",
+                ]}
+                links={[
+                  { location: "Leaderboards", url: "/leaderboard" },
+                  { location: "Podium", url: "/pdoium" },
+                ]}
+              ></EventListing>
+              <EventListing
                 number={1}
                 name="Apres Ski Games"
                 startDate="Monday Feb. 26th"
                 endDate="Friday March 1st"
                 description="Compete in a variety of mini-games with your clayno!"
+                prizes={["Top scorer: 1 Claymaker, 2 Clay for each event"]}
               >
                 <div className="mt-4 grid w-full grid-cols-1 items-center justify-between gap-4 md:grid-cols-3">
                   <Link
@@ -79,6 +93,7 @@ export default function Home() {
                   },
                   { location: "Voting", url: "/memes" },
                 ]}
+                prizes={["Top scorer: 2 Clay"]}
               ></EventListing>
               <EventListing
                 number={3}
@@ -87,6 +102,7 @@ export default function Home() {
                 links={[
                   { location: "Guesses", url: "https://x.com/ApresMountLodge" },
                 ]}
+                prizes={["Top scorer: 2 Clay"]}
               ></EventListing>
               <EventListing
                 number={4}
@@ -98,6 +114,7 @@ export default function Home() {
                     url: "https://x.com/ApresMountLodge",
                   },
                 ]}
+                prizes={["Top scorer: 2 Clay"]}
               ></EventListing>
               <EventListing
                 number={5}
@@ -109,6 +126,7 @@ export default function Home() {
                     url: "https://x.com/ApresMountLodge",
                   },
                 ]}
+                prizes={["Top scorer: 2 Clay"]}
               ></EventListing>
             </div>
           </div>
@@ -125,12 +143,13 @@ type Link = {
 };
 
 type EventListingProps = {
-  number: number;
+  number?: number;
   name: string;
   startDate?: string;
   endDate?: string;
   description?: string;
   links?: Link[];
+  prizes?: string[];
 };
 
 function EventListing({
@@ -140,19 +159,20 @@ function EventListing({
   endDate,
   description,
   links,
+  prizes,
   children, // Include children prop
 }: EventListingProps & { children?: React.ReactNode }) {
   return (
     <div className="w-full rounded-lg bg-purple-900 p-2 md:p-4">
-      <div className="text-center font-clayno text-2xl">
-        {`#${number}:`} {name}
+      <div className="text-center font-clayno text-lg md:text-2xl">
+        {number && `#${number}:`} {name}
       </div>
       <div className="flex flex-col items-center justify-center gap-2 px-2 pb-2 md:px-4">
         <div className="text-sm">
           {startDate} {endDate && `- ${endDate}`}
         </div>
         {description && (
-          <div className="text-md text-center font-semibold">{description}</div>
+          <div className="text-md text-center">{description}</div>
         )}
         {links && (
           <div className="flex flex-row items-center justify-center gap-4 text-sm font-semibold">
@@ -169,6 +189,19 @@ function EventListing({
               >
                 {link.location}
               </a>
+            ))}
+          </div>
+        )}
+        {prizes && (
+          <div className="flex flex-col items-center justify-center gap-1">
+            <h1 className="font-clayno font-bold">Prizes</h1>
+            {prizes.map((prize, idx) => (
+              <div
+                key={idx}
+                className="md:text-md text-center text-sm font-semibold"
+              >
+                {prize}
+              </div>
             ))}
           </div>
         )}
