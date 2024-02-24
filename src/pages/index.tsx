@@ -6,6 +6,8 @@ import { extractProfileFromUser } from "~/utils/wallet";
 import LoginModal from "~/components/LoginModal";
 import Inventory from "~/components/inventory/Inventory";
 import Header from "~/components/Header";
+import { endDate } from "~/utils/constants";
+import TimeRemaining from "~/components/TimeRemaining";
 
 export default function Home() {
   const { user } = useUser();
@@ -75,12 +77,21 @@ export default function Home() {
               </ul>
             </div>
           </section>
+
           <section className="flex w-full justify-center">
             <Link
               href="/events"
-              className="flex w-full cursor-pointer flex-col items-center gap-4 rounded-xl bg-sky-400 p-6 font-clayno text-4xl hover:animate-wiggle md:w-fit "
+              className="flex w-full cursor-pointer flex-col items-center gap-4 rounded-xl bg-sky-400 p-6 font-clayno text-4xl hover:animate-wiggle md:w-fit"
             >
-              <div className="relative aspect-square w-full md:w-[400px]">
+              <div className="flex  flex-col items-center justify-center gap-2">
+                <h2 className="text-lg font-semibold">
+                  Apres Winter Games ending in
+                </h2>
+                <div className="animate-pulse font-clayno text-2xl font-extrabold">
+                  <TimeRemaining endDate={endDate} />
+                </div>
+              </div>
+              <div className="relative aspect-square w-full md:w-[450px]">
                 <Image
                   src="/images/start.jpeg"
                   fill
