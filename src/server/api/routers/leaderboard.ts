@@ -25,7 +25,11 @@ export const leaderboardRouter = createTRPCRouter({
                   wallets: true,
                 },
               },
-              dino: true,
+              dino: {
+                include: {
+                  attributes: true,
+                },
+              },
             },
             orderBy: {
               score: "asc",
