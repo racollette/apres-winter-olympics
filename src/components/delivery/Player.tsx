@@ -56,7 +56,7 @@ const Player = ({
   );
   const [smoothedCameraTarget] = useState(() => new THREE.Vector3());
 
-  const jumpStrength = 37;
+  const jumpStrength = 45;
   const cameraHeight = species === "bronto" ? 4 : 2;
 
   useFrame((state, delta) => {
@@ -69,7 +69,7 @@ const Player = ({
     const torque = { x: 0, y: 0, z: 0 };
 
     const impulseStrength = 50 * delta;
-    const torqueStrength = 22 * delta;
+    const torqueStrength = 20 * delta;
 
     // console.log(delta);
 
@@ -188,8 +188,8 @@ const Player = ({
       smoothedCameraPosition.lerp(cameraPosition, 3 * delta);
       smoothedCameraTarget.lerp(cameraTarget, 5 * delta);
 
-      // state.camera.position.copy(smoothedCameraPosition);
-      // state.camera.lookAt(smoothedCameraTarget);
+      state.camera.position.copy(smoothedCameraPosition);
+      state.camera.lookAt(smoothedCameraTarget);
 
       if (bodyPosition.z > 15 || bodyPosition.z < -460) {
         reset();
@@ -215,7 +215,7 @@ const Player = ({
   };
 
   const reset = () => {
-    body.current?.setTranslation({ x: 0, y: 1, z: 0 }, false);
+    body.current?.setTranslation({ x: 0, y: 3, z: -70 }, false);
     body.current?.setLinvel({ x: 0, y: 0, z: 0 }, false);
     body.current?.setAngvel({ x: 0, y: 0, z: 0 }, false);
     body.current?.setRotation({ x: 0, y: 0, z: 0, w: 1 }, false);
@@ -259,7 +259,7 @@ const Player = ({
         friction={0.5}
         linearDamping={0.5}
         angularDamping={0.5}
-        position={[0, 170, -180]}
+        position={[0, 3, -70]}
       >
         <group castShadow>
           <Model
