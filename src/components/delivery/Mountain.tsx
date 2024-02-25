@@ -507,6 +507,7 @@ const Ankylo = forwardRef<RapierRigidBody>((props, ref) => {
     </RigidBody>
   );
 });
+Ankylo.displayName = "Ankylo";
 
 const Bronto = forwardRef<RapierRigidBody>((props, ref) => {
   return (
@@ -532,3 +533,4 @@ const Bronto = forwardRef<RapierRigidBody>((props, ref) => {
     </RigidBody>
   );
 });
+Bronto.displayName = "Bronto";
