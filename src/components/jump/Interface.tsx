@@ -39,9 +39,7 @@ export default function Interface() {
       } else if (state.phase === "ended") {
         setGatesActivated(state.gatesActivated);
         elapsedTime = (state.endTime - state.startTime) / 1000;
-        console.log(state.gatesActivated);
         const score = elapsedTime + (totalGates - state.gatesActivated) * 5;
-        console.log(score);
         setScore(score);
       }
 

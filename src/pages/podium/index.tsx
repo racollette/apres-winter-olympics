@@ -87,8 +87,6 @@ export default function Podium() {
     handle: extractProfileFromUser(overallLeaderboard[2]?.user).userHandle,
   };
 
-  console.log(goldMedal, silverMedal, bronzeMedal);
-
   return (
     <>
       <Metatags

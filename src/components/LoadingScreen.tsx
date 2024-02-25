@@ -13,12 +13,12 @@ export const LoadingScreen = ({
   const [showExperience, setShowExperience] = useState(false);
 
   const { active, progress, errors, item, loaded, total } = useProgress();
-  console.log("active", active);
-  console.log("progress", progress);
-  console.log("errors", errors);
-  console.log("item", item);
-  console.log("loaded", loaded);
-  console.log("total", total);
+  // console.log("active", active);
+  // console.log("progress", progress);
+  // console.log("errors", errors);
+  // console.log("item", item);
+  // console.log("loaded", loaded);
+  // console.log("total", total);
 
   const loadingProgress = (loaded / totalFiles) * 100;
 

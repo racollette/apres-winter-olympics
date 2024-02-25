@@ -16,11 +16,9 @@ const Medalist = ({ player, medal }: MedalistProps) => {
 
   let dinoNumber = number;
   let modelString = model;
-  if (
-    model.includes("para") ||
-    model.includes("spino") ||
-    model.includes("dactyl")
-  ) {
+
+  console.log(player);
+  if (model.includes("para") || model.includes("spino")) {
     modelString = "rex-idle-excited";
     dinoNumber = "5630";
   }

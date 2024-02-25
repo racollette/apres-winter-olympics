@@ -143,7 +143,6 @@ export default function Model({
 
   useEffect(() => {
     if (textureParamsShaderA && textureShaderA.current) {
-      console.log("applyTexture A");
       applyTexture(textureShaderA.current, "Shader_A");
     }
     if (textureParamsShaderB && textureShaderB.current) {

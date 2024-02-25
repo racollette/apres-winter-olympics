@@ -40,13 +40,10 @@ const GATE_POSITIONS = [
   [0, 0, -420],
 ];
 
-console.log(GATE_POSITIONS);
-
 const SkiSlope = () => {
   const slopeRef = useRef<THREE.Mesh | null>(null);
 
   const phase = useGame((state) => state.phase);
-  console.log(phase);
   // useFrame((state, delta) => {
   //   // You can add animation logic here if needed
   // });
