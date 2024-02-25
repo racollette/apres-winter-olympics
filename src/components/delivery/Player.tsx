@@ -92,7 +92,6 @@ const Player = ({
       }
 
       if (rightward) {
-        console.log("right");
         torque.y -= torqueStrength;
       }
 
@@ -103,7 +102,6 @@ const Player = ({
       }
 
       if (leftward) {
-        console.log("left");
         torque.y += torqueStrength;
       }
 
@@ -199,7 +197,6 @@ const Player = ({
   });
 
   const jump = () => {
-    console.log("jump");
     if (body.current) {
       const origin = body.current.translation();
       origin.y -= -0.01;
@@ -208,7 +205,6 @@ const Player = ({
       const hit = world.castRay(ray, 10, true);
 
       if (hit && hit.toi <= 0.01) {
-        console.log(hit.toi);
         body.current.applyImpulse({ x: 0, y: jumpStrength, z: 0 }, true);
       }
     }
@@ -285,7 +281,11 @@ const Player = ({
             rotation={[0, CrossaintPositions[species]?.rotationY, 0]}
             object={croissants.scene}
           />
-          <CuboidCollider position={[0, 0.8, 0]} args={[0.75, 0.75, 0.75]} />
+          <CuboidCollider
+            position={[0, 0.8, 0]}
+            args={[0.75, 0.75, 0.75]}
+            name="playerCollider"
+          />
         </group>
       </RigidBody>
     </>
