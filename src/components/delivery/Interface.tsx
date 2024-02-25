@@ -8,10 +8,7 @@ import { Controls } from "../Controls";
 import { OLYMPICS_ENDED } from "~/utils/constants";
 
 export default function Interface() {
-  console.log(OLYMPICS_ENDED);
   const time = useRef<HTMLDivElement | null>(null);
-  // const gatesActivated = useRef();
-  const [gatesActivated, setGatesActivated] = useState(0);
   const [playing, setPlaying] = useState(true);
 
   const restart = useGame((state) => state.restart);
@@ -32,11 +29,17 @@ export default function Interface() {
   useEffect(() => {
     const unsubscribeEffect = addEffect(() => {
       const state = useGame.getState();
-      const elapsedTime = 0;
+      let elapsedTime = 0;
 
       if (state.phase === "playing") {
+        elapsedTime = (Date.now() - state.startTime) / 1000;
+        setScore(0);
         setPlaying(true);
       } else if (state.phase === "ended") {
+        elapsedTime = (state.endTime - state.startTime) / 1000;
+        if (playing) {
+          setScore(elapsedTime);
+        }
         setPlaying(false);
       }
 
@@ -52,7 +55,7 @@ export default function Interface() {
     if (OLYMPICS_ENDED) return;
     if (phase === "ended" && userId && dino?.mint && score) {
       recordResult.mutate({
-        eventId: 1,
+        eventId: 3,
         userId,
         score: score,
         dinoId: dino?.mint ?? "",
@@ -67,9 +70,9 @@ export default function Interface() {
   return (
     <div className="pointer-events-none fixed left-0 top-0 h-screen w-screen font-clayno">
       {/* Time */}
-      {/* <div className="top-15% absolute left-0 mt-2 flex w-full flex-row justify-center gap-4 bg-black/50 py-2 text-center text-2xl text-white">
+      <div className="top-15% absolute left-0 mt-2 flex w-full flex-row justify-center gap-4 bg-black/50 py-2 text-center text-2xl text-white">
         <div ref={time}>0.00</div>
-      </div> */}
+      </div>
 
       {phase === "ready" && (
         <div className="absolute left-0 top-1/4 flex w-full flex-col items-center justify-center gap-2 bg-black/50 py-4 text-4xl text-white">
@@ -88,11 +91,8 @@ export default function Interface() {
 
       {phase === "ended" && (
         <div className="absolute left-0 top-1/4 flex w-full flex-col items-center justify-center gap-2 bg-black/50 py-4 text-4xl text-white">
-          <div className="text-xl">
-            {/* Penalty: {(totalGates - gatesActivated) * 5} seconds */}
-          </div>
           <div className="text-2xl font-extrabold">
-            {/* Score: {score.toFixed(4)} seconds */}
+            Score: {score.toFixed(4)} seconds
           </div>
         </div>
       )}
