@@ -145,27 +145,18 @@ export default function LoginModal({
   };
 
   useEffect(() => {
-    if (attemptedLogin) {
-      setTimeout(() => {
-        if (signedIn && !user) {
-          toast({
-            title: "No Clayno.club account found! Please create one first.",
-          });
-        }
-      }, 2000);
+    if (attemptedLogin || redirect) {
+      if (!signedIn) return;
+      if (isLoading) return;
+      if (user) return;
+
+      toast({
+        title: "No Clayno.club account found! Please create one first.",
+      });
       setAttemptedLogin(false);
-    } else if (redirect) {
-      // wait 1 second
-      setTimeout(() => {
-        if (signedIn && !user) {
-          toast({
-            title: "No Clayno.club account found! Please create one first.",
-          });
-        }
-      }, 2000);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [attemptedLogin, redirect]);
+  }, [attemptedLogin, redirect, isLoading]);
 
   return (
     <>
