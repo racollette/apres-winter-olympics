@@ -1,91 +1,375 @@
-import React, { use, useEffect, useRef, useState } from "react";
+import React, { forwardRef, useEffect, useRef, useState } from "react";
 import { useFrame } from "@react-three/fiber";
-import * as THREE from "three";
-import { CuboidCollider, RigidBody, RigidBodyProps } from "@react-three/rapier";
 import {
-  Box,
-  ContactShadows,
-  Html,
-  Sparkles,
-  Sphere,
-  Text,
+  CuboidCollider,
+  RapierRigidBody,
+  RigidBody,
+} from "@react-three/rapier";
+import {
+  Float,
+  RoundedBox,
   Text3D,
   useGLTF,
-  useKeyboardControls,
   useTexture,
 } from "@react-three/drei";
 import useGame from "../../stores/useGame";
-import { MeshPhysicalMaterial } from "three";
+import Model from "../Model";
 
-const ledgePositions = [
-  { x: 0, y: 0, z: -50 },
-  { x: 12, y: 4, z: -50 },
-  { x: 24, y: 8, z: -50 },
-  { x: 36, y: 12, z: -50 },
-  { x: 48, y: 16, z: -50 },
-  { x: 60, y: 20, z: -50.5 },
-  { x: 72, y: 24, z: -50.5 },
-  { x: 60, y: 28, z: -51 },
-  { x: 48, y: 32, z: -51 },
-  { x: 36, y: 36, z: -54.5 },
-  { x: 24, y: 40, z: -51.5 },
-  { x: 12, y: 44, z: -52 },
-  { x: 0, y: 48, z: -52 },
-  { x: -12, y: 52, z: -55.5 },
-  { x: -24, y: 56, z: -56.5 },
-  { x: -36, y: 60, z: -57 },
-  { x: -48, y: 64, z: -55 },
-  { x: -60, y: 68, z: -55.5 },
-  { x: -72, y: 72, z: -58 },
-  { x: -60, y: 76, z: -58 },
-  { x: -48, y: 80, z: -57 },
-  { x: -36, y: 84, z: -59 },
-  { x: -24, y: 88, z: -59 },
-  { x: -12, y: 92, z: -59 },
-  { x: 0, y: 96, z: -60 },
-  { x: 12, y: 100, z: -60 },
-  { x: 24, y: 104, z: -59 },
-  { x: 36, y: 108, z: -62 },
-  { x: 48, y: 112, z: -60 },
-  { x: 60, y: 116, z: -62 },
-  { x: 72, y: 120, z: -63 },
-  { x: 60, y: 124, z: -63 },
-  { x: 48, y: 128, z: -64 },
-  { x: 36, y: 132, z: -64 },
-  { x: 24, y: 136, z: -64 },
-  { x: 12, y: 140, z: -64 },
-  { x: 0, y: 144, z: -64 },
-  { x: -12, y: 148, z: -65 },
+const ledgeObjects = [
+  {
+    positionX: 0,
+    positionY: 0,
+    positionZ: -50,
+    sizeX: 8,
+    sizeY: 1,
+    sizeZ: 8,
+    rotX: 0,
+    rotY: 0,
+    rotZ: 0,
+    interaction: false,
+  },
+  {
+    positionX: 12,
+    positionY: 4,
+    positionZ: -50,
+    sizeX: 8,
+    sizeY: 1,
+    sizeZ: 8,
+    rotX: 0,
+    rotY: 0,
+    rotZ: 0,
+    interaction: false,
+  },
+  {
+    positionX: 24,
+    positionY: 8,
+    positionZ: -50,
+    sizeX: 8,
+    sizeY: 1,
+    sizeZ: 8,
+    rotX: 0,
+    rotY: 0,
+    rotZ: 0,
+    interaction: false,
+  },
+  {
+    positionX: 36,
+    positionY: 12,
+    positionZ: -50,
+    sizeX: 8,
+    sizeY: 1,
+    sizeZ: 8,
+    rotX: 0,
+    rotY: 0,
+    rotZ: 0,
+    interaction: false,
+  },
+  {
+    positionX: 48,
+    positionY: 16,
+    positionZ: -50,
+    sizeX: 8,
+    sizeY: 1,
+    sizeZ: 8,
+    rotX: 0,
+    rotY: 0,
+    rotZ: 0,
+    interaction: false,
+  },
+  {
+    positionX: 60,
+    positionY: 20,
+    positionZ: -50.5,
+    sizeX: 8,
+    sizeY: 1,
+    sizeZ: 8,
+    rotX: 0,
+    rotY: 0,
+    rotZ: 0,
+    interaction: false,
+  },
+  {
+    positionX: 72,
+    positionY: 24,
+    positionZ: -50.5,
+    sizeX: 8,
+    sizeY: 1,
+    sizeZ: 8,
+    rotX: 0,
+    rotY: 0,
+    rotZ: 0,
+    interaction: false,
+  },
+
+  {
+    positionX: 0,
+    positionY: 48,
+    positionZ: -54.5,
+    sizeX: 130,
+    sizeY: 1,
+    sizeZ: 16,
+    rotX: 0,
+    rotY: 0,
+    rotZ: -0.3,
+    interaction: "ankylo",
+  },
+
+  {
+    positionX: -71,
+    positionY: 72,
+    positionZ: -58,
+    sizeX: 8,
+    sizeY: 1,
+    sizeZ: 8,
+    rotX: 0,
+    rotY: 0,
+    rotZ: 0,
+    interaction: false,
+  },
+  {
+    positionX: -60,
+    positionY: 76,
+    positionZ: -58,
+    sizeX: 8,
+    sizeY: 1,
+    sizeZ: 8,
+    rotX: 0,
+    rotY: 0,
+    rotZ: 0,
+    interaction: false,
+  },
+  {
+    positionX: -48,
+    positionY: 80,
+    positionZ: -57,
+    sizeX: 8,
+    sizeY: 1,
+    sizeZ: 8,
+    rotX: 0,
+    rotY: 0,
+    rotZ: 0,
+    interaction: false,
+  },
+  {
+    positionX: -36,
+    positionY: 84,
+    positionZ: -59,
+    sizeX: 8,
+    sizeY: 1,
+    sizeZ: 8,
+    rotX: 0,
+    rotY: 0,
+    rotZ: 0,
+    interaction: false,
+  },
+  {
+    positionX: 12,
+    positionY: 100,
+    positionZ: -59,
+    sizeX: 85,
+    sizeY: 1,
+    sizeZ: 8,
+    rotX: 0,
+    rotY: 0,
+    rotZ: 0.3,
+    interaction: "bronto",
+  },
+  {
+    positionX: 60,
+    positionY: 116,
+    positionZ: -62,
+    sizeX: 8,
+    sizeY: 1,
+    sizeZ: 8,
+    rotX: 0,
+    rotY: 0,
+    rotZ: 0,
+    interaction: false,
+  },
+  {
+    positionX: 72,
+    positionY: 120,
+    positionZ: -63,
+    sizeX: 8,
+    sizeY: 1,
+    sizeZ: 8,
+    rotX: 0,
+    rotY: 0,
+    rotZ: 0,
+    interaction: false,
+  },
+  {
+    positionX: 60,
+    positionY: 124,
+    positionZ: -63,
+    sizeX: 8,
+    sizeY: 1,
+    sizeZ: 8,
+    rotX: 0,
+    rotY: 0,
+    rotZ: 0,
+    interaction: false,
+  },
+  {
+    positionX: 48,
+    positionY: 128,
+    positionZ: -64,
+    sizeX: 8,
+    sizeY: 1,
+    sizeZ: 8,
+    rotX: 0,
+    rotY: 0,
+    rotZ: 0,
+    interaction: false,
+  },
+  {
+    positionX: 36,
+    positionY: 132,
+    positionZ: -64,
+    sizeX: 8,
+    sizeY: 1,
+    sizeZ: 8,
+    rotX: 0,
+    rotY: 0,
+    rotZ: 0,
+    interaction: false,
+  },
+  {
+    positionX: 24,
+    positionY: 136,
+    positionZ: -64,
+    sizeX: 8,
+    sizeY: 1,
+    sizeZ: 8,
+    rotX: 0,
+    rotY: 0,
+    rotZ: 0,
+    interaction: false,
+  },
+  {
+    positionX: 12,
+    positionY: 140,
+    positionZ: -64,
+    sizeX: 8,
+    sizeY: 1,
+    sizeZ: 8,
+    rotX: 0,
+    rotY: 0,
+    rotZ: 0,
+    interaction: false,
+  },
+  {
+    positionX: 0,
+    positionY: 144,
+    positionZ: -64,
+    sizeX: 8,
+    sizeY: 1,
+    sizeZ: 8,
+    rotX: 0,
+    rotY: 0,
+    rotZ: 0,
+    interaction: false,
+  },
+  {
+    positionX: -12,
+    positionY: 148,
+    positionZ: -65,
+    sizeX: 8,
+    sizeY: 1,
+    sizeZ: 8,
+    rotX: 0,
+    rotY: 0,
+    rotZ: 0,
+    interaction: false,
+  },
 ];
 
+const ankyloPosition = { x: -45, y: 64, z: -102 };
+const brontoPosition = { x: 47.5, y: 115, z: -108 };
+
 const Mountain = () => {
-  const slopeRef = useRef<THREE.Mesh | null>(null);
+  // const restart = useGame((state) => state.restart);
+  // const randomSeed = useMemo(() => Math.random(), []);
 
-  const phase = useGame((state) => state.phase);
+  const ankyloRef = useRef<RapierRigidBody>(null);
+  const brontoRef = useRef<RapierRigidBody>(null);
+  const [ankyloObstacle, setAnkyloObstacle] = useState(false);
+  const [brontoObstacle, setBrontoObstacle] = useState(false);
 
-  // useFrame((state, delta) => {
-  //   // You can add animation logic here if needed
-  // });
-
-  const colorTexture = useTexture("/textures/snow_02_diff_4k.jpg");
-  colorTexture.colorSpace = THREE.SRGBColorSpace;
-  colorTexture.wrapS = THREE.RepeatWrapping;
-  colorTexture.wrapT = THREE.RepeatWrapping;
-  colorTexture.repeat.x = 4;
-  colorTexture.repeat.y = 4;
-  // const displacementTexture = useTexture("/textures/snow_02_disp_4k.jpg");
-  const normalTexture = useTexture("/textures/snow_02_nor_gl_4k.jpg");
-  const aoTexture = useTexture("/textures/Snow_002_OCC.jpg");
-  const roughnessTexture = useTexture("/textures/Snow_002_ROUGH.jpg");
+  const matcap = useTexture("/textures/ice_matcap.png");
 
   const cliff = useGLTF("/models/cliff.glb");
-  const ledge = useGLTF("/models/ledge.glb");
   const snowfield = useGLTF("/models/snowfield.glb");
+
+  const triggerEvent = (interaction: string | boolean) => {
+    if (interaction === "ankylo") {
+      console.log("Ankylo");
+      setAnkyloObstacle(true);
+      ankyloRef.current?.setGravityScale(1, true);
+    }
+    if (interaction === "bronto") {
+      console.log("Bronto");
+      setBrontoObstacle(true);
+      brontoRef.current?.setGravityScale(1, true);
+    }
+  };
+
+  const timeRef = useRef(0);
+
+  useFrame((state, delta) => {
+    timeRef.current += delta;
+
+    if (ankyloObstacle === true) {
+      ankyloRef.current?.applyImpulse({ x: 4, y: 0, z: 0 }, true);
+    }
+    if (brontoObstacle === true) {
+      brontoRef.current?.applyImpulse({ x: -15, y: 0, z: 0 }, true);
+    }
+  });
+
+  const reset = () => {
+    console.log("resetting");
+    setAnkyloObstacle(false);
+    setBrontoObstacle(false);
+    timeRef.current = 0;
+
+    ankyloRef.current?.setGravityScale(0, true);
+    ankyloRef?.current?.setTranslation(
+      { x: ankyloPosition.x, y: ankyloPosition.y, z: ankyloPosition.z },
+      true
+    );
+    ankyloRef.current?.setRotation({ x: 0, y: -1.8, z: 0, w: 1 }, true);
+    ankyloRef.current?.setLinvel({ x: 0, y: 0, z: 0 }, true);
+    ankyloRef.current?.setAngvel({ x: 0, y: 0, z: 0 }, true);
+
+    brontoRef.current?.setGravityScale(0, true);
+    brontoRef?.current?.setTranslation(
+      { x: brontoPosition.x, y: brontoPosition.y, z: brontoPosition.z },
+      true
+    );
+    brontoRef.current?.setLinvel({ x: 0, y: 0, z: 0 }, true);
+    brontoRef.current?.setAngvel({ x: 0, y: 0, z: 0 }, true);
+  };
+
+  useEffect(() => {
+    const unsubscribeReset = useGame.subscribe(
+      (state) => state.phase,
+      (value) => {
+        if (value === "ready") reset();
+      }
+    );
+
+    return () => {
+      unsubscribeReset();
+    };
+  }, []);
 
   return (
     <>
+      <Ankylo ref={ankyloRef} />
+      <Bronto ref={brontoRef} />
+      {/* {brontoObstacle && <Bronto />} */}
       <Floor />
-
       <group scale={[15, 10, 10]}>
         <primitive object={cliff.scene} position={[0, 6, -11]} />
         <RigidBody type="fixed">
@@ -110,22 +394,28 @@ const Mountain = () => {
       </group>
 
       <group position={[0, 0, -50]}>
-        {ledgePositions.map((position, index) => (
+        {ledgeObjects.map((object, index) => (
           <RigidBody
             key={index}
             type="fixed"
-            position={[position.x, position.y, position.z]}
+            position={[
+              object.positionX + 4 * (0.5 - Math.random()),
+              object.positionY + 2 * (0.5 - Math.random()),
+              object.positionZ,
+            ]}
+            onCollisionEnter={() => triggerEvent(object.interaction)}
           >
-            <mesh position={[0, 0, 0]}>
-              <boxGeometry args={[8, 1, 8]} />
-              <meshStandardMaterial
-                map={colorTexture}
-                // displacementMap={displacementTexture}
-                aoMap={aoTexture}
-                roughnessMap={roughnessTexture}
-                normalMap={normalTexture}
-              />
-            </mesh>
+            <group
+              position={[0, 0, 0]}
+              rotation={[object.rotX, object.rotY, object.rotZ]}
+            >
+              <RoundedBox
+                args={[object.sizeX, object.sizeY, object.sizeZ]}
+                radius={0.5}
+              >
+                <meshMatcapMaterial matcap={matcap} />
+              </RoundedBox>
+            </group>
           </RigidBody>
         ))}
       </group>
@@ -144,21 +434,11 @@ const Floor = () => {
     <group rotation={[0, 0, 0]} position={[0, 0, 0]}>
       {/* Platform */}
       <RigidBody type="fixed" restitution={0.2} friction={1}>
-        {/* <mesh ref={slopeRef} position={[0, -1, -240]} receiveShadow>
-        <boxGeometry args={[500, 1, 500]} />
-        <meshStandardMaterial
-          map={colorTexture}
-          // displacementMap={displacementTexture}
-          aoMap={aoTexture}
-          roughnessMap={roughnessTexture}
-          normalMap={normalTexture}
-        />
-      </mesh> */}
         <primitive
-          scale={[48, 4, 20]}
+          scale={[48, 4, 8]}
           rotation={[Math.PI, 0, 0]}
           object={snowfield1.scene}
-          position={[-25, -3.5, -50]}
+          position={[-25, -3.5, -90]}
         />
       </RigidBody>
     </group>
@@ -166,15 +446,80 @@ const Floor = () => {
 };
 
 const Lodge = () => {
+  const [intersecting, setIntersection] = useState(false);
+  const end = useGame((state) => state.end);
+
   const lodge = useGLTF("/models/lodge.glb");
+
+  const matcap = useTexture("/textures/silver.png");
+
+  useEffect(() => {
+    if (intersecting) {
+      console.log("intersecting");
+      end();
+    }
+  }, [intersecting, end]);
 
   return (
     <group scale={0.2} rotation={[0, 0, 0]} position={[-45, 100, -280]}>
-      <primitive
-        scale={[10, 10, 10]}
-        object={lodge.scene}
-        position={[0, 0, 0]}
+      <Float floatIntensity={0.05} rotationIntensity={0.5}>
+        <Text3D
+          scale={20}
+          font="/fonts/Titan_One_Regular.json"
+          position={[150, 310, 500]}
+          rotation={[0, 0, 0]}
+        >
+          The Lodge
+          <meshMatcapMaterial matcap={matcap} />
+        </Text3D>
+      </Float>
+      <primitive scale={[10, 10, 10]} object={lodge.scene} />
+      <CuboidCollider
+        sensor
+        position={[0, 3700, -4300]}
+        args={[200, 100, 200]}
+        onIntersectionEnter={() => setIntersection(true)}
       />
     </group>
   );
 };
+
+const Ankylo = forwardRef<RapierRigidBody>((props, ref) => {
+  return (
+    <RigidBody
+      scale={2}
+      rotation={[0, -1.5, 0]}
+      position={[ankyloPosition.x, ankyloPosition.y, ankyloPosition.z]}
+      ref={ref}
+      canSleep={true}
+      gravityScale={0}
+    >
+      <Model
+        modelName="ankylo-gallop-confident"
+        nftId={"7826"}
+        playAnimation={true}
+      />
+      <CuboidCollider position={[0, 0.5, 0]} args={[1.5, 0.35, 0.75]} />
+    </RigidBody>
+  );
+});
+
+const Bronto = forwardRef<RapierRigidBody>((props, ref) => {
+  return (
+    <RigidBody
+      scale={2}
+      rotation={[0, 1.5, 0]}
+      position={[brontoPosition.x, brontoPosition.y, brontoPosition.z]}
+      ref={ref}
+      canSleep={true}
+      gravityScale={0}
+    >
+      <Model
+        modelName="bronto-gallop-confident"
+        nftId={"7245"}
+        playAnimation={true}
+      />
+      <CuboidCollider position={[0, 1.75, 0]} args={[1.5, 1, 1.5]} />
+    </RigidBody>
+  );
+});
