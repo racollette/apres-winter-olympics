@@ -5,6 +5,7 @@ import { addEffect } from "@react-three/fiber";
 import { api } from "~/utils/api";
 import Link from "next/link";
 import { OLYMPICS_ENDED } from "~/utils/constants";
+import { Controls } from "../Controls";
 
 export default function Interface({
   species,
@@ -85,6 +86,17 @@ export default function Interface({
       <div className="top-15% absolute left-0 mt-2 flex w-full flex-row justify-center gap-4 bg-black/50 py-2 text-center text-2xl text-white">
         <div ref={time}>0.00</div>
       </div>
+
+      {phase === "ready" && (
+        <div className="absolute left-0 top-1/4 flex w-full flex-col items-center justify-center gap-2 bg-black/50 py-4 text-4xl text-white">
+          <div className="text-2xl font-bold">Slalom Time Trial</div>
+          <div className="text-lg">
+            Make it to the finish line. Each missed gate will add 5 seconds to
+            your time.
+          </div>
+          <Controls wasdInstruction="Move" spacebar={false} />
+        </div>
+      )}
 
       {phase === "ended" && (
         <div className="absolute left-0 top-1/4 flex w-full flex-col items-center justify-center gap-2 bg-black/50 py-4 text-4xl text-white">
