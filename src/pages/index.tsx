@@ -1,18 +1,15 @@
 import Link from "next/link";
 import Metatags from "~/components/MetaTags";
 import Image from "next/image";
-import { useUser } from "~/hooks/useUser";
-import { extractProfileFromUser } from "~/utils/wallet";
-import LoginModal from "~/components/LoginModal";
-import Inventory from "~/components/inventory/Inventory";
 import Header from "~/components/Header";
 import { endDate } from "~/utils/constants";
-import TimeRemaining from "~/components/TimeRemaining";
+import dynamic from "next/dynamic"; // Import dynamic from next/dynamic
+
+const TimeRemaining = dynamic(() => import("~/components/TimeRemaining"), {
+  ssr: false,
+}); // Dynamically import TimeRemaining component
 
 export default function Home() {
-  const { user } = useUser();
-  const { username } = extractProfileFromUser(user);
-
   return (
     <>
       <Metatags
