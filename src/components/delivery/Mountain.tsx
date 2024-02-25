@@ -301,16 +301,17 @@ const Mountain = () => {
   const cliff = useGLTF("/models/cliff.glb");
   const snowfield = useGLTF("/models/snowfield.glb");
 
-  const triggerEvent = (interaction: string | boolean) => {
-    if (interaction === "ankylo") {
-      console.log("Ankylo");
+  const triggerEvent = (
+    interaction: string | boolean,
+    colliderName: string | undefined
+  ) => {
+    if (interaction === "ankylo" && colliderName === "playerCollider") {
+      // console.log("ankylo triggered");
       setAnkyloObstacle(true);
-      ankyloRef.current?.setGravityScale(1, true);
     }
-    if (interaction === "bronto") {
-      console.log("Bronto");
+    if (interaction === "bronto" && colliderName === "playerCollider") {
+      // console.log("bronto triggered");
       setBrontoObstacle(true);
-      brontoRef.current?.setGravityScale(1, true);
     }
   };
 
@@ -320,7 +321,7 @@ const Mountain = () => {
     timeRef.current += delta;
 
     if (ankyloObstacle === true) {
-      ankyloRef.current?.applyImpulse({ x: 4, y: 0, z: 0 }, true);
+      ankyloRef.current?.applyImpulse({ x: 20, y: -8, z: 0 }, true);
     }
     if (brontoObstacle === true) {
       brontoRef.current?.applyImpulse({ x: -15, y: 0, z: 0 }, true);
@@ -328,25 +329,23 @@ const Mountain = () => {
   });
 
   const reset = () => {
-    console.log("resetting");
     setAnkyloObstacle(false);
     setBrontoObstacle(false);
     timeRef.current = 0;
 
-    ankyloRef.current?.setGravityScale(0, true);
     ankyloRef?.current?.setTranslation(
       { x: ankyloPosition.x, y: ankyloPosition.y, z: ankyloPosition.z },
       true
     );
-    ankyloRef.current?.setRotation({ x: 0, y: -1.8, z: 0, w: 1 }, true);
+    ankyloRef.current?.setRotation({ x: 0, y: -1, z: 0, w: 1 }, true);
     ankyloRef.current?.setLinvel({ x: 0, y: 0, z: 0 }, true);
     ankyloRef.current?.setAngvel({ x: 0, y: 0, z: 0 }, true);
 
-    brontoRef.current?.setGravityScale(0, true);
     brontoRef?.current?.setTranslation(
       { x: brontoPosition.x, y: brontoPosition.y, z: brontoPosition.z },
       true
     );
+    brontoRef.current?.setRotation({ x: 0, y: 1, z: 0, w: 1 }, true);
     brontoRef.current?.setLinvel({ x: 0, y: 0, z: 0 }, true);
     brontoRef.current?.setAngvel({ x: 0, y: 0, z: 0 }, true);
   };
@@ -403,7 +402,9 @@ const Mountain = () => {
               object.positionY + 2 * (0.5 - Math.random()),
               object.positionZ,
             ]}
-            onCollisionEnter={() => triggerEvent(object.interaction)}
+            onCollisionEnter={({ other }) => {
+              triggerEvent(object.interaction, other?.colliderObject?.name);
+            }}
           >
             <group
               position={[0, 0, 0]}
@@ -455,7 +456,6 @@ const Lodge = () => {
 
   useEffect(() => {
     if (intersecting) {
-      console.log("intersecting");
       end();
     }
   }, [intersecting, end]);
@@ -488,18 +488,22 @@ const Ankylo = forwardRef<RapierRigidBody>((props, ref) => {
   return (
     <RigidBody
       scale={2}
-      rotation={[0, -1.5, 0]}
+      rotation={[0, -1.45, 0]}
       position={[ankyloPosition.x, ankyloPosition.y, ankyloPosition.z]}
       ref={ref}
-      canSleep={true}
-      gravityScale={0}
+      colliders={false}
     >
       <Model
         modelName="ankylo-gallop-confident"
         nftId={"7826"}
         playAnimation={true}
       />
-      <CuboidCollider position={[0, 0.5, 0]} args={[1.5, 0.35, 0.75]} />
+      <CuboidCollider
+        position={[0, 0.5, 0]}
+        args={[1.5, 0.5, 0.75]}
+        friction={0.25}
+        name="ankyloCollider"
+      />
     </RigidBody>
   );
 });
@@ -507,19 +511,24 @@ const Ankylo = forwardRef<RapierRigidBody>((props, ref) => {
 const Bronto = forwardRef<RapierRigidBody>((props, ref) => {
   return (
     <RigidBody
-      scale={2}
+      scale={1.75}
       rotation={[0, 1.5, 0]}
       position={[brontoPosition.x, brontoPosition.y, brontoPosition.z]}
       ref={ref}
-      canSleep={true}
-      gravityScale={0}
+      colliders={false}
     >
-      <Model
-        modelName="bronto-gallop-confident"
-        nftId={"7245"}
-        playAnimation={true}
-      />
-      <CuboidCollider position={[0, 1.75, 0]} args={[1.5, 1, 1.5]} />
+      <group>
+        <Model
+          modelName="bronto-gallop-confident"
+          nftId={"7245"}
+          playAnimation={true}
+        />
+        <CuboidCollider
+          position={[0, 0.75, 0]}
+          args={[1.5, 0.85, 1.5]}
+          name="brontoCollider"
+        />
+      </group>
     </RigidBody>
   );
 });
