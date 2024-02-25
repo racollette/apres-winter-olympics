@@ -14,6 +14,17 @@ const Medalist = ({ player, medal }: MedalistProps) => {
 
   const matcap = useTexture(`/textures/${medal}.png`);
 
+  let dinoNumber = number;
+  let modelString = model;
+  if (
+    model.includes("para") ||
+    model.includes("spino") ||
+    model.includes("dactyl")
+  ) {
+    modelString = "rex-idle-excited";
+    dinoNumber = "5630";
+  }
+
   return (
     <>
       <group position={[0, 0, 0]} castShadow>
@@ -26,7 +37,7 @@ const Medalist = ({ player, medal }: MedalistProps) => {
           {handle}
           <meshMatcapMaterial matcap={matcap} />
         </Text3D>
-        <Model modelName={model} nftId={number} />
+        <Model modelName={modelString} nftId={dinoNumber} />
       </group>
     </>
   );
