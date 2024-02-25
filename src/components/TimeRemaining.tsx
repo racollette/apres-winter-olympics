@@ -8,8 +8,8 @@ type RemainingTime = {
 };
 
 const TimeRemaining = ({ endDate }: { endDate: Date }) => {
+  const difference = +endDate - +new Date();
   const calculateTimeRemaining = () => {
-    const difference = +new Date(endDate) - +new Date();
     let remainingTime: RemainingTime = {
       days: 0,
       hours: 0,
