@@ -82,7 +82,7 @@ export default function Interface() {
             immediate haste.
           </div>
           <div className="text-sm">
-            Be warned, The Crimson Clan is known to lurk in these parts.
+            And be careful, a certain clan is not a fan of croissants.
           </div>
 
           <Controls spaceInstruction="Jump" wasdInstruction="Move" spacebar />
