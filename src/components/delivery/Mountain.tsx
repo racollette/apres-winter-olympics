@@ -363,6 +363,10 @@ const Mountain = () => {
     };
   }, []);
 
+  useEffect(() => {
+    reset();
+  }, []);
+
   return (
     <>
       <Ankylo ref={ankyloRef} />
