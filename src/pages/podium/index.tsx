@@ -60,11 +60,11 @@ export default function Podium() {
   );
 
   const modelString = (index: number) =>
-    `${overallLeaderboard[
-      index
-    ]?.dino?.attributes?.species.toLowerCase()}-idle-${overallLeaderboard[
-      index
-    ]?.dino?.attributes?.mood.toLowerCase()}`;
+    `${overallLeaderboard[index]?.dino?.attributes?.species.toLowerCase()}-${
+      overallLeaderboard[index]?.dino?.attributes.species === "Dactyl"
+        ? "soar"
+        : "idle"
+    }-${overallLeaderboard[index]?.dino?.attributes?.mood.toLowerCase()}`;
 
   const modelNumber = (index: number) =>
     `${overallLeaderboard[index]?.dino?.name.split("#").slice(-1)}`;
