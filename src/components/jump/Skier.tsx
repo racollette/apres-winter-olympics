@@ -60,12 +60,10 @@ const Skier = ({
 
       if (forward) {
         if (hit && hit.toi <= 0.1) {
-          console.log("impulse");
           impulse.x -= impulseStrength * modelForward.x;
           impulse.y -= impulseStrength * modelForward.y;
           impulse.z -= impulseStrength * modelForward.z;
         } else {
-          console.log("torque");
           torque.x -= torqueStrength * 5;
           // torque.y -= torqueStrength * modelForward.y;
           // torque.z -= torqueStrength * modelForward.z;
@@ -188,8 +186,6 @@ const Skier = ({
       const ray = new rapier.Ray(origin, direction);
       const hit = world.castRay(ray, 10, true);
 
-      console.log(ray);
-      console.log(hit);
       if (hit && hit.toi <= 0.6) {
         body.current.applyImpulse({ x: 0, y: 70, z: 0 }, true);
       }
