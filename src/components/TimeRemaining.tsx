@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { ZodNumber } from "zod";
 
 type RemainingTime = {
   days: number;
@@ -9,7 +10,7 @@ type RemainingTime = {
 
 const TimeRemaining = ({ endDate }: { endDate: Date }) => {
   const difference = +endDate - +new Date();
-  const calculateTimeRemaining = () => {
+  const calculateTimeRemaining = (timeToEnd: number) => {
     let remainingTime: RemainingTime = {
       days: 0,
       hours: 0,
@@ -17,27 +18,32 @@ const TimeRemaining = ({ endDate }: { endDate: Date }) => {
       seconds: 0,
     };
 
-    if (difference > 0) {
+    if (timeToEnd > 0) {
       remainingTime = {
-        days: Math.floor(difference / (1000 * 60 * 60 * 24)),
-        hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
-        minutes: Math.floor((difference / 1000 / 60) % 60),
-        seconds: Math.floor((difference / 1000) % 60),
+        days: Math.floor(timeToEnd / (1000 * 60 * 60 * 24)),
+        hours: Math.floor((timeToEnd / (1000 * 60 * 60)) % 24),
+        minutes: Math.floor((timeToEnd / 1000 / 60) % 60),
+        seconds: Math.floor((timeToEnd / 1000) % 60),
       };
     }
 
     return remainingTime;
   };
 
-  const [timeRemaining, setTimeRemaining] = useState(calculateTimeRemaining());
+  const [timeRemaining, setTimeRemaining] = useState(
+    calculateTimeRemaining(difference)
+  );
+
+  let timeElapsed = 0;
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setTimeRemaining(calculateTimeRemaining());
+      timeElapsed += 1000;
+      setTimeRemaining(calculateTimeRemaining(difference - timeElapsed));
     }, 1000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [endDate]);
 
   const { days, hours, minutes, seconds } = timeRemaining;
 
