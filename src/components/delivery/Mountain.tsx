@@ -498,6 +498,7 @@ const Lodge = () => {
         position={[0, 3700, -4000]}
         args={[200, 100, 200]}
         onIntersectionEnter={() => setIntersection(true)}
+        onIntersectionExit={() => setIntersection(true)}
       />
     </group>
   );
