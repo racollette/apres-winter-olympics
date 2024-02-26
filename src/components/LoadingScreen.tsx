@@ -18,7 +18,7 @@ export const LoadingScreen = ({
   // console.log("errors", errors);
   // console.log("item", item);
   // console.log("loaded", loaded);
-  console.log("total", total);
+  // console.log("total", total);
 
   const loadingProgress = (loaded / totalFiles) * 100;
 

@@ -1,5 +1,5 @@
 import { Canvas } from "@react-three/fiber";
-import { Suspense, useState } from "react";
+import { Suspense, useRef, useState } from "react";
 import Experience from "../../components/drop/Experience";
 import { KeyboardControls } from "@react-three/drei";
 import Interface from "../../components/drop/Interface";
@@ -9,6 +9,9 @@ import { LoadingScreen } from "~/components/LoadingScreen";
 function DropEvent() {
   const router = useRouter();
   const { species, mood, number } = router.query;
+
+  const [frameRate, setFrameRate] = useState(0);
+  const lastTime = useRef(0);
 
   const [start, setStart] = useState(false);
   return (
@@ -22,7 +25,16 @@ function DropEvent() {
           { name: "jump", keys: ["Space"] },
         ]}
       >
-        <Canvas>
+        <Canvas
+          onCreated={({ gl }) => {
+            gl.setAnimationLoop((time) => {
+              const delta = time - lastTime.current;
+              lastTime.current = time;
+              const currentFrameRate = Math.round(1000 / delta); // Convert milliseconds to frames per second
+              setFrameRate(currentFrameRate);
+            });
+          }}
+        >
           <color attach="background" args={["black"]} />
           <Suspense fallback={null}>
             <Experience
@@ -32,11 +44,16 @@ function DropEvent() {
             />
           </Suspense>
         </Canvas>
-        {start && <Interface  
-              species={species as string}
-              mood={mood as string}
-              number={number as string} 
-        />}
+        <div className="absolute left-5 top-6 z-10 text-xs font-semibold text-white">
+          {frameRate} FPS
+        </div>
+        {start && (
+          <Interface
+            species={species as string}
+            mood={mood as string}
+            number={number as string}
+          />
+        )}
         <LoadingScreen
           totalFiles={15}
           started={start}

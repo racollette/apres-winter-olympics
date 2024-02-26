@@ -1,5 +1,5 @@
 import { Canvas } from "@react-three/fiber";
-import { Suspense, useState } from "react";
+import { Suspense, useRef, useState } from "react";
 import Experience from "../../components/slalom/Experience";
 import { KeyboardControls } from "@react-three/drei";
 import Interface from "../../components/slalom/Interface";
@@ -9,6 +9,9 @@ import { LoadingScreen } from "~/components/LoadingScreen";
 function SlalomEvent() {
   const router = useRouter();
   const { species, mood, number } = router.query;
+
+  const [frameRate, setFrameRate] = useState(0);
+  const lastTime = useRef(0);
 
   const [start, setStart] = useState(false);
 
@@ -23,7 +26,16 @@ function SlalomEvent() {
           { name: "jump", keys: ["Space"] },
         ]}
       >
-        <Canvas>
+        <Canvas
+          onCreated={({ gl }) => {
+            gl.setAnimationLoop((time) => {
+              const delta = time - lastTime.current;
+              lastTime.current = time;
+              const currentFrameRate = Math.round(1000 / delta); // Convert milliseconds to frames per second
+              setFrameRate(currentFrameRate);
+            });
+          }}
+        >
           <color attach="background" args={["black"]} />
           <Suspense fallback={null}>
             <Experience
@@ -33,9 +45,14 @@ function SlalomEvent() {
             />
           </Suspense>
         </Canvas>
-        <Interface          species={species as string}
-              mood={mood as string}
-              number={number as string} />
+        <div className="absolute left-5 top-6 z-10 text-xs font-semibold text-white">
+          {frameRate} FPS
+        </div>
+        <Interface
+          species={species as string}
+          mood={mood as string}
+          number={number as string}
+        />
         <LoadingScreen
           totalFiles={20}
           started={start}
