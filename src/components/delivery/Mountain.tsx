@@ -256,11 +256,11 @@ const ledgeObjects = [
     rotX: 0,
     rotY: 0,
     rotZ: 0,
-    interaction: false,
+    interaction: "dactyl",
   },
   {
     positionX: 0,
-    positionY: 144,
+    positionY: 143,
     positionZ: -64,
     sizeX: 8,
     sizeY: 1,
@@ -268,11 +268,11 @@ const ledgeObjects = [
     rotX: 0,
     rotY: 0,
     rotZ: 0,
-    interaction: "dactyl",
+    interaction: false,
   },
   {
     positionX: -12,
-    positionY: 148,
+    positionY: 147,
     positionZ: -65,
     sizeX: 8,
     sizeY: 1,
@@ -286,7 +286,7 @@ const ledgeObjects = [
 
 const ankyloPosition = { x: -45, y: 64, z: -102 };
 const brontoPosition = { x: 47.5, y: 115, z: -107.5 };
-const dactylPosition = { x: -200, y: 149, z: -114 };
+const dactylPosition = { x: -200, y: 149.25, z: -114 };
 
 const Mountain = () => {
   // const restart = useGame((state) => state.restart);
@@ -330,7 +330,7 @@ const Mountain = () => {
       brontoRef.current?.applyImpulse({ x: -15, y: 0, z: 0 }, true);
     }
     if (dactylObstacle === true) {
-      dactylRef.current?.applyImpulse({ x: 70, y: 0, z: 0 }, true);
+      dactylRef.current?.applyImpulse({ x: 48, y: 0, z: 0 }, true);
     }
   });
 
@@ -416,8 +416,8 @@ const Mountain = () => {
             key={index}
             type="fixed"
             position={[
-              object.positionX + 4 * (0.5 - Math.random()),
-              object.positionY + 2 * (0.5 - Math.random()),
+              object.positionX, // + 4 * (0.5 - Math.random()),
+              object.positionY, // + 2 * (0.5 - Math.random()),
               object.positionZ,
             ]}
             onCollisionEnter={({ other }) => {
@@ -572,7 +572,7 @@ const Dactyl = forwardRef<RapierRigidBody>((props, ref) => {
         />
         <CuboidCollider
           position={[0, 0.75, 0]}
-          args={[1.35, 1, 1.5]}
+          args={[1.75, 2, 1.5]}
           name="dactylCollider"
         />
       </group>
