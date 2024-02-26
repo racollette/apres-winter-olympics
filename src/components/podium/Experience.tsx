@@ -26,10 +26,6 @@ export default function Experience({ gold, silver, bronze }: PodiumProps) {
   // Function to set camera position and target
   const setCameraPositionAndTarget = () => {
     if (cameraRef.current) {
-      // Set camera position
-      // cameraRef.current.position.set(0, 5, 30); // Example position
-
-      // Set camera target (lookAt)
       cameraRef.current.lookAt(0, 0, 0); // Example target
     }
   };
@@ -55,24 +51,26 @@ export default function Experience({ gold, silver, bronze }: PodiumProps) {
         background
       />
       <OrbitControls />
-
       <Lights />
-      <group position={[0, 0, 0]} rotation={[0, -Math.PI, 0]}>
-        <Medalist player={gold} medal="gold" />
-      </group>
-      <group position={[2.25, -0.7, 0]} rotation={[0, -Math.PI, 0]}>
-        <Medalist player={silver} medal="silver" />
-      </group>
-      <group position={[-2.25, -1.25, 0]} rotation={[0, -Math.PI, 0]}>
-        <Medalist player={bronze} medal="bronze" />
-      </group>
+
+      {gold && (
+        <group position={[0, 0, 0]} rotation={[0, -Math.PI, 0]}>
+          <Medalist player={gold} medal="gold" />
+        </group>
+      )}
+      {silver && (
+        <group position={[2.25, -0.7, 0]} rotation={[0, -Math.PI, 0]}>
+          <Medalist player={silver} medal="silver" />
+        </group>
+      )}
+      {bronze && (
+        <group position={[-2.25, -1.25, 0]} rotation={[0, -Math.PI, 0]}>
+          <Medalist player={bronze} medal="bronze" />
+        </group>
+      )}
 
       <group position={[-1, -2.9, -0.5]} rotation={[0, -Math.PI / 2, 0]}>
         <primitive object={podium.scene} />
-        {/* <mesh rotation={[-Math.PI / 2, 0, 0]}>
-          <planeGeometry args={[20, 20]} />
-          <meshPhysicalMaterial map={triangles} />
-        </mesh> */}
       </group>
     </>
   );
