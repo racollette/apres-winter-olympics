@@ -22,7 +22,10 @@ export default function Interface() {
   const rightward = useKeyboardControls((state) => !!state.rightward);
   const jump = useKeyboardControls((state) => !!state.jump);
 
-  const recordResult = api.leaderboard.recordResult.useMutation();
+  const recordResult = api.leaderboard.recordResult.useMutation({
+    retry: 3,
+    retryDelay: 1000,
+  });
 
   const [score, setScore] = useState(0);
 
