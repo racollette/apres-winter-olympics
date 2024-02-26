@@ -284,7 +284,7 @@ const ledgeObjects = [
   },
 ];
 
-const ankyloPosition = { x: -45, y: 64, z: -102 };
+const ankyloPosition = { x: -45, y: 64.5, z: -102 };
 const brontoPosition = { x: 47.5, y: 115, z: -107.5 };
 const dactylPosition = { x: -200, y: 149.25, z: -114 };
 
@@ -507,7 +507,7 @@ const Ankylo = forwardRef<RapierRigidBody>((props, ref) => {
   return (
     <RigidBody
       scale={2}
-      rotation={[0, -1.45, 0]}
+      rotation={[0, 0, 0]}
       position={[ankyloPosition.x, ankyloPosition.y, ankyloPosition.z]}
       ref={ref}
       colliders={false}
