@@ -211,10 +211,10 @@ const Player = ({
   };
 
   const reset = () => {
-    // body.current?.setTranslation({ x: 0, y: 3, z: -70 }, false);
-    // body.current?.setLinvel({ x: 0, y: 0, z: 0 }, false);
-    // body.current?.setAngvel({ x: 0, y: 0, z: 0 }, false);
-    // body.current?.setRotation({ x: 0, y: 0, z: 0, w: 1 }, false);
+    body.current?.setTranslation({ x: 0, y: 3, z: -70 }, false);
+    body.current?.setLinvel({ x: 0, y: 0, z: 0 }, false);
+    body.current?.setAngvel({ x: 0, y: 0, z: 0 }, false);
+    body.current?.setRotation({ x: 0, y: 0, z: 0, w: 1 }, false);
   };
 
   useEffect(() => {
