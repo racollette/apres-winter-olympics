@@ -54,6 +54,12 @@ export default function Interface() {
   useEffect(() => {
     if (OLYMPICS_ENDED) return;
     if (phase === "ended" && userId && dino?.mint && score) {
+      console.log("Recording result", {
+        eventId: 3,
+        userId,
+        score,
+        dinoId: dino?.mint,
+      });
       recordResult.mutate({
         eventId: 3,
         userId,
