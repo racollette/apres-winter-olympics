@@ -35,7 +35,7 @@ function DeliveryEvent() {
         </Canvas>
         <Interface />
         <LoadingScreen
-          totalFiles={79}
+          totalFiles={115}
           started={start}
           startExperience={() => setStart(true)}
         />

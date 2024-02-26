@@ -1,8 +1,6 @@
 import { Environment, OrbitControls } from "@react-three/drei";
 import { Physics } from "@react-three/rapier";
 import Lights from "./Lights";
-import useGame from "../../stores/useGame";
-import { useEffect } from "react";
 import Mountain from "./Mountain";
 import Player from "./Player";
 
