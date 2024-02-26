@@ -31,7 +31,7 @@ export default function Model({
   const mood = modelName.split("-")[2];
   if (species === "trice") {
     if (mood === "confident" || mood === "happy" || mood === "sad") {
-      model = `trice-${motion}-excited`;
+      model = `trice-${motion}-smug`;
     }
   }
 

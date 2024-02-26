@@ -268,7 +268,7 @@ const ledgeObjects = [
     rotX: 0,
     rotY: 0,
     rotZ: 0,
-    interaction: false,
+    interaction: "dactyl",
   },
   {
     positionX: -12,
@@ -286,6 +286,7 @@ const ledgeObjects = [
 
 const ankyloPosition = { x: -45, y: 64, z: -102 };
 const brontoPosition = { x: 47.5, y: 115, z: -107.5 };
+const dactylPosition = { x: -200, y: 149, z: -114 };
 
 const Mountain = () => {
   // const restart = useGame((state) => state.restart);
@@ -293,8 +294,10 @@ const Mountain = () => {
 
   const ankyloRef = useRef<RapierRigidBody>(null);
   const brontoRef = useRef<RapierRigidBody>(null);
+  const dactylRef = useRef<RapierRigidBody>(null);
   const [ankyloObstacle, setAnkyloObstacle] = useState(false);
   const [brontoObstacle, setBrontoObstacle] = useState(false);
+  const [dactylObstacle, setDactylObstacle] = useState(false);
 
   const matcap = useTexture("/textures/ice_matcap.png");
 
@@ -313,6 +316,10 @@ const Mountain = () => {
       // console.log("bronto triggered");
       setBrontoObstacle(true);
     }
+    if (interaction === "dactyl" && colliderName === "playerCollider") {
+      // console.log("bronto triggered");
+      setDactylObstacle(true);
+    }
   };
 
   useFrame((state, delta) => {
@@ -322,11 +329,15 @@ const Mountain = () => {
     if (brontoObstacle === true) {
       brontoRef.current?.applyImpulse({ x: -15, y: 0, z: 0 }, true);
     }
+    if (dactylObstacle === true) {
+      dactylRef.current?.applyImpulse({ x: 70, y: 0, z: 0 }, true);
+    }
   });
 
   const reset = () => {
     setAnkyloObstacle(false);
     setBrontoObstacle(false);
+    setDactylObstacle(false);
 
     ankyloRef?.current?.setTranslation(
       { x: ankyloPosition.x, y: ankyloPosition.y, z: ankyloPosition.z },
@@ -343,6 +354,14 @@ const Mountain = () => {
     brontoRef.current?.setRotation({ x: 0, y: 1, z: 0, w: 1 }, true);
     brontoRef.current?.setLinvel({ x: 0, y: 0, z: 0 }, true);
     brontoRef.current?.setAngvel({ x: 0, y: 0, z: 0 }, true);
+
+    dactylRef?.current?.setTranslation(
+      { x: dactylPosition.x, y: dactylPosition.y, z: dactylPosition.z },
+      true
+    );
+    dactylRef.current?.setRotation({ x: 0, y: 1, z: 0, w: 1 }, true);
+    dactylRef.current?.setLinvel({ x: 0, y: 0, z: 0 }, true);
+    dactylRef.current?.setAngvel({ x: 0, y: 0, z: 0 }, true);
   };
 
   useEffect(() => {
@@ -366,7 +385,7 @@ const Mountain = () => {
     <>
       <Ankylo ref={ankyloRef} />
       <Bronto ref={brontoRef} />
-      {/* {brontoObstacle && <Bronto />} */}
+      <Dactyl ref={dactylRef} />
       <Floor />
       <group scale={[15, 10, 10]}>
         <primitive object={cliff.scene} position={[0, 6, -11]} />
@@ -421,6 +440,7 @@ const Mountain = () => {
       </group>
 
       <Lodge />
+      <ApresGang />
     </>
   );
 };
@@ -461,12 +481,12 @@ const Lodge = () => {
 
   return (
     <group scale={0.2} rotation={[0, 0, 0]} position={[-45, 100, -280]}>
-      <Float floatIntensity={0.05} rotationIntensity={0.5}>
+      <Float floatIntensity={0.01} rotationIntensity={0.5}>
         <Text3D
-          scale={20}
+          scale={12}
           font="/fonts/Titan_One_Regular.json"
-          position={[150, 310, 500]}
-          rotation={[0, 0, 0]}
+          position={[75, 290, 500]}
+          rotation={[0, 0.2, 0]}
         >
           The Lodge
           <meshMatcapMaterial matcap={matcap} />
@@ -475,7 +495,7 @@ const Lodge = () => {
       <primitive scale={[10, 10, 10]} object={lodge.scene} />
       <CuboidCollider
         sensor
-        position={[0, 3700, -4300]}
+        position={[0, 3700, -4000]}
         args={[200, 100, 200]}
         onIntersectionEnter={() => setIntersection(true)}
       />
@@ -533,3 +553,65 @@ const Bronto = forwardRef<RapierRigidBody>((props, ref) => {
   );
 });
 Bronto.displayName = "Bronto";
+
+const Dactyl = forwardRef<RapierRigidBody>((props, ref) => {
+  return (
+    <RigidBody
+      scale={1.75}
+      rotation={[0, 0.7, 0]}
+      position={[brontoPosition.x, brontoPosition.y, brontoPosition.z]}
+      ref={ref}
+      colliders={false}
+      gravityScale={0}
+    >
+      <group>
+        <Model
+          modelName="dactyl-fly-confident"
+          nftId={"10185"}
+          playAnimation={true}
+        />
+        <CuboidCollider
+          position={[0, 0.75, 0]}
+          args={[1.35, 1, 1.5]}
+          name="dactylCollider"
+        />
+      </group>
+    </RigidBody>
+  );
+});
+Dactyl.displayName = "Dactyl";
+
+const ApresGang = () => {
+  return (
+    <group scale={1.3} position={[0, 150.5, -175]} rotation={[0, 3, 0]}>
+      <group position={[2, 0, -1]} rotation={[0, 0.8, 0]}>
+        <Model modelName="bronto-idle-smug" nftId="1404" playAnimation={true} />
+      </group>
+      <group position={[1, 0, 0]} rotation={[0, 0.4, 0]}>
+        <Model
+          modelName="rex-idle-confident"
+          nftId="6452"
+          playAnimation={true}
+        />
+      </group>
+
+      <group position={[0, 0, 1]}>
+        <Model
+          modelName="trice-idle-confident"
+          nftId="3615"
+          playAnimation={true}
+        />
+      </group>
+      <group position={[-1, 0, 0]} rotation={[0, -0.4, 0]}>
+        <Model
+          modelName="ankylo-idle-happy"
+          nftId="3635"
+          playAnimation={true}
+        />
+      </group>
+      <group position={[-2.2, 0, 1]} rotation={[0, -0.8, 0]}>
+        <Model modelName="rex-idle-excited" nftId="3644" playAnimation={true} />
+      </group>
+    </group>
+  );
+};
