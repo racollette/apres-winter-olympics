@@ -25,6 +25,10 @@ export default function Interface() {
   const recordResult = api.leaderboard.recordResult.useMutation({
     retry: 3,
     retryDelay: 1000,
+    onError: (error) => {
+      console.error("Mutation failed:", error);
+      // You can also add additional error handling logic here if needed
+    },
   });
 
   const [score, setScore] = useState(0);
@@ -56,6 +60,15 @@ export default function Interface() {
 
   useEffect(() => {
     if (OLYMPICS_ENDED) return;
+    if (!userId) {
+      console.log("User not logged in");
+    }
+    if (!score) {
+      console.log("No score updated");
+    }
+    if (!dino?.mint) {
+      console.log("No dino registered");
+    }
     if (phase === "ended" && userId && dino?.mint && score) {
       console.log("Recording result", {
         eventId: 3,

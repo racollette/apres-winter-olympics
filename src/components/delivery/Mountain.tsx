@@ -475,6 +475,7 @@ const Lodge = () => {
 
   useEffect(() => {
     if (intersecting) {
+      console.log("Finish intersection detected, end the game");
       end();
     }
   }, [intersecting, end]);
