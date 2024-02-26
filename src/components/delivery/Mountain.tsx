@@ -285,7 +285,7 @@ const ledgeObjects = [
 ];
 
 const ankyloPosition = { x: -45, y: 64, z: -102 };
-const brontoPosition = { x: 47.5, y: 115, z: -108 };
+const brontoPosition = { x: 47.5, y: 115, z: -107.5 };
 
 const Mountain = () => {
   // const restart = useGame((state) => state.restart);
@@ -315,11 +315,7 @@ const Mountain = () => {
     }
   };
 
-  const timeRef = useRef(0);
-
   useFrame((state, delta) => {
-    timeRef.current += delta;
-
     if (ankyloObstacle === true) {
       ankyloRef.current?.applyImpulse({ x: 20, y: -8, z: 0 }, true);
     }
@@ -331,7 +327,6 @@ const Mountain = () => {
   const reset = () => {
     setAnkyloObstacle(false);
     setBrontoObstacle(false);
-    timeRef.current = 0;
 
     ankyloRef?.current?.setTranslation(
       { x: ankyloPosition.x, y: ankyloPosition.y, z: ankyloPosition.z },
@@ -530,7 +525,7 @@ const Bronto = forwardRef<RapierRigidBody>((props, ref) => {
         />
         <CuboidCollider
           position={[0, 0.75, 0]}
-          args={[1.5, 0.85, 1.5]}
+          args={[1.35, 0.85, 1.35]}
           name="brontoCollider"
         />
       </group>
