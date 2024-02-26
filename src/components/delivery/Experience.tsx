@@ -22,8 +22,8 @@ export default function Experience({ species, mood, number }: ModelProps) {
       />
       <OrbitControls />
 
-      {/* <Physics> */}
-      <Physics debug>
+      <Physics>
+        {/* <Physics debug> */}
         <Lights />
         <Player species={species} mood={mood} number={number} />
         <Mountain />
