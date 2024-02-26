@@ -53,17 +53,17 @@ export default function Experience({ gold, silver, bronze }: PodiumProps) {
       <OrbitControls />
       <Lights />
 
-      {gold && (
+      {!gold.model.includes("undefined") && (
         <group position={[0, 0, 0]} rotation={[0, -Math.PI, 0]}>
           <Medalist player={gold} medal="gold" />
         </group>
       )}
-      {silver && (
+      {!silver.model.includes("undefined") && (
         <group position={[2.25, -0.7, 0]} rotation={[0, -Math.PI, 0]}>
           <Medalist player={silver} medal="silver" />
         </group>
       )}
-      {bronze && (
+      {!bronze.model.includes("undefined") && (
         <group position={[-2.25, -1.25, 0]} rotation={[0, -Math.PI, 0]}>
           <Medalist player={bronze} medal="bronze" />
         </group>

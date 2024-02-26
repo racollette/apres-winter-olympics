@@ -17,7 +17,6 @@ export type Medalist = {
 };
 
 export default function Podium() {
-  const [start, setStart] = useState(false);
   const { data: events = [], isLoading } =
     api.leaderboard.getAllEvents.useQuery({
       competitionId: 1,
@@ -115,11 +114,6 @@ export default function Podium() {
                   />
                 </Suspense>
               </Canvas>
-              {/* <LoadingScreen
-                totalFiles={10}
-                started={start}
-                startExperience={() => setStart(true)}
-              /> */}
             </div>
             <div className="flex w-full flex-col items-center justify-center gap-4 overflow-x-scroll rounded-lg bg-purple-900 p-3 font-clayno text-xs md:w-3/4 md:overflow-auto md:p-6 md:text-sm">
               <div className="text-xl font-extrabold">Overall</div>
@@ -176,9 +170,6 @@ export default function Podium() {
                               fill
                               className="rounded-xl"
                             />
-                            {/* <div className="max-w-xs">
-                      {result?.dino?.name.split(" ")[1]}
-                    </div> */}
                           </div>
                         </td>
                         <td className="px-2 md:px-4">
