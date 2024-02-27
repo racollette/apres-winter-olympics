@@ -167,7 +167,7 @@ export default function Interface({
           <>
             <div className="text-md p-1 text-center">Not logged in!</div>
             <p className="text-center text-xs text-neutral-300">
-              Scores won't be recorded.
+              {`Scores won't be recorded.`}
             </p>
           </>
         )}
