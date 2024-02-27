@@ -29,6 +29,7 @@ const Dactyl = ({
   const payloadRigidBodyRef = useRef<RapierRigidBody>(null);
   const [subscribeKeys, getKeys] = useKeyboardControls();
   const [dropped, setDropped] = useState(false);
+  const [dropImpulseApplied, setDropImpulseApplied] = useState(false);
 
   const [smoothedCameraPosition] = useState(
     () => new THREE.Vector3(2000, 2000, 2000)
@@ -41,7 +42,7 @@ const Dactyl = ({
   // Calculate rotation difference
 
   const timeRef = useRef(0);
-  let dropImpulseApplied = false;
+  // let dropImpulseApplied = false;
 
   // const joint = useSphericalJoint(payloadRef, dactylRef, [
   //   // Position of the joint in bodyA's local space
@@ -146,7 +147,8 @@ const Dactyl = ({
           impulse.z = -direction.z * impulseStrength;
 
           payloadRigidBodyRef.current?.applyImpulse(impulse, true);
-          dropImpulseApplied = true;
+          // dropImpulseApplied = true;
+          setDropImpulseApplied(true);
 
           // if (rightward) {
           //   const rotationZ = payloadRigidBodyRef.current?.rotation().z
@@ -255,7 +257,7 @@ const Dactyl = ({
   });
 
   const reset = () => {
-    setDropped(false);
+    payloadRigidBodyRef.current?.setGravityScale(0, true);
     dactylRef?.current?.position.set(
       startingPosition.x,
       startingPosition.y,
@@ -266,8 +268,9 @@ const Dactyl = ({
       false
     );
 
-    dropImpulseApplied = false;
-    payloadRigidBodyRef.current?.setGravityScale(0, true);
+    setDropped(false);
+    setDropImpulseApplied(false);
+    // dropImpulseApplied = false;
     timeRef.current = 0;
   };
 
