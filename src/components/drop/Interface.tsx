@@ -173,7 +173,7 @@ export default function Interface({
         )}
         <Link
           href={`/events`}
-          className="pointer-events-auto cursor-pointer rounded-lg bg-sky-500 p-2"
+          className="pointer-events-auto cursor-pointer rounded-lg bg-sky-500 px-2 py-1"
         >
           Back to Menu
         </Link>
