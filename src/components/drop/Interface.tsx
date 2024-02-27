@@ -162,6 +162,23 @@ export default function Interface({
         </div>
       )}
 
+      <div className="absolute bottom-5 right-10 flex w-[150px] flex-col items-center rounded-md bg-fuchsia-800 py-2 text-xs uppercase text-white">
+        {!userId && (
+          <>
+            <div className="text-md p-1 text-center">Not logged in!</div>
+            <p className="text-center text-xs text-neutral-300">
+              Scores won't be recorded.
+            </p>
+          </>
+        )}
+        <Link
+          href={`/events`}
+          className="pointer-events-auto cursor-pointer rounded-lg bg-sky-500 p-2"
+        >
+          Back to Menu
+        </Link>
+      </div>
+
       {/* Controls */}
       <div className="controls">
         <div className="raw">
