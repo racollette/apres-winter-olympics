@@ -25,7 +25,7 @@ export default function Podium() {
   const userPointsMap = new Map();
 
   for (const event of events) {
-    let top10 = event.results.slice(0, 10);
+    const top10 = event.results.slice(0, 10);
 
     let multiplier = 1;
 
