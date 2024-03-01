@@ -29,7 +29,7 @@ export default function Podium() {
       event.id === 1 || event.id === 2 || event.id === 3
         ? event.results
         : event.results.slice().reverse();
-    let top10 = orderedResults.slice(0, 10);
+    const top10 = orderedResults.slice(0, 10);
 
     let multiplier = 1;
     if (event.id === 1 || event.id === 2 || event.id === 3) {
