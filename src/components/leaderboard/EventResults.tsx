@@ -25,12 +25,13 @@ type EventResultsProps = {
       };
     })[];
   };
+  name?: boolean;
 };
 
-export const EventResults = ({ event }: EventResultsProps) => {
+export const EventResults = ({ event, name = false }: EventResultsProps) => {
   return (
     <div className="flex flex-col items-center justify-center gap-4 overflow-x-scroll rounded-lg bg-blue-950 p-3 font-clayno text-xs md:overflow-auto md:p-6 md:text-sm">
-      <div className="text-xl font-extrabold">{event.name}</div>
+      {name && <div className="text-xl font-extrabold">{event.name}</div>}
       <table className="table-auto border-separate border-spacing-1 md:border-spacing-2">
         <thead>
           <tr>
