@@ -25,12 +25,14 @@ export default function Podium() {
   const userPointsMap = new Map();
 
   for (const event of events) {
-    const top10 = event.results.slice(0, 10);
+    let top10 = event.results.slice(0, 10);
 
     let multiplier = 1;
 
     if (event.id === 1 || event.id === 2 || event.id === 3) {
       multiplier = 2;
+    } else {
+      top10.reverse();
     }
 
     for (const [index, result] of top10.entries()) {
