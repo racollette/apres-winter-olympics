@@ -25,19 +25,25 @@ export default function Podium() {
   const userPointsMap = new Map();
 
   for (const event of events) {
-    const top10 = event.results.slice(0, 10);
+    const orderedResults =
+      event.id === 1 || event.id === 2 || event.id === 3
+        ? event.results
+        : event.results.slice().reverse();
+    let top10 = orderedResults.slice(0, 10);
 
     let multiplier = 1;
-
     if (event.id === 1 || event.id === 2 || event.id === 3) {
       multiplier = 2;
-    } else {
-      top10.reverse();
     }
 
     for (const [index, result] of top10.entries()) {
       const points = (10 - index) * multiplier;
       const { userId, dinoId, dino, user } = result;
+
+      if (user.discord?.global_name === "Luke") {
+        console.log(index);
+        console.log(points);
+      }
 
       // If the userId already exists in the map, add the points to the existing entry
       if (userPointsMap.has(userId)) {
