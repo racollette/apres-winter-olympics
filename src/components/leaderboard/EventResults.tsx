@@ -26,9 +26,18 @@ type EventResultsProps = {
     })[];
   };
   name?: boolean;
+  reverse?: boolean;
+  dino?: boolean;
 };
 
-export const EventResults = ({ event, name = false }: EventResultsProps) => {
+export const EventResults = ({
+  event,
+  name = false,
+  reverse = false,
+  dino = true,
+}: EventResultsProps) => {
+  const results = reverse ? event.results.slice().reverse() : event.results;
+
   return (
     <div className="flex flex-col items-center justify-center gap-4 overflow-x-scroll rounded-lg bg-blue-950 p-3 font-clayno text-xs md:overflow-auto md:p-6 md:text-sm">
       {name && <div className="text-xl font-extrabold">{event.name}</div>}
@@ -37,14 +46,16 @@ export const EventResults = ({ event, name = false }: EventResultsProps) => {
           <tr>
             <th className="items-center justify-center px-2 py-1 text-right md:px-4 md:py-2"></th>
             <th className="px-2 py-1 text-left md:px-4 md:py-2">Player</th>
-            <th className="px-2 py-1 text-left md:px-4 md:py-2">Clayno</th>
+            {dino && (
+              <th className="px-2 py-1 text-left md:px-4 md:py-2">Clayno</th>
+            )}
             <th className="whitespace-nowrap px-2 py-1 text-left md:px-4 md:py-2">
               {event.scoringType}
             </th>
           </tr>
         </thead>
         <tbody>
-          {event.results.map((result, idx) => {
+          {results.map((result, idx) => {
             const { username, userPFP, userHandle } = extractProfileFromUser(
               result.user
             );
@@ -74,19 +85,22 @@ export const EventResults = ({ event, name = false }: EventResultsProps) => {
                     </div>
                   </div>
                 </td>
-                <td className="px-2 md:px-4">
-                  <div className="relative flex h-10 w-10 items-center gap-2 md:h-14 md:w-14">
-                    <Image
-                      src={`https://prod-image-cdn.tensor.trade/images/slug=claynosaurz/400x400/freeze=false/${result?.dino?.gif}`}
-                      alt={result?.dino?.name as string}
-                      fill
-                      className="rounded-xl"
-                    />
-                    {/* <div className="max-w-xs">
-                      {result?.dino?.name.split(" ")[1]}
-                    </div> */}
-                  </div>
-                </td>
+                {dino && (
+                  <td className="px-2 md:px-4">
+                    <div className="relative flex h-10 w-10 items-center gap-2 md:h-14 md:w-14">
+                      <Image
+                        src={`https://prod-image-cdn.tensor.trade/images/slug=claynosaurz/400x400/freeze=false/${result?.dino?.gif}`}
+                        alt={result?.dino?.name as string}
+                        fill
+                        className="rounded-xl"
+                      />
+                      {/* <div className="max-w-xs">
+                                      {result?.dino?.name.split(" ")[1]}
+                                    </div> */}
+                    </div>
+                  </td>
+                )}
+
                 <td className="px-2 md:px-4">
                   <div className="max-w-xs">{result.score.toFixed(2)}</div>
                 </td>

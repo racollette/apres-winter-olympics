@@ -73,7 +73,7 @@ export default function Leaderboard() {
               </h2>
               {events && events[3] && (
                 <div className="w-full">
-                  <EventResults event={events[3]} />
+                  <EventResults event={events[3]} reverse={true} dino={false} />
                 </div>
               )}
             </div>
@@ -83,7 +83,7 @@ export default function Leaderboard() {
               </h2>
               {events && events[4] && (
                 <div className="w-full">
-                  <EventResults event={events[4]} />
+                  <EventResults event={events[4]} reverse={true} dino={false} />
                 </div>
               )}
             </div>
@@ -93,7 +93,7 @@ export default function Leaderboard() {
               </h2>
               {events && events[5] && (
                 <div className="w-full">
-                  <EventResults event={events[5]} />
+                  <EventResults event={events[5]} reverse={true} dino={false} />
                 </div>
               )}
             </div>
@@ -103,7 +103,7 @@ export default function Leaderboard() {
               </h2>
               {events && events[7] && (
                 <div className="w-full">
-                  <EventResults event={events[7]} />
+                  <EventResults event={events[7]} reverse={true} dino={false} />
                 </div>
               )}
             </div>
