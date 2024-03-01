@@ -40,11 +40,6 @@ export default function Podium() {
       const points = (10 - index) * multiplier;
       const { userId, dinoId, dino, user } = result;
 
-      if (user.discord?.global_name === "Luke") {
-        console.log(index);
-        console.log(points);
-      }
-
       // If the userId already exists in the map, add the points to the existing entry
       if (userPointsMap.has(userId)) {
         const existingEntry = userPointsMap.get(userId);
