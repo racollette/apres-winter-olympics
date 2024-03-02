@@ -83,7 +83,11 @@ export default function Leaderboard() {
               </h2>
               {events && events[4] && (
                 <div className="w-full">
-                  <EventResults event={events[4]} reverse={true} dino={false} />
+                  <EventResults
+                    event={events[4]}
+                    reverse={false}
+                    dino={false}
+                  />
                 </div>
               )}
             </div>
