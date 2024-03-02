@@ -105,7 +105,7 @@ export default function Leaderboard() {
               <h2 className="font-clayno text-xl font-extrabold">
                 #5: Degen Trivia
               </h2>
-              {events && events[7] && (
+              {events && events[6] && (
                 <div className="w-full">
                   <EventResults event={events[6]} reverse={true} dino={false} />
                 </div>
