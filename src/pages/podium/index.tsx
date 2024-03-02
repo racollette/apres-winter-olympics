@@ -26,7 +26,7 @@ export default function Podium() {
 
   for (const event of events) {
     const orderedResults =
-      event.id === 1 || event.id === 2 || event.id === 3
+      event.id === 1 || event.id === 2 || event.id === 3 || event.id === 5
         ? event.results
         : event.results.slice().reverse();
     const top10 = orderedResults.slice(0, 10);
