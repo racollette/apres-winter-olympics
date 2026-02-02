@@ -188,11 +188,6 @@ const Skier = ({
       velocity.add(_tempVec3A);
     }
 
-    // Debug logging (throttled)
-    if (frameCountRef.current % 30 === 0) {
-      console.log(`Speed: ${speed.toFixed(1)}, Tuck: ${isTucking}, Brake: ${isBraking}, Z: ${position.z.toFixed(0)}`);
-    }
-
     if (speed > MAX_SPEED) {
       velocity.normalize().multiplyScalar(MAX_SPEED);
     }
