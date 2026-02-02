@@ -17,14 +17,16 @@ import { GATE_POSITIONS, FINISH_LINE_Z } from "./Gates";
 import SnowSpray from "./SnowSpray";
 import SkiTrails from "./SkiTrails";
 
-const DOWNHILL_ACCEL = 16;
+const BASE_DOWNHILL_ACCEL = 12;
+const TUCK_ACCEL_BONUS = 8;
 const MAX_SPEED = 35;
 const BASE_CARVE_ACCEL = 45;
 const HIGH_SPEED_TURN_PENALTY = 0.75;
-const DRAG_COEFFICIENT = 0.012;
-const BRAKE_STRENGTH = 25;
+const BASE_DRAG = 0.015;
+const TUCK_DRAG = 0.008;
+const BRAKE_DRAG = 0.06;
 const CARVE_SPEED_DRAG = 0.04;
-const GROUND_OFFSET = 0.15;
+const GROUND_OFFSET = 0.05;
 const CAMERA_LERP = 12;
 const TERRAIN_SAMPLE_DIST = 0.5;
 const GATE_PASS_BOOST = 1.06;
@@ -52,6 +54,12 @@ export type SkierState = {
   leanAngle: number;
 };
 
+const _tempVec3A = new THREE.Vector3();
+const _tempVec3B = new THREE.Vector3();
+const _tempVec3C = new THREE.Vector3();
+const _tempQuat = new THREE.Quaternion();
+const _tempEuler = new THREE.Euler();
+
 const Skier = ({
   species = "rex",
   mood = "confident",
@@ -62,29 +70,33 @@ const Skier = ({
   const velocityRef = useRef(new THREE.Vector3(0, 0, 0));
   const currentLeanRef = useRef(0);
   const passedGatesRef = useRef<Set<number>>(new Set());
-  const [subscribeKeys, getKeys] = useKeyboardControls();
-  const { rapier, world } = useRapier();
-  const restart = useGame((state) => state.restart);
-  const startCountdown = useGame((state) => state.startCountdown);
-  const end = useGame((state) => state.end);
-  const gateActivated = useGame((state) => state.gateActivated);
-  const setSpeed = useGame((state) => state.setSpeed);
-  const initAudio = useAudio((state) => state.init);
-  const updateWind = useAudio((state) => state.updateWind);
-  const playCarve = useAudio((state) => state.playCarve);
-  const stopCarve = useAudio((state) => state.stopCarve);
-  const playGatePass = useAudio((state) => state.playGatePass);
-  const [smoothedCameraPosition] = useState(
-    () => new THREE.Vector3(0, 10, 10)
-  );
-  const [smoothedCameraTarget] = useState(() => new THREE.Vector3(0, 0, -10));
-  const [skierState, setSkierState] = useState<SkierState>({
+  const skierStateRef = useRef<SkierState>({
     isCarving: false,
     carvingIntensity: 0,
     speed: 0,
     speedRatio: 0,
     leanAngle: 0,
   });
+  const [subscribeKeys, getKeys] = useKeyboardControls();
+  const { rapier, world } = useRapier();
+  const restart = useGame((state) => state.restart);
+  const startCountdown = useGame((state) => state.startCountdown);
+  const end = useGame((state) => state.end);
+  const gateActivated = useGame((state) => state.gateActivated);
+  const setSpeedRef = useRef(useGame.getState().setSpeed);
+  const initAudio = useAudio((state) => state.init);
+  const updateWindRef = useRef(useAudio.getState().updateWind);
+  const playCarveRef = useRef(useAudio.getState().playCarve);
+  const stopCarveRef = useRef(useAudio.getState().stopCarve);
+  const playGatePassRef = useRef(useAudio.getState().playGatePass);
+  const [smoothedCameraPosition] = useState(
+    () => new THREE.Vector3(0, 10, 10)
+  );
+  const [smoothedCameraTarget] = useState(() => new THREE.Vector3(0, 0, -10));
+  const [particlePosition] = useState(() => new THREE.Vector3(0, 0, 0));
+  const [particleVelocity] = useState(() => new THREE.Vector3(0, 0, 0));
+  const [skierRotation] = useState(() => new THREE.Quaternion());
+  const frameCountRef = useRef(0);
 
   useFrame((state, delta) => {
     if (!body.current) return;
@@ -98,22 +110,31 @@ const Skier = ({
 
       // Still update camera
       const bodyPosition = body.current.translation();
-      const cameraPosition = new THREE.Vector3(0, bodyPosition.y + 3, bodyPosition.z + 5);
-      const cameraTarget = new THREE.Vector3(0, bodyPosition.y + 0.5, bodyPosition.z - 8);
-      smoothedCameraPosition.lerp(cameraPosition, CAMERA_LERP * delta);
-      smoothedCameraTarget.lerp(cameraTarget, CAMERA_LERP * delta);
+      _tempVec3A.set(0, bodyPosition.y + 3, bodyPosition.z + 5);
+      _tempVec3B.set(0, bodyPosition.y + 0.5, bodyPosition.z - 8);
+      smoothedCameraPosition.lerp(_tempVec3A, CAMERA_LERP * delta);
+      smoothedCameraTarget.lerp(_tempVec3B, CAMERA_LERP * delta);
       state.camera.position.copy(smoothedCameraPosition);
       state.camera.lookAt(smoothedCameraTarget);
       return;
     }
 
-    const { leftward, rightward, backward } = getKeys();
+    const { forward, leftward, rightward, backward } = getKeys();
     const velocity = velocityRef.current;
     const position = body.current.translation();
 
-    velocity.z -= DOWNHILL_ACCEL * delta;
+    const isTucking = forward;
+    const isBraking = backward;
 
-    const speed = velocity.length();
+    // Downhill acceleration (reduced when braking)
+    if (!isBraking) {
+      const downhillAccel = isTucking
+        ? BASE_DOWNHILL_ACCEL + TUCK_ACCEL_BONUS
+        : BASE_DOWNHILL_ACCEL;
+      velocity.z -= downhillAccel * delta;
+    }
+
+    let speed = velocity.length();
     const speedRatio = Math.min(speed / MAX_SPEED, 1);
     const carveMultiplier = 1 - (speedRatio * HIGH_SPEED_TURN_PENALTY);
     const effectiveCarveAccel = BASE_CARVE_ACCEL * carveMultiplier;
@@ -121,15 +142,14 @@ const Skier = ({
     let targetLean = 0;
     let isCarving = false;
     let carvingIntensity = 0;
-    let isBraking = false;
 
-    if (backward && speed > 5) {
-      isBraking = true;
-      const brakeForce = BRAKE_STRENGTH * delta;
-      velocity.z += brakeForce;
-      if (velocity.z > -2) velocity.z = -2;
+    // Braking - direct velocity reduction
+    if (isBraking && speed > 2) {
+      velocity.multiplyScalar(0.97);
+      speed = velocity.length();
     }
 
+    // Steering
     if (leftward) {
       velocity.x -= effectiveCarveAccel * delta;
       targetLean = MAX_LEAN_ANGLE;
@@ -153,13 +173,24 @@ const Skier = ({
       skierGroupRef.current.rotation.z = currentLeanRef.current;
     }
 
+    // Drag calculation based on stance
     if (speed > 0.1) {
-      let drag = DRAG_COEFFICIENT * speed * speed;
+      let dragCoeff = BASE_DRAG;
+      if (isTucking) {
+        dragCoeff = TUCK_DRAG;
+      }
+
+      let drag = dragCoeff * speed * speed;
       if (isCarving) {
         drag += CARVE_SPEED_DRAG * speed * speedRatio;
       }
-      const dragForce = velocity.clone().normalize().multiplyScalar(-drag * delta);
-      velocity.add(dragForce);
+      _tempVec3A.copy(velocity).normalize().multiplyScalar(-drag * delta);
+      velocity.add(_tempVec3A);
+    }
+
+    // Debug logging (throttled)
+    if (frameCountRef.current % 30 === 0) {
+      console.log(`Speed: ${speed.toFixed(1)}, Tuck: ${isTucking}, Brake: ${isBraking}, Z: ${position.z.toFixed(0)}`);
     }
 
     if (speed > MAX_SPEED) {
@@ -173,20 +204,22 @@ const Skier = ({
 
     velocity.x *= 0.97;
 
-    setSkierState({
-      isCarving,
-      carvingIntensity: Math.min(carvingIntensity, 1),
-      speed,
-      speedRatio,
-      leanAngle: currentLeanRef.current,
-    });
-    setSpeed(speed);
+    const clampedIntensity = Math.min(carvingIntensity, 1);
+    skierStateRef.current.isCarving = isCarving;
+    skierStateRef.current.carvingIntensity = clampedIntensity;
+    skierStateRef.current.speed = speed;
+    skierStateRef.current.speedRatio = speedRatio;
+    skierStateRef.current.leanAngle = currentLeanRef.current;
 
-    updateWind(speedRatio);
-    if (isCarving && carvingIntensity > 0.2) {
-      playCarve(carvingIntensity);
-    } else {
-      stopCarve();
+    frameCountRef.current++;
+    if (frameCountRef.current % 3 === 0) {
+      setSpeedRef.current(speed);
+      updateWindRef.current(speedRatio);
+      if (isCarving && carvingIntensity > 0.2) {
+        playCarveRef.current(carvingIntensity);
+      } else {
+        stopCarveRef.current();
+      }
     }
 
     const newX = position.x + velocity.x * delta;
@@ -198,10 +231,12 @@ const Skier = ({
     body.current.setNextKinematicTranslation({ x: newX, y: newY, z: newZ });
 
     const terrainNormal = getTerrainNormal(newX, newZ);
-    const forward = speed > 0.5
-      ? new THREE.Vector3(velocity.x, 0, velocity.z).normalize()
-      : new THREE.Vector3(0, 0, -1);
-    const yawAngle = Math.atan2(forward.x, forward.z) + Math.PI;
+    if (speed > 0.5) {
+      _tempVec3A.set(velocity.x, 0, velocity.z).normalize();
+    } else {
+      _tempVec3A.set(0, 0, -1);
+    }
+    const yawAngle = Math.atan2(_tempVec3A.x, _tempVec3A.z) + Math.PI;
 
     const slopeAngle = Math.acos(terrainNormal.y);
     const slopeDirection = Math.atan2(terrainNormal.x, terrainNormal.z);
@@ -209,19 +244,15 @@ const Skier = ({
     const pitchFromSlope = slopeAngle * Math.cos(slopeDirection - yawAngle);
     const rollFromSlope = slopeAngle * Math.sin(slopeDirection - yawAngle) * 0.5;
 
-    const targetQuat = new THREE.Quaternion().setFromEuler(
-      new THREE.Euler(pitchFromSlope, yawAngle, rollFromSlope, "YXZ")
-    );
+    _tempEuler.set(pitchFromSlope, yawAngle, rollFromSlope, "YXZ");
+    _tempQuat.setFromEuler(_tempEuler);
 
     const currentRotation = body.current.rotation();
-    const currentQuat = new THREE.Quaternion(
-      currentRotation.x,
-      currentRotation.y,
-      currentRotation.z,
-      currentRotation.w
-    );
+    _tempVec3A.set(currentRotation.x, currentRotation.y, currentRotation.z);
+    const currentQuat = skierRotation;
+    currentQuat.set(currentRotation.x, currentRotation.y, currentRotation.z, currentRotation.w);
 
-    currentQuat.slerp(targetQuat, 8 * delta);
+    currentQuat.slerp(_tempQuat, 8 * delta);
     body.current.setNextKinematicRotation({
       x: currentQuat.x,
       y: currentQuat.y,
@@ -230,23 +261,23 @@ const Skier = ({
     });
 
     const bodyPosition = body.current.translation();
+    particlePosition.set(bodyPosition.x, bodyPosition.y, bodyPosition.z);
+    particleVelocity.copy(velocity);
 
-    const cameraHeight = 3;
-    const cameraDistance = 5;
-    const cameraPosition = new THREE.Vector3(
+    _tempVec3B.set(
       bodyPosition.x * 0.9,
-      bodyPosition.y + cameraHeight,
-      bodyPosition.z + cameraDistance
+      bodyPosition.y + 3,
+      bodyPosition.z + 5
     );
 
-    const cameraTarget = new THREE.Vector3(
+    _tempVec3C.set(
       bodyPosition.x * 0.7,
       bodyPosition.y + 0.5,
       bodyPosition.z - 8
     );
 
-    smoothedCameraPosition.lerp(cameraPosition, CAMERA_LERP * delta);
-    smoothedCameraTarget.lerp(cameraTarget, CAMERA_LERP * delta);
+    smoothedCameraPosition.lerp(_tempVec3B, CAMERA_LERP * delta);
+    smoothedCameraTarget.lerp(_tempVec3C, CAMERA_LERP * delta);
 
     state.camera.position.copy(smoothedCameraPosition);
     state.camera.lookAt(smoothedCameraTarget);
@@ -265,7 +296,7 @@ const Skier = ({
           const currentSpeed = velocity.length();
           const boostSpeed = Math.min(currentSpeed * GATE_PASS_BOOST, MAX_SPEED * 1.05);
           velocity.normalize().multiplyScalar(boostSpeed);
-          playGatePass();
+          playGatePassRef.current();
           break;
         }
       }
@@ -289,9 +320,9 @@ const Skier = ({
       origin.y -= 0.01;
       const direction = { x: 0, y: -1, z: 0 };
       const ray = new rapier.Ray(origin, direction);
-      const hit = world.castRay(ray, 10, true);
+      const hit = world.castRay(ray, 10, true) as { timeOfImpact: number } | null;
 
-      if (hit && hit.toi <= 1) {
+      if (hit && hit.timeOfImpact <= 1) {
         velocityRef.current.y = 8;
       }
     }
@@ -339,20 +370,6 @@ const Skier = ({
   const skis = useGLTF("/models/skis.glb");
   const startY = getTerrainHeight(0, 0) + GROUND_OFFSET;
 
-  const [particlePosition] = useState(() => new THREE.Vector3(0, startY, 0));
-  const [particleVelocity] = useState(() => new THREE.Vector3(0, 0, 0));
-  const [skierRotation] = useState(() => new THREE.Quaternion());
-
-  useFrame(() => {
-    if (body.current) {
-      const pos = body.current.translation();
-      particlePosition.set(pos.x, pos.y, pos.z);
-      particleVelocity.copy(velocityRef.current);
-      const rot = body.current.rotation();
-      skierRotation.set(rot.x, rot.y, rot.z, rot.w);
-    }
-  });
-
   return (
     <>
       <RigidBody
@@ -372,18 +389,18 @@ const Skier = ({
       </RigidBody>
 
       <SnowSpray
-        isCarving={skierState.isCarving}
-        carvingIntensity={skierState.carvingIntensity}
+        isCarving={skierStateRef.current.isCarving}
+        carvingIntensity={skierStateRef.current.carvingIntensity}
         position={particlePosition}
         velocity={particleVelocity}
-        leanAngle={skierState.leanAngle}
+        leanAngle={skierStateRef.current.leanAngle}
       />
 
       <SkiTrails
         skierPosition={particlePosition}
         skierRotation={skierRotation}
-        isMoving={skierState.speed > 1}
-        isCarving={skierState.isCarving}
+        isMoving={skierStateRef.current.speed > 1}
+        isCarving={skierStateRef.current.isCarving}
       />
     </>
   );

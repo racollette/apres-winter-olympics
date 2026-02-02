@@ -14,11 +14,11 @@ export type ModelProps = {
 function SkyDome() {
   return (
     <mesh scale={[-1, 1, 1]}>
-      <sphereGeometry args={[1000, 32, 16]} />
+      <sphereGeometry args={[2000, 16, 8]} />
       <meshBasicMaterial side={2}>
         <GradientTexture
-          stops={[0, 0.3, 0.6, 1]}
-          colors={["#1a3a5c", "#5b9bd5", "#87CEEB", "#d4e8f7"]}
+          stops={[0, 0.35, 0.5, 0.65, 1]}
+          colors={["#0a1a2e", "#2563a8", "#4a90c9", "#87CEEB", "#b8d9f0"]}
         />
       </meshBasicMaterial>
     </mesh>

@@ -1,5 +1,4 @@
 import { useMemo, useRef, useEffect } from "react";
-import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { Text3D, useTexture } from "@react-three/drei";
 import useGame from "../../stores/useGame";
@@ -84,8 +83,8 @@ export default function Gates() {
     markersRef.current.instanceMatrix.needsUpdate = true;
   }, []);
 
-  // Update marker colors based on passed gates
-  useFrame(() => {
+  // Update marker colors only when gates are passed
+  useEffect(() => {
     if (!markersRef.current) return;
 
     let markerIdx = 0;
@@ -99,7 +98,7 @@ export default function Gates() {
     if (markersRef.current.instanceColor) {
       markersRef.current.instanceColor.needsUpdate = true;
     }
-  });
+  }, [passedGateIndices.size]);
 
   const startY = getTerrainHeight(0, -5) + 2;
   const finishY = getTerrainHeight(0, FINISH_LINE_Z) + 2;

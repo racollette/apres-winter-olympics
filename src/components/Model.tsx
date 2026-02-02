@@ -1,17 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useGLTF, useTexture } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import { useRef, useEffect, useState } from "react";
-import {
-  Euler,
-  Vector2,
-  Vector3,
-  Texture,
-  Group,
-  AnimationMixer,
-  Mesh,
-  SRGBColorSpace,
-} from "three";
+import { useRef, useEffect, useMemo } from "react";
+import * as THREE from "three";
 
 type ModelProps = {
   modelName: string;
@@ -24,164 +14,92 @@ export default function Model({
   nftId,
   playAnimation = false,
 }: ModelProps) {
-  // weird bug with trice moods
-  let model = modelName;
-  const species = modelName.split("-")[0];
-  const motion = modelName.split("-")[1];
-  const mood = modelName.split("-")[2];
-  if (species === "trice") {
-    if (mood === "confident" || mood === "happy" || mood === "sad") {
-      model = `trice-${motion}-smug`;
-    }
-  }
-
-  const localURL = `/models/${model}.gltf.glb`;
+  const localURL = `/models/rex-idle-confident.gltf.glb`;
   const { scene, animations } = useGLTF(localURL);
 
-  // console.log(scene);
-  // console.log(animations);
+  const meshRef = useRef<THREE.Group | null>(null);
+  const mixer = useMemo(
+    () => new THREE.AnimationMixer(scene as unknown as THREE.Object3D),
+    [scene]
+  );
 
-  const meshRef = useRef<Group | null>(null);
-  const [mixer] = useState(() => new AnimationMixer(scene));
-
-  const textureShaderA = useRef<Texture | null>(null);
-  const textureShaderB = useRef<Texture | null>(null);
-
-  const [textureParamsShaderA, setTextureParamsShaderA] = useState<any>(null);
-  const [textureParamsShaderB, setTextureParamsShaderB] = useState<any>(null);
-
-  const loadTexture = (url: string) => {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    const texture = useTexture(url);
-    texture.flipY = false;
-
-    return texture;
-  };
-
-  if (nftId) {
-    textureShaderA.current = loadTexture(`/textures/3495_1001.jpg`);
-    textureShaderB.current = loadTexture(`/textures/3495_1002.jpg`);
-  }
+  const textureA = useTexture(`/textures/${nftId}_1001.jpg`);
+  const textureB = useTexture(`/textures/${nftId}_1002.jpg`);
 
   useEffect(() => {
-    if (scene) {
-      meshRef.current = scene.children[0] as Group;
+    if (!scene) return;
 
-      meshRef.current.traverse((child) => {
-        if (child instanceof Mesh) {
-          const materials = Array.isArray(child.material)
-            ? child.material
-            : [child.material];
+    textureA.flipY = false;
+    textureA.colorSpace = THREE.SRGBColorSpace;
+    textureA.wrapS = THREE.RepeatWrapping;
+    textureA.wrapT = THREE.RepeatWrapping;
+    textureA.needsUpdate = true;
 
-          materials.forEach((material) => {
-            if (material.map) {
-              const paramsShader = {
-                wrapS: material.map.wrapS,
-                wrapT: material.map.wrapT,
-                repeat: new Vector2(
-                  material.map.repeat.x,
-                  material.map.repeat.y
-                ),
-                offset: new Vector2(
-                  material.map.offset.x,
-                  material.map.offset.y
-                ),
-              };
+    textureB.flipY = false;
+    textureB.colorSpace = THREE.SRGBColorSpace;
+    textureB.wrapS = THREE.RepeatWrapping;
+    textureB.wrapT = THREE.RepeatWrapping;
+    textureB.needsUpdate = true;
 
-              if (material.name === "Shader_A") {
-                setTextureParamsShaderA(paramsShader);
-              } else if (material.name === "Shader_B") {
-                setTextureParamsShaderB(paramsShader);
-              }
-            }
-          });
+    const materialsProcessed = new Set<string>();
+
+    scene.traverse((child) => {
+      const obj = child as any;
+      if (!obj.isMesh && !obj.isSkinnedMesh) return;
+
+      const materials = Array.isArray(obj.material) ? obj.material : [obj.material];
+
+      materials.forEach((material: any) => {
+        if (materialsProcessed.has(material.uuid)) return;
+        materialsProcessed.add(material.uuid);
+
+        const originalMap = material.map;
+        const repeat = new THREE.Vector2(1, 1);
+        const offset = new THREE.Vector2(0, 0);
+
+        if (originalMap) {
+          repeat.copy(originalMap.repeat);
+          offset.copy(originalMap.offset);
         }
+
+        const texture = material.name === "Shader_B" ? textureB : textureA;
+
+        texture.repeat.copy(repeat);
+        texture.offset.copy(offset);
+
+        material.map = texture;
+        material.metalness = 0.5;
+        material.roughness = 1;
+        material.needsUpdate = true;
       });
-    }
-  }, [scene]);
-
-  const applyTexture = (texture: Texture, materialName: string) => {
-    if (textureParamsShaderA && materialName === "Shader_A") {
-      texture.wrapS = textureParamsShaderA.wrapS;
-      texture.wrapT = textureParamsShaderA.wrapT;
-      texture.repeat.copy(textureParamsShaderA.repeat);
-      texture.offset.copy(textureParamsShaderA.offset);
-    } else if (textureParamsShaderB && materialName === "Shader_B") {
-      texture.wrapS = textureParamsShaderB.wrapS;
-      texture.wrapT = textureParamsShaderB.wrapT;
-      texture.repeat.copy(textureParamsShaderB.repeat);
-      texture.offset.copy(textureParamsShaderB.offset);
-    }
-
-    texture.colorSpace = SRGBColorSpace;
-    texture.needsUpdate = true;
-
-    meshRef.current?.traverse((child) => {
-      if (child instanceof Mesh) {
-        const materials = Array.isArray(child.material)
-          ? child.material
-          : [child.material];
-        materials.forEach((material) => {
-          if (material.name === materialName) {
-            material.map = texture;
-            material.metalness = 0.5;
-            material.roughness = 1;
-            material.needsUpdate = true;
-          }
-        });
-      }
     });
-  };
+
+  }, [scene, textureA, textureB]);
 
   useEffect(() => {
-    if (textureParamsShaderA && textureShaderA.current) {
-      applyTexture(textureShaderA.current, "Shader_A");
-    }
-    if (textureParamsShaderB && textureShaderB.current) {
-      applyTexture(textureShaderB.current, "Shader_B");
-    }
-  }, [
-    textureParamsShaderA,
-    textureParamsShaderB,
-    textureShaderA,
-    textureShaderB,
-  ]);
-
-  useEffect(() => {
-    if (scene) {
-      meshRef.current = scene.children[0] as Group;
-    }
-  }, [scene]);
-
-  useEffect(() => {
-    if (playAnimation) {
-      animations.forEach((clip) => mixer.clipAction(clip, scene).play());
+    if (playAnimation && animations.length > 0) {
+      animations.forEach((clip) => {
+        mixer.clipAction(
+          clip as unknown as THREE.AnimationClip,
+          scene as unknown as THREE.Object3D
+        ).play();
+      });
     } else {
       mixer.stopAllAction();
     }
-  }, [playAnimation]);
+  }, [playAnimation, animations, mixer, scene]);
 
   useFrame((_, delta) => {
     mixer.update(delta);
   });
 
   return (
-    <>
-      <primitive
-        ref={meshRef}
-        object={scene}
-        scale={1}
-        rotation={[0, Math.PI, 0]}
-        position={new Vector3(0, 0, 0)}
-      />
-
-      {animations &&
-        animations.map((clip) => (
-          <primitive
-            key={clip.uuid}
-            object={mixer.clipAction(clip, scene).play()}
-          />
-        ))}
-    </>
+    <primitive
+      ref={meshRef}
+      object={scene}
+      scale={1}
+      rotation={[0, Math.PI, 0]}
+      position={[0, 0, 0]}
+    />
   );
 }

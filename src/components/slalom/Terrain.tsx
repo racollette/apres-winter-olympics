@@ -117,8 +117,8 @@ export default function Terrain() {
   }, []);
 
   const snowMaterial = useMemo(() => {
-    return new THREE.MeshLambertMaterial({
-      color: "#e8f0f8",
+    return new THREE.MeshBasicMaterial({
+      color: "#f5f9fc",
     });
   }, []);
 

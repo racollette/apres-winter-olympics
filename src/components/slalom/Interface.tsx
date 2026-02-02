@@ -6,7 +6,6 @@ import { addEffect } from "@react-three/fiber";
 import { api } from "~/utils/api";
 import Link from "next/link";
 import { OLYMPICS_ENDED } from "~/utils/constants";
-import { Controls } from "../Controls";
 import SpeedIndicator from "./SpeedIndicator";
 
 export default function Interface() {
@@ -149,7 +148,17 @@ export default function Interface() {
           <div className="mt-4 animate-pulse text-2xl font-bold text-yellow-400">
             Press SPACE to start
           </div>
-          <Controls wasdInstruction="Steer" spacebar={false} />
+          <div className="mt-4 flex flex-col items-center gap-2 rounded-lg bg-black/50 p-4">
+            <div className="text-xl font-bold">Controls</div>
+            <div className="grid grid-cols-2 gap-x-6 gap-y-2 text-sm">
+              <span className="text-white/70">W</span>
+              <span>Tuck (faster)</span>
+              <span className="text-white/70">S</span>
+              <span>Brake (slower)</span>
+              <span className="text-white/70">A / D</span>
+              <span>Steer left / right</span>
+            </div>
+          </div>
         </div>
       )}
 

@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useMemo } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { Trail } from "@react-three/drei";
@@ -21,16 +21,18 @@ export default function SkiTrails({
 }: SkiTrailsProps) {
   const leftSkiRef = useRef<THREE.Mesh>(null);
   const rightSkiRef = useRef<THREE.Mesh>(null);
+  const leftOffset = useMemo(() => new THREE.Vector3(), []);
+  const rightOffset = useMemo(() => new THREE.Vector3(), []);
 
   useFrame(() => {
     if (!leftSkiRef.current || !rightSkiRef.current) return;
 
-    const leftOffset = new THREE.Vector3(-SKI_OFFSET_X, 0, SKI_OFFSET_Z);
+    leftOffset.set(-SKI_OFFSET_X, 0, SKI_OFFSET_Z);
     leftOffset.applyQuaternion(skierRotation);
     leftSkiRef.current.position.copy(skierPosition).add(leftOffset);
     leftSkiRef.current.quaternion.copy(skierRotation);
 
-    const rightOffset = new THREE.Vector3(SKI_OFFSET_X, 0, SKI_OFFSET_Z);
+    rightOffset.set(SKI_OFFSET_X, 0, SKI_OFFSET_Z);
     rightOffset.applyQuaternion(skierRotation);
     rightSkiRef.current.position.copy(skierPosition).add(rightOffset);
     rightSkiRef.current.quaternion.copy(skierRotation);

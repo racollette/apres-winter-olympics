@@ -12,10 +12,8 @@ const DEFAULT_DINO = {
 } as const;
 
 function SlalomEvent() {
-
-  const [frameRate, setFrameRate] = useState(0);
   const lastTime = useRef(0);
-
+  const fpsRef = useRef<HTMLDivElement>(null);
   const [start, setStart] = useState(false);
 
   return (
@@ -32,11 +30,14 @@ function SlalomEvent() {
         <Canvas
           camera={{ fov: 75, near: 0.1, far: 2500 }}
           onCreated={({ gl }) => {
+            let frameCount = 0;
             gl.setAnimationLoop((time) => {
-              const delta = time - lastTime.current;
-              lastTime.current = time;
-              const currentFrameRate = Math.round(1000 / delta);
-              setFrameRate(currentFrameRate);
+              frameCount++;
+              if (frameCount % 10 === 0 && fpsRef.current) {
+                const delta = time - lastTime.current;
+                lastTime.current = time;
+                fpsRef.current.textContent = `${Math.round(10000 / delta)} FPS`;
+              }
             });
           }}
         >
@@ -49,8 +50,8 @@ function SlalomEvent() {
             />
           </Suspense>
         </Canvas>
-        <div className="absolute left-5 top-6 z-10 text-xs font-semibold text-white">
-          {frameRate} FPS
+        <div ref={fpsRef} className="absolute left-5 top-6 z-10 text-xs font-semibold text-white">
+          -- FPS
         </div>
         <Interface />
         <LoadingScreen

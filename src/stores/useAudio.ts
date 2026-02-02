@@ -58,12 +58,12 @@ const useAudio = create<AudioState>((set, get) => ({
 
     if (windAudio) {
       windAudio.volume = 0;
-      windAudio.play().catch(() => {});
+      windAudio.play().catch((_e) => { /* autoplay blocked */ });
     }
 
     if (carveAudio) {
       carveAudio.volume = 0;
-      carveAudio.play().catch(() => {});
+      carveAudio.play().catch((_e) => { /* autoplay blocked */ });
     }
 
     set({
@@ -132,7 +132,7 @@ const useAudio = create<AudioState>((set, get) => ({
 
     gatePassAudio.currentTime = 0;
     gatePassAudio.volume = 0.5;
-    gatePassAudio.play().catch(() => {});
+    gatePassAudio.play().catch((_e) => { /* audio play failed */ });
   },
 
   playGateMiss: () => {
@@ -141,7 +141,7 @@ const useAudio = create<AudioState>((set, get) => ({
 
     gateMissAudio.currentTime = 0;
     gateMissAudio.volume = 0.4;
-    gateMissAudio.play().catch(() => {});
+    gateMissAudio.play().catch((_e) => { /* audio play failed */ });
   },
 }));
 
