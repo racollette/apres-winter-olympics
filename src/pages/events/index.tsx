@@ -37,9 +37,9 @@ export default function Home() {
                 description="Compete in a variety of mini-games with your clayno!"
                 prizes={["Top scorer: 1 Claymaker, 2 Clay for each event"]}
               >
-                <div className="mt-4 grid w-full grid-cols-1 items-center justify-between gap-4 md:grid-cols-3">
+                <div className="mt-4 grid w-full grid-cols-2 items-center justify-between gap-4 md:grid-cols-4">
                   <Link
-                    href="/events/select?event=slalom"
+                    href="/slalom"
                     className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg bg-purple-950 p-2 hover:scale-105 hover:bg-cyan-500"
                   >
                     <div className="relative aspect-square w-full">
@@ -53,21 +53,35 @@ export default function Home() {
                     <p className="font-bold">Time Trial</p>
                   </Link>
                   <Link
-                    href="/events/select?event=drop"
-                    className="flex w-full cursor-pointer flex-col items-center justify-center gap-2 rounded-lg bg-purple-950 p-2 hover:scale-105 hover:bg-cyan-500"
+                    href="/ski-jump"
+                    className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg bg-purple-950 p-2 hover:scale-105 hover:bg-cyan-500"
                   >
                     <div className="relative aspect-square w-full">
                       <Image
-                        src="/images/drop.png"
-                        alt="Taxi Training"
+                        src="/images/slalom.png"
+                        alt="Ski Jump"
                         fill
                         className="rounded-md"
                       />
                     </div>
-                    <p className="font-bold">Taxi Training</p>
+                    <p className="font-bold">Ski Jump</p>
                   </Link>
                   <Link
-                    href="/events/select?event=delivery"
+                    href="/bobsled"
+                    className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg bg-purple-950 p-2 hover:scale-105 hover:bg-cyan-500"
+                  >
+                    <div className="relative aspect-square w-full">
+                      <Image
+                        src="/images/slalom.png"
+                        alt="Bobsled"
+                        fill
+                        className="rounded-md"
+                      />
+                    </div>
+                    <p className="font-bold">Bobsled</p>
+                  </Link>
+                  <Link
+                    href="/delivery"
                     className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg bg-purple-950 p-2 hover:scale-105 hover:bg-cyan-500"
                   >
                     <div className="relative aspect-square w-full">

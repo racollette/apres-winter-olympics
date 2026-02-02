@@ -3,14 +3,17 @@
 import { Canvas } from "@react-three/fiber";
 import { Suspense, useRef, useState } from "react";
 import Experience from "../../components/delivery/Experience";
-import { KeyboardControls, PerformanceMonitor } from "@react-three/drei";
+import { KeyboardControls } from "@react-three/drei";
 import Interface from "../../components/delivery/Interface";
-import { useRouter } from "next/router";
 import { LoadingScreen } from "~/components/LoadingScreen";
 
+const DEFAULT_DINO = {
+  species: "rex",
+  mood: "confident",
+  number: "3495",
+} as const;
+
 function DeliveryEvent() {
-  const router = useRouter();
-  const { species, mood, number } = router.query;
 
   const [frameRate, setFrameRate] = useState(0);
   const lastTime = useRef(0);
@@ -49,9 +52,9 @@ function DeliveryEvent() {
           <color attach="background" args={["black"]} />
           <Suspense fallback={null}>
             <Experience
-              species={species as string}
-              mood={mood as string}
-              number={number as string}
+              species={DEFAULT_DINO.species}
+              mood={DEFAULT_DINO.mood}
+              number={DEFAULT_DINO.number}
             />
           </Suspense>
         </Canvas>

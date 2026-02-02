@@ -1,21 +1,15 @@
 import { useKeyboardControls } from "@react-three/drei";
 import useGame from "../../stores/useGame";
+import useAudio from "../../stores/useAudio";
 import { useEffect, useRef, useState } from "react";
 import { addEffect } from "@react-three/fiber";
 import { api } from "~/utils/api";
 import Link from "next/link";
 import { OLYMPICS_ENDED } from "~/utils/constants";
 import { Controls } from "../Controls";
+import SpeedIndicator from "./SpeedIndicator";
 
-export default function Interface({
-  species,
-  mood,
-  number,
-}: {
-  species: string;
-  mood: string;
-  number: string;
-}) {
+export default function Interface() {
   const time = useRef<HTMLDivElement | null>(null);
   // const gatesActivated = useRef();
   const [gatesActivated, setGatesActivated] = useState(0);
@@ -23,6 +17,7 @@ export default function Interface({
 
   const restart = useGame((state) => state.restart);
   const phase = useGame((state) => state.phase);
+  const countdown = useGame((state) => state.countdown);
   const userId = useGame((state) => state.userId);
   const dino = useGame((state) => state.dino);
 
@@ -31,6 +26,9 @@ export default function Interface({
   const leftward = useKeyboardControls((state) => !!state.leftward);
   const rightward = useKeyboardControls((state) => !!state.rightward);
   const jump = useKeyboardControls((state) => !!state.jump);
+  const toggleMute = useAudio((state) => state.toggleMute);
+  const muted = useAudio((state) => state.muted);
+  const currentGates = useGame((state) => state.gatesActivated);
 
   const recordResult = api.leaderboard.recordResult.useMutation({
     retry: 3,
@@ -42,7 +40,7 @@ export default function Interface({
   });
 
   const [score, setScore] = useState(0);
-  const totalGates = 21;
+  const totalGates = 50;
 
   useEffect(() => {
     const unsubscribeEffect = addEffect(() => {
@@ -106,19 +104,60 @@ export default function Interface({
 
   return (
     <div className="pointer-events-none fixed left-0 top-0 h-screen w-screen font-clayno">
-      {/* Time */}
-      <div className="top-15% absolute left-0 mt-2 flex w-full flex-row justify-center gap-4 bg-black/50 py-2 text-center text-2xl text-white">
-        <div ref={time}>0.00</div>
+      {/* Time and Gates */}
+      <div className="top-15% absolute left-0 mt-2 flex w-full flex-row items-center justify-center gap-6 bg-black/50 py-2 text-center text-white">
+        <div className="flex flex-col items-center">
+          <div className="text-xs text-white/70">TIME</div>
+          <div ref={time} className="text-2xl font-bold tabular-nums">0.00</div>
+        </div>
+        <div className="h-8 w-px bg-white/30" />
+        <div className="flex flex-col items-center">
+          <div className="text-xs text-white/70">GATES</div>
+          <div className="text-2xl font-bold">
+            <span className="text-green-400">{currentGates}</span>
+            <span className="text-white/50">/{totalGates}</span>
+          </div>
+        </div>
       </div>
 
+      {/* Speed Indicator */}
+      {phase === "playing" && <SpeedIndicator />}
+
+      {/* Mute button */}
+      <button
+        className="pointer-events-auto absolute right-4 top-4 rounded-lg bg-black/40 p-2 text-white transition-colors hover:bg-black/60"
+        onClick={toggleMute}
+      >
+        {muted ? (
+          <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
+          </svg>
+        ) : (
+          <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+          </svg>
+        )}
+      </button>
+
       {phase === "ready" && (
-        <div className="absolute left-0 top-1/4 flex w-full flex-col items-center justify-center gap-2 bg-black/50 py-4 text-4xl text-white">
-          <div className="text-2xl font-bold">Slalom Time Trial</div>
+        <div className="absolute left-0 top-1/4 flex w-full flex-col items-center justify-center gap-4 bg-black/50 py-6 text-white">
+          <div className="text-3xl font-bold">Slalom Time Trial</div>
           <div className="text-lg">
-            Make it to the finish line. Each missed gate will add 5 seconds to
-            your time.
+            Pass through the gates. Each missed gate adds 5 seconds.
           </div>
-          <Controls wasdInstruction="Move" spacebar={false} />
+          <div className="mt-4 animate-pulse text-2xl font-bold text-yellow-400">
+            Press SPACE to start
+          </div>
+          <Controls wasdInstruction="Steer" spacebar={false} />
+        </div>
+      )}
+
+      {phase === "countdown" && (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="text-9xl font-bold text-white drop-shadow-lg">
+            {countdown}
+          </div>
         </div>
       )}
 
@@ -162,7 +201,7 @@ export default function Interface({
             Leaderboard
           </Link>
           <Link
-            href={`/drop?species=${species}&mood=${mood}&number=${number}`}
+            href={`/delivery`}
             className="pointer-events-auto cursor-pointer rounded-lg bg-blue-600 p-2"
           >
             Next Event

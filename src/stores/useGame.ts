@@ -8,15 +8,18 @@ type State = {
   startTime: number;
   endTime: number;
   phase: string;
+  countdown: number;
   gatesActivated: number;
+  passedGateIndices: Set<number>;
   userId: string;
   dino: Character | null;
   velocity: number;
   distanceFromCenter: number;
+  startCountdown: () => void;
   start: () => void;
   restart: () => void;
   end: () => void;
-  gateActivated: () => void;
+  gateActivated: (gateIndex: number) => void;
   playerInformation: (userId: string, dino: Character | null) => void;
   setSpeed: (velocity: number) => void;
   setDistance: (distanceFromCenter: number) => void;
@@ -29,7 +32,8 @@ export default create(
       set: (
         partial: Partial<State> | ((state: State) => Partial<State>),
         replace?: boolean
-      ) => void
+      ) => void,
+      get: () => State
     ) => {
       return {
         blocksCount: 10,
@@ -45,11 +49,13 @@ export default create(
          * Phases
          */
         phase: "ready",
+        countdown: 0,
 
         /**
          * Actions
          */
         gatesActivated: 0,
+        passedGateIndices: new Set<number>(),
 
         // Results
         distanceFromCenter: 0,
@@ -67,6 +73,24 @@ export default create(
           set((state) => ({ ...state, velocity }));
         },
 
+        startCountdown: () => {
+          const state = get();
+          if (state.phase !== "ready") return;
+
+          let count = 3;
+          set({ phase: "countdown", countdown: count });
+
+          const interval = setInterval(() => {
+            count--;
+            if (count > 0) {
+              set({ countdown: count });
+            } else {
+              clearInterval(interval);
+              set({ phase: "playing", startTime: Date.now(), countdown: 0 });
+            }
+          }, 1000);
+        },
+
         start: () => {
           set((state) => {
             if (state.phase === "ready")
@@ -76,9 +100,14 @@ export default create(
           });
         },
 
-        gateActivated: () => {
+        gateActivated: (gateIndex: number) => {
           set((state) => {
-            return { gatesActivated: state.gatesActivated + 1 };
+            const newSet = new Set(state.passedGateIndices);
+            newSet.add(gateIndex);
+            return {
+              gatesActivated: state.gatesActivated + 1,
+              passedGateIndices: newSet,
+            };
           });
         },
 
@@ -88,11 +117,13 @@ export default create(
 
         restart: () => {
           set((state) => {
-            if (state.phase === "playing" || state.phase === "ended")
+            if (state.phase === "playing" || state.phase === "ended" || state.phase === "countdown")
               return {
                 phase: "ready",
                 blocksSeed: Math.random(),
                 gatesActivated: 0,
+                passedGateIndices: new Set<number>(),
+                countdown: 0,
               };
 
             return {};
@@ -115,7 +146,9 @@ export default create(
             startTime: 0,
             endTime: 0,
             phase: "ready",
+            countdown: 0,
             gatesActivated: 0,
+            passedGateIndices: new Set<number>(),
             userId: "",
             dino: null,
             velocity: 0,

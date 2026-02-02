@@ -1,8 +1,8 @@
 import { Canvas } from "@react-three/fiber";
 import { Suspense, useRef, useState } from "react";
-import Experience from "../../components/slalom/Experience";
+import Experience from "../../components/ski-jump/Experience";
 import { KeyboardControls } from "@react-three/drei";
-import Interface from "../../components/slalom/Interface";
+import Interface from "../../components/ski-jump/Interface";
 import { LoadingScreen } from "~/components/LoadingScreen";
 
 const DEFAULT_DINO = {
@@ -11,11 +11,9 @@ const DEFAULT_DINO = {
   number: "3495",
 } as const;
 
-function SlalomEvent() {
-
+function SkiJumpEvent() {
   const [frameRate, setFrameRate] = useState(0);
   const lastTime = useRef(0);
-
   const [start, setStart] = useState(false);
 
   return (
@@ -30,7 +28,6 @@ function SlalomEvent() {
         ]}
       >
         <Canvas
-          camera={{ fov: 75, near: 0.1, far: 2500 }}
           onCreated={({ gl }) => {
             gl.setAnimationLoop((time) => {
               const delta = time - lastTime.current;
@@ -54,7 +51,7 @@ function SlalomEvent() {
         </div>
         <Interface />
         <LoadingScreen
-          totalFiles={9}
+          totalFiles={15}
           started={start}
           startExperience={() => setStart(true)}
         />
@@ -63,4 +60,4 @@ function SlalomEvent() {
   );
 }
 
-export default SlalomEvent;
+export default SkiJumpEvent;

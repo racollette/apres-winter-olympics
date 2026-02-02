@@ -56,8 +56,9 @@ const Player = ({
   );
   const [smoothedCameraTarget] = useState(() => new THREE.Vector3());
 
-  const jumpStrength = 45;
+  const jumpStrength = 50;
   const cameraHeight = species === "bronto" ? 4 : 2;
+  const [isGrounded, setIsGrounded] = useState(false);
 
   useFrame((state, delta) => {
     /**
@@ -68,8 +69,22 @@ const Player = ({
     const impulse = { x: 0, y: 0, z: 0 };
     const torque = { x: 0, y: 0, z: 0 };
 
-    const impulseStrength = 50 * delta;
-    const torqueStrength = 20 * delta;
+    // Check if grounded for air control reduction
+    let grounded = false;
+    if (body.current) {
+      const origin = body.current.translation();
+      origin.y -= 0.5;
+      const direction = { x: 0, y: -1, z: 0 };
+      const ray = new rapier.Ray(origin, direction);
+      const hit = world.castRay(ray, 1, true);
+      grounded = !!(hit && hit.toi <= 0.6);
+      setIsGrounded(grounded);
+    }
+
+    // Reduce control strength when in air (30% of ground control)
+    const airControlMultiplier = grounded ? 1.0 : 0.3;
+    const impulseStrength = 60 * delta * airControlMultiplier;
+    const torqueStrength = 25 * delta * airControlMultiplier;
 
     // console.log(delta);
 
@@ -252,9 +267,9 @@ const Player = ({
         canSleep={false}
         colliders={false}
         restitution={0}
-        friction={0.5}
-        linearDamping={0.5}
-        angularDamping={0.5}
+        friction={1.5}
+        linearDamping={0.8}
+        angularDamping={1.0}
         position={[0, 3, -70]}
       >
         <group castShadow>

@@ -3,12 +3,14 @@ import { Suspense } from "react";
 import Experience from "../../components/jump/Experience";
 import { KeyboardControls } from "@react-three/drei";
 import Interface from "../../components/jump/Interface";
-import { useRouter } from "next/router";
+
+const DEFAULT_DINO = {
+  species: "rex",
+  mood: "confident",
+  number: "3495",
+} as const;
 
 function JumpEvent() {
-  const router = useRouter();
-  const { species, mood, number } = router.query;
-
   return (
     <>
       <KeyboardControls
@@ -24,9 +26,9 @@ function JumpEvent() {
           <color attach="background" args={["black"]} />
           <Suspense fallback={null}>
             <Experience
-              species={species as string}
-              mood={mood as string}
-              number={number as string}
+              species={DEFAULT_DINO.species}
+              mood={DEFAULT_DINO.mood}
+              number={DEFAULT_DINO.number}
             />
           </Suspense>
         </Canvas>

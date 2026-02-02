@@ -35,10 +35,8 @@ export default function Model({
     }
   }
 
-  const externalURL = `https://cdn.hellomoon.io/public/claynos/models/${model}.gltf.glb`;
-
-  // const { scene, animations } = useGLTF(`/models/${modelName}.gltf.glb`);
-  const { scene, animations } = useGLTF(externalURL);
+  const localURL = `/models/${model}.gltf.glb`;
+  const { scene, animations } = useGLTF(localURL);
 
   // console.log(scene);
   // console.log(animations);
@@ -61,14 +59,8 @@ export default function Model({
   };
 
   if (nftId) {
-    textureShaderA.current = loadTexture(
-      `https://cdn.hellomoon.io/public/claynos/textures/${nftId}_1001.jpg`
-      // `textures/${nftId}_1001.jpg`
-    );
-    textureShaderB.current = loadTexture(
-      `https://cdn.hellomoon.io/public/claynos/textures/${nftId}_1002.jpg`
-      // `/textures/${nftId}_1002.jpg`
-    );
+    textureShaderA.current = loadTexture(`/textures/3495_1001.jpg`);
+    textureShaderB.current = loadTexture(`/textures/3495_1002.jpg`);
   }
 
   useEffect(() => {

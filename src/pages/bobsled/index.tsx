@@ -1,19 +1,21 @@
 import { Canvas } from "@react-three/fiber";
 import { Suspense, useRef, useState } from "react";
-import Experience from "../../components/drop/Experience";
+import Experience from "../../components/bobsled/Experience";
 import { KeyboardControls } from "@react-three/drei";
-import Interface from "../../components/drop/Interface";
-import { useRouter } from "next/router";
+import Interface from "../../components/bobsled/Interface";
 import { LoadingScreen } from "~/components/LoadingScreen";
 
-function DropEvent() {
-  const router = useRouter();
-  const { species, mood, number } = router.query;
+const DEFAULT_DINO = {
+  species: "rex",
+  mood: "confident",
+  number: "3495",
+} as const;
 
+function BobsledEvent() {
   const [frameRate, setFrameRate] = useState(0);
   const lastTime = useRef(0);
-
   const [start, setStart] = useState(false);
+
   return (
     <>
       <KeyboardControls
@@ -30,7 +32,7 @@ function DropEvent() {
             gl.setAnimationLoop((time) => {
               const delta = time - lastTime.current;
               lastTime.current = time;
-              const currentFrameRate = Math.round(1000 / delta); // Convert milliseconds to frames per second
+              const currentFrameRate = Math.round(1000 / delta);
               setFrameRate(currentFrameRate);
             });
           }}
@@ -38,22 +40,16 @@ function DropEvent() {
           <color attach="background" args={["black"]} />
           <Suspense fallback={null}>
             <Experience
-              species={species as string}
-              mood={mood as string}
-              number={number as string}
+              species={DEFAULT_DINO.species}
+              mood={DEFAULT_DINO.mood}
+              number={DEFAULT_DINO.number}
             />
           </Suspense>
         </Canvas>
         <div className="absolute left-5 top-6 z-10 text-xs font-semibold text-white">
           {frameRate} FPS
         </div>
-        {start && (
-          <Interface
-            species={species as string}
-            mood={mood as string}
-            number={number as string}
-          />
-        )}
+        <Interface />
         <LoadingScreen
           totalFiles={15}
           started={start}
@@ -64,4 +60,4 @@ function DropEvent() {
   );
 }
 
-export default DropEvent;
+export default BobsledEvent;
