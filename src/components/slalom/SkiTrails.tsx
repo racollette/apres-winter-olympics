@@ -1,4 +1,4 @@
-import { useRef, useMemo } from "react";
+import { useRef, useMemo, type MutableRefObject } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { Trail } from "@react-three/drei";
@@ -48,7 +48,7 @@ export default function SkiTrails({
         length={15}
         color={trailColor}
         attenuation={(t) => t}
-        target={leftSkiRef}
+        target={leftSkiRef as MutableRefObject<THREE.Object3D>}
       >
         <mesh ref={leftSkiRef}>
           <sphereGeometry args={[0.01, 4, 4]} />
@@ -61,7 +61,7 @@ export default function SkiTrails({
         length={15}
         color={trailColor}
         attenuation={(t) => t}
-        target={rightSkiRef}
+        target={rightSkiRef as MutableRefObject<THREE.Object3D>}
       >
         <mesh ref={rightSkiRef}>
           <sphereGeometry args={[0.01, 4, 4]} />

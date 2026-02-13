@@ -161,8 +161,8 @@ export default function Sled({
     smoothedCameraPosition.lerp(cameraPosition, 3 * delta);
     smoothedCameraTarget.lerp(cameraTarget, 3 * delta);
 
-    state.camera.position.copy(smoothedCameraPosition);
-    state.camera.lookAt(smoothedCameraTarget);
+    state.camera.position.set(smoothedCameraPosition.x, smoothedCameraPosition.y, smoothedCameraPosition.z);
+    state.camera.lookAt(smoothedCameraTarget.x, smoothedCameraTarget.y, smoothedCameraTarget.z);
   });
 
   useEffect(() => {

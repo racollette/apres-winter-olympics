@@ -77,7 +77,7 @@ const Player = ({
       const direction = { x: 0, y: -1, z: 0 };
       const ray = new rapier.Ray(origin, direction);
       const hit = world.castRay(ray, 1, true);
-      grounded = !!(hit && hit.toi <= 0.6);
+      grounded = !!(hit && hit.timeOfImpact <= 0.6);
       setIsGrounded(grounded);
     }
 
@@ -219,7 +219,7 @@ const Player = ({
       const ray = new rapier.Ray(origin, direction);
       const hit = world.castRay(ray, 10, true);
 
-      if (hit && hit.toi <= 0.01) {
+      if (hit && hit.timeOfImpact <= 0.01) {
         body.current.applyImpulse({ x: 0, y: jumpStrength, z: 0 }, true);
       }
     }

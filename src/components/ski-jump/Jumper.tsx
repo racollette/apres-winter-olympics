@@ -107,7 +107,7 @@ export default function Jumper({
       const ray = new rapier.Ray(origin, direction);
       const hit = world.castRay(ray, 5, true);
 
-      if (hit && hit.toi <= 1 && bodyVelocity.y < 0) {
+      if (hit && hit.timeOfImpact <= 1 && bodyVelocity.y < 0) {
         // Calculate distance from launch point
         if (launchPosition.current) {
           const distance = Math.abs(bodyPosition.z - launchPosition.current.z);
