@@ -1,5 +1,5 @@
 import { Dropdown } from "flowbite-react";
-import { HiCog, HiLogout, HiViewGrid, HiUser } from "react-icons/hi";
+import { LogOut } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { handleUserPFPDoesNotExist } from "~/utils/images";
@@ -39,7 +39,7 @@ export default function ProfileButton(props: ProfileButtonProps) {
 
       <Dropdown.Item
         className="text-white hover:bg-neutral-900 focus:bg-neutral-900"
-        icon={HiLogout}
+        icon={LogOut}
         onClick={handleSignout}
       >
         Sign out

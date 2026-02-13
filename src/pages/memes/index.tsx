@@ -2,7 +2,7 @@ import Metatags from "~/components/MetaTags";
 import Header from "~/components/Header";
 import { api } from "~/utils/api";
 import Image from "next/image";
-import { IoMdArrowDropupCircle, IoMdArrowDropdownCircle } from "react-icons/io";
+import { ArrowUpCircle, ArrowDownCircle } from "lucide-react";
 import { useUser } from "~/hooks/useUser";
 import { useState } from "react";
 import { useToast } from "~/@/components/ui/use-toast";
@@ -196,14 +196,14 @@ export default function Memes() {
                       height={500}
                     />
                     {!isVoted ? (
-                      <IoMdArrowDropupCircle
+                      <ArrowUpCircle
                         size={45}
                         color="#097a1c"
                         className="absolute bottom-3 right-3 cursor-pointer rounded-full bg-emerald-400 hover:scale-125"
                         onClick={() => handleCastVote(meme.id)}
                       />
                     ) : (
-                      <IoMdArrowDropdownCircle
+                      <ArrowDownCircle
                         size={45}
                         color="#69120c"
                         className="absolute bottom-3 right-3 cursor-pointer rounded-full bg-red-400 hover:scale-125"
