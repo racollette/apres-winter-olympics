@@ -1,5 +1,5 @@
 import { type CustomFlowbiteTheme, Modal } from "flowbite-react";
-import { HiTrash } from "react-icons/hi";
+import { Trash2 } from "lucide-react";
 import { useState } from "react";
 
 const customTheme: CustomFlowbiteTheme["modal"] = {
@@ -34,7 +34,7 @@ export default function AlertModal({
           setOpenModal("dismissible");
         }}
       >
-        <HiTrash className="mr-1 self-center" width={20} height={20} />
+        <Trash2 className="mr-1 self-center" size={16} />
         <div className="md:text-md text-xs font-extrabold">{button}</div>
       </button>
       <Modal
